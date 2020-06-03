@@ -22,7 +22,7 @@ namespace AuthingApiClientTest
             {
                 Secret = "699b99005bdf51d5f7ca97014ed9fdea"
             };
-            client.GetAccessToken().Wait();
+            client.GetAccessTokenAsync().Wait();
 
             var email = new Random().Next().ToString() + "@gmail.com";
             var password = "123456";
@@ -35,7 +35,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test1_GetAccessToken()
         {
-            await client.GetAccessToken();
+            await client.GetAccessTokenAsync();
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace AuthingApiClientTest
         }
 
         [Test]
-        public async Task Test6_CheckLoginStatus()
+        public async Task Test7_CheckLoginStatus()
         {
             var result = await client.CheckLoginStatusAsync(new CheckLoginStatusParam(token));
 

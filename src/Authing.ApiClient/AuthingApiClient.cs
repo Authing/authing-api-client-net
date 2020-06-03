@@ -45,7 +45,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// 需要提供 Secret
         /// </summary>
         /// <returns>access token</returns>
-        public async Task<string> GetAccessToken()
+        public async Task<string> GetAccessTokenAsync()
         {
             var param = new InitParam()
             {

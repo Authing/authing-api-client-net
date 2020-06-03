@@ -69,23 +69,14 @@ namespace Authing.ApiClient
             var url = $"https://users.authing.cn/send_smscode/{phone}/{UserPoolId}";
             var result = await httpClient.GetAsync(url);
 
-            try
+            result.EnsureSuccessStatusCode();
+
+            var content = await result.Content.ReadAsStringAsync();
+            var sendPhoneCodeResult = JsonConvert.DeserializeObject<SendPhoneCodeResult>(content);
+
+            if (sendPhoneCodeResult.Code != 200)
             {
-                result.EnsureSuccessStatusCode();
-                var content = await result.Content.ReadAsStringAsync();
-                var sendPhoneCodeResult = JsonConvert.DeserializeObject<SendPhoneCodeResult>(content);
-                if (sendPhoneCodeResult.Code != 200)
-                {
-                    throw new AuthingApiException(sendPhoneCodeResult.Message, sendPhoneCodeResult.Code);
-                }
-            }
-            catch (AuthingApiException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new AuthingApiException(e.Message);
+                throw new AuthingApiException(sendPhoneCodeResult.Message, sendPhoneCodeResult.Code);
             }
         }
 
@@ -100,23 +91,14 @@ namespace Authing.ApiClient
             var url = $"https://users.authing.cn/notification/send_register_smscode/{phone}/{UserPoolId}";
             var result = await httpClient.GetAsync(url);
 
-            try
+            result.EnsureSuccessStatusCode();
+
+            var content = await result.Content.ReadAsStringAsync();
+            var sendPhoneCodeResult = JsonConvert.DeserializeObject<SendPhoneCodeResult>(content);
+
+            if (sendPhoneCodeResult.Code != 200)
             {
-                result.EnsureSuccessStatusCode();
-                var content = await result.Content.ReadAsStringAsync();
-                var sendPhoneCodeResult = JsonConvert.DeserializeObject<SendPhoneCodeResult>(content);
-                if (sendPhoneCodeResult.Code != 200)
-                {
-                    throw new AuthingApiException(sendPhoneCodeResult.Message, sendPhoneCodeResult.Code);
-                }
-            }
-            catch (AuthingApiException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new AuthingApiException(e.Message);
+                throw new AuthingApiException(sendPhoneCodeResult.Message, sendPhoneCodeResult.Code);
             }
         }
 

@@ -22,7 +22,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test1_GetAccessToken()
         {
-            await client.GetAccessToken();
+            await client.GetAccessTokenAsync();
         }
 
         [Test]
