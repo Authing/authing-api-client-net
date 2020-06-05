@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Authing.ApiClient.Results
 {
@@ -63,7 +64,7 @@ namespace Authing.ApiClient.Results
         public bool IsDeleted { get; set; }
 
         [DataMember]
-        public Location UserLocation{ get; set; }
+        public List<Location> UserLocation{ get; set; }
 
         [DataMember]
         public UserLoginHistory UserLoginHistory{ get; set; }
