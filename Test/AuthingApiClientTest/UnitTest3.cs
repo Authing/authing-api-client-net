@@ -85,7 +85,7 @@ namespace AuthingApiClientTest
         }
 
         [Test]
-        public async Task Test08_VerifyResetPasswordVerifyCode()
+        public async Task Test08_ChangePassword()
         {
             // var result = await client.ChangePasswordAsync(new ChangePasswordParam(newUser.Email, "12345678", ""));
             // Console.WriteLine(result.Email);

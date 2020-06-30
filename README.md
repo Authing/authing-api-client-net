@@ -241,6 +241,160 @@ client.CheckLoginStatusAsync(CheckLoginStatusParam param)
 var result = await client.CheckLoginStatusAsync(new CheckLoginStatusParam("token"));
 ```
 
+### 使用 AD 账号登录
+
+client.LoginByAdAsync(LoginByAdParam param)
+
+- param {LoginByAdParam}
+  - param.AdConnectorId {string}，必填，AD Connector ID
+  - param.Username {string}，必填，用户名
+  - param.Password {string}，必填，密码
+
+示例
+
+```c#
+var result = await client.LoginByAdAsync(new LoginByAdParam("adConnectorId", "username", "password"));
+```
+
+### 发送验证邮件
+
+向目标邮箱发送带有验证链接的邮件，可以用来验证邮箱真实性
+
+client.SendVerifyEmailAsync(SendVerifyEmailParam param)
+
+- param {SendVerifyEmailParam}
+  - param.Email {string}，必填，邮箱
+
+示例
+
+```c#
+await client.SendVerifyEmailAsync(new SendVerifyEmailParam("email"));
+```
+
+### 发送重置密码的验证邮件
+
+向目标邮箱发送带有验证码的邮件，可以用来重置密码
+
+client.SendResetPasswordEmailAsync(SendResetPasswordEmailParam param)
+
+- param {SendResetPasswordEmailParam}
+  - param.Email {string}，必填，邮箱
+
+示例
+
+```c#
+await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam("email"));
+```
+
+### 验证重置密码的邮件验证码
+
+client.VerifyResetPasswordVerifyCodeAsync(VerifyResetPasswordVerifyCodeParam param)
+
+- param {VerifyResetPasswordVerifyCodeParam}
+  - param.Email {string}，必填，邮箱
+  - param.VerifyCode {string}，必填，验证码
+
+示例
+
+```c#
+var result = await client.VerifyResetPasswordVerifyCodeAsync(new VerifyResetPasswordVerifyCodeParam("email", "code"));
+```
+
+### 修改密码
+
+client.ChangePasswordAsync(ChangePasswordParam param)
+
+- param {ChangePasswordParam}
+  - param.Email {string}，必填，邮箱
+  - param.Password {string}，必填，新密码
+  - param.VerifyCode {string}，必填，上一步的验证码
+
+示例
+
+```c#
+var result = await client.ChangePasswordAsync(new ChangePasswordParam("email", "new password", "code"));
+```
+
+### 判断用户是否存在
+
+client.UserExistAsync(UserExistParam param)
+
+- param {UserExistParam}
+  - param.Username {string}，用户名
+  - param.Phone {string}，电话
+  - param.Email {string}，邮箱
+
+示例
+
+```c#
+var result = await client.UserExistAsync(new UserExistParam() {
+  Email = "email"
+});
+```
+
+### 批量查询用户池中的用户信息
+
+client.UsersInfoByCountAsync(UsersInfoByCountParam param)
+
+- param {UsersInfoByCountParam}
+  - param.Count {int}，必填，每页用户数量
+  - param.Page {int}，当前页数，默认为 1
+
+示例
+
+```c#
+var result = await client.UsersInfoByCountAsync(new UsersInfoByCountParam(10));
+```
+
+### 根据 ID 列表查询用户信息
+
+client.UsersInfoByIdsAsync(UsersInfoByIdsParam param)
+
+- param {UsersInfoByIdsParam}
+  - param.UserIdList {List}，必填，用户 ID 列表
+
+示例
+
+```c#
+var result = await client.UsersInfoByIdsAsync(new UsersInfoByIdsParam(new List<string>()
+{
+  "ID1",
+  "ID2",
+  "ID3"
+}));
+```
+
+### 解绑邮箱
+
+client.UnbindEmailAsync(UnbindEmailParam param)
+
+- param {UnbindEmailParam}
+  - param.UserId {string}，必填，用户 ID
+
+示例
+
+```c#
+var result = await client.UnbindEmailAsync(new UnbindEmailParam("ID"));
+```
+
+### 批量删除用户
+
+client.RemoveUsersAsync(RemoveUsersParam param)
+
+- param {RemoveUsersParam}
+  - param.UserIdList {string}，必填，用户 ID 列表
+
+示例
+
+```c#
+var result = await client.RemoveUsersAsync(new RemoveUsersParam(new List<string>()
+{
+  "ID1",
+  "ID2",
+  "ID3"
+}));
+```
+
 ## 获取帮助
 
 1. Gitter: [#authing-chat](https://gitter.im/authing-chat/community)
