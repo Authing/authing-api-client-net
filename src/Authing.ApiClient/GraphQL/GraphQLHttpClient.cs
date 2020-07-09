@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient.GrqphQL
+namespace Authing.ApiClient.GraphQL
 {
     public class GraphQLHttpClient
     {
@@ -46,7 +46,7 @@ namespace Authing.ApiClient.GrqphQL
             CancellationToken cancellationToken = default)
             => SendQueryAsync<TResponse>(request, cancellationToken);
 
-        public void AddAccessToken(string accessToken)
+        public void SetAccessToken(string accessToken)
         {
             Options.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         }

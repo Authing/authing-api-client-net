@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace Authing.ApiClient.GrqphQL
+namespace Authing.ApiClient.GraphQL
 {
     public class GraphQLHttpResponse<T> : GraphQLResponse<T>
     {

@@ -1,9 +1,9 @@
 ﻿using Authing.ApiClient;
-using Authing.ApiClient.Params;
-using Authing.ApiClient.Results;
+using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace AuthingApiClientTest
     public class UnitTest3
     {
         private AuthingApiClient client;
-        private RegisterResult newUser;
+        private ExtendUser newUser;
 
         [SetUp]
         public void Setup()
@@ -25,9 +25,17 @@ namespace AuthingApiClientTest
 
             var email = new Random().Next().ToString() + "@gmail.com";
             var password = "123456";
-            client.RegisterAsync(new RegisterParam(email, password)).ContinueWith((user) =>
+
+            client.RegisterAsync(new RegisterParam()
             {
-                newUser = user.Result;
+                UserInfo = new UserRegisterInput()
+                {
+                    Email = email,
+                    Password = password
+                }
+            }).ContinueWith((result) =>
+            {
+                newUser = result.Result.Register;
             }).Wait();
         }
 
@@ -40,21 +48,28 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test02_SendVerifyEmail()
         {
-            var result = await client.SendVerifyEmailAsync(new SendVerifyEmailParam("recallsufuture@gmail.com"));
-            Console.WriteLine(result.Code);
+            var response = await client.SendVerifyEmailAsync(new SendVerifyEmailParam()
+            {
+                Email = "recallsufuture@gmail.com"
+            });
+            Console.WriteLine(response.SendVerifyEmail.Code);
         }
 
         [Test]
         public async Task Test03_SendResetPasswordEmail()
         {
-            var result = await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam("recallsufuture@gmail.com"));
-            Console.WriteLine(result.Code);
+            var response = await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam()
+            {
+                Email = "recallsufuture@gmail.com"
+            });
+            Console.WriteLine(response.SendResetPasswordEmail.Code);
         }
 
         [Test]
         public async Task Test04_UserExist()
         {
-            var result = await client.UserExistAsync(new UserExistParam() {
+            var result = await client.UserExistAsync(new UserExistParam()
+            {
                 Email = newUser.Email
             });
             Console.WriteLine(result);
@@ -63,18 +78,24 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test05_UsersInfoByCount()
         {
-            var result = await client.UsersInfoByCountAsync(new UsersInfoByCountParam(10));
-            Console.WriteLine(result.TotalCount);
+            var response = await client.UsersInfoByCountAsync(new UsersParam()
+            {
+                Count = 10
+            });
+            Console.WriteLine(response.Users.TotalCount);
         }
 
         [Test]
         public async Task Test06_UsersInfoByIds()
         {
-            var result = await client.UsersInfoByIdsAsync(new UsersInfoByIdsParam(new List<string>()
+            var response = await client.UsersInfoByIdsAsync(new UserPatchParam()
             {
-                newUser.Id
-            }));
-            Console.WriteLine(result.Count);
+                Ids = string.Join(',', new List<string>()
+                {
+                    newUser._Id
+                })
+            });
+            Console.WriteLine(response.UserPatch.TotalCount);
         }
 
         [Test]
@@ -95,18 +116,25 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test09_UnbindEmail()
         {
-            var result = await client.UnbindEmailAsync(new UnbindEmailParam(newUser.Id));
-            Console.WriteLine(result.Email);
+            // 需要配置其他登录方式才能解绑
+            var response = await client.UnbindEmailAsync(new UnbindEmailParam()
+            {
+                User = newUser._Id
+            });
+            Console.WriteLine(response.UnbindEmail.Email);
         }
 
         [Test]
         public async Task Test10_RemoveUsers()
         {
-            var result = await client.RemoveUsersAsync(new RemoveUsersParam(new List<string>()
+            var response = await client.RemoveUsersAsync(new RemoveUsersParam()
             {
-                newUser.Id
-            }));
-            Console.WriteLine(result.Count);
+                Ids = string.Join(',', new List<string>()
+                {
+                    newUser._Id
+                })
+            });
+            Console.WriteLine(response.RemoveUsers.Count());
         }
     }
 }

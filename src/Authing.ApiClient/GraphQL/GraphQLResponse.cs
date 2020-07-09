@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Authing.ApiClient.GrqphQL
+namespace Authing.ApiClient.GraphQL
 {
     [DataContract]
     public class GraphQLResponse<T>

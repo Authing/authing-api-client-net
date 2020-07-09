@@ -1,9 +1,9 @@
-﻿using Authing.ApiClient.Params;
-using Authing.ApiClient.Results;
+﻿using Authing.ApiClient.Types;
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Authing.ApiClient.GrqphQL;
+using Authing.ApiClient.GraphQL;
 using System.Text;
 using XC.RSAUtil;
 using System.Security.Cryptography;
@@ -12,16 +12,34 @@ namespace Authing.ApiClient
 {
     public partial class AuthingApiClient
     {
+        /// <summary>
+        /// 用户池 ID，必填
+        /// </summary>
         public string UserPoolId { get; set; }
 
+        /// <summary>
+        /// 用户池密钥
+        /// </summary>
         public string Secret { get; set; }
 
+        /// <summary>
+        /// 接口超时时间
+        /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
 
+        /// <summary>
+        /// Graphql 接口地址
+        /// </summary>
         public string UserHost { get; set; } = "https://users.authing.cn/graphql";
 
+        /// <summary>
+        /// Graphql 接口地址
+        /// </summary>
         public string OAuthHost { get; set; } = "https://oauth.authing.cn/graphql";
 
+        /// <summary>
+        /// 加密密码使用的公钥
+        /// </summary>
         public string PublicKey { get; set; } = @"-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4xKeUgQ+Aoz7TLfAfs9+paePb
 5KIofVthEopwrXFkp8OCeocaTHt9ICjTT2QeJh6cZaDaArfZ873GPUn00eOIZ7Ae
@@ -33,11 +51,62 @@ GKl64GDcIq3au+aqJQIDAQAB
         private GraphQLHttpClient userGqlClient;
         private GraphQLHttpClient oAuthGqlClient;
 
+        /// <summary>
+        /// 通过 userPoolId 和可选的一些参数来初始化
+        /// </summary>
+        /// <param name="userPoolId"></param>
         public AuthingApiClient(string userPoolId)
         {
             UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
             userGqlClient = CreateGqlClient(UserHost);
             oAuthGqlClient = CreateGqlClient(OAuthHost);
+        }
+
+        /// <summary>
+        /// 向任意 Graphql 接口发出请求，
+        /// 详见 https://docs.authing.cn/sdk/open-graphql.html
+        /// </summary>
+        /// 
+        /// <example>
+        /// <code>
+        /// var param = new GetClientWhenSdkInitParam()
+        /// {
+        ///     ClientId = userPoolId,
+        ///     Secret = secret
+        /// };
+        /// var response = await client.Request&lt;GetClientWhenSdkInitResponse&gt;(param.GetRequest());
+        /// Console.WriteLine(response.GetClientWhenSdkInit.AccessToken);
+        /// </code>
+        /// </example>
+        /// <typeparam name="TResponse">返回值类型</typeparam>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default) {
+            var result = await userGqlClient.SendQueryAsync<TResponse>(request, cancellationToken);
+            CheckResult(result);
+            return result.Data;
+        }
+
+        /// <summary>
+        /// 通过 rsa 加密字符串，通常用来加密密码
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public string Encrypt(string message)
+        {
+            if (message == null)
+            {
+                return null;
+            }
+
+            if (PublicKey == null)
+            {
+                throw new NullReferenceException("AuthingApiClient.PublicKey");
+            }
+
+            var util = new RsaPkcs1Util(Encoding.UTF8, PublicKey);
+            return util.Encrypt(message, RSAEncryptionPadding.Pkcs1);
         }
 
         /// <summary>
@@ -47,18 +116,18 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <returns>access token</returns>
         public async Task<string> GetAccessTokenAsync()
         {
-            var param = new InitParam()
+            var param = new GetClientWhenSdkInitParam()
             {
                 ClientId = UserPoolId,
                 Secret = Secret ?? throw new ArgumentNullException("AuthingApiClient.Secret")
             };
 
-            var result = await userGqlClient.SendQueryAsync<InitResponse>(param.CreateRequest());
+            var result = await userGqlClient.SendQueryAsync<GetClientWhenSdkInitResponse>(param.CreateRequest());
             CheckResult(result);
 
             accessToken = result.Data.GetClientWhenSdkInit.AccessToken;
-            userGqlClient.AddAccessToken(accessToken);
-            oAuthGqlClient.AddAccessToken(accessToken);
+            userGqlClient.SetAccessToken(accessToken);
+            oAuthGqlClient.SetAccessToken(accessToken);
 
             return accessToken;
         }
@@ -86,17 +155,6 @@ GKl64GDcIq3au+aqJQIDAQAB
                 var error = result.Errors[0].Message;
                 throw new AuthingApiException(error.Message, error.Code);
             }
-        }
-
-        private string Encrypt(string message)
-        {
-            if (PublicKey == null)
-            {
-                throw new NullReferenceException("AuthingApiClient.PublicKey");
-            }
-
-            var util = new RsaPkcs1Util(Encoding.UTF8, PublicKey);
-            return util.Encrypt(message, RSAEncryptionPadding.Pkcs1);
         }
     }
 }

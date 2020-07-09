@@ -1,6 +1,5 @@
 ﻿using Authing.ApiClient;
-using Authing.ApiClient.Params;
-using Authing.ApiClient.Results;
+using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,8 +11,10 @@ namespace AuthingApiClientTest
     public class UnitTest2
     {
         private AuthingApiClient client;
-        private RegisterResult newUser;
+        private ExtendUser newUser;
         private string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoicmVjYWxsc3VmdXR1cmVAZ21haWwuY29tIiwiaWQiOiI1ZWQ3MzQ1NzdlMDRkMzMwZDU1MjBmMTAiLCJjbGllbnRJZCI6IjVlNzJkNjVjNzc5MzJhNTlhMjY2YTVjYSJ9LCJpYXQiOjE1OTExNjkwNzIsImV4cCI6MTU5MjQ2NTA3Mn0.vgaoULOEYXptBMYe-S7_NNHBK90M2BXRTVzl_qCc2xo";
+        
+        private string password = "123456";
 
         [SetUp]
         public void Setup()
@@ -23,66 +24,94 @@ namespace AuthingApiClientTest
                 Secret = "699b99005bdf51d5f7ca97014ed9fdea"
             };
             client.GetAccessTokenAsync().Wait();
-
-            var email = new Random().Next().ToString() + "@gmail.com";
-            var password = "123456";
-            client.RegisterAsync(new RegisterParam(email, password)).ContinueWith((user) =>
+            string email = new Random().Next().ToString() + "@gmail.com";
+            client.RegisterAsync(new RegisterParam()
             {
-                newUser = user.Result;
+                UserInfo = new UserRegisterInput()
+                {
+                    Email = email,
+                    Password = password,
+                    Nickname = "123123"
+                }
+            }).ContinueWith((result) =>
+            {
+                newUser = result.Result.Register;
             }).Wait();
         }
 
         [Test]
         public async Task Test1_GetAccessToken()
         {
-            await client.GetAccessTokenAsync();
+            var response = await client.GetAccessTokenAsync();
+            Console.WriteLine(response);
         }
 
         [Test]
         public async Task Test2_LoginByEmail()
         {
-            await client.LoginByEmailAsync(new LoginByEmailParam(newUser.Email, "123456"));
+            var response = await client.LoginByEmailAsync(new LoginParam()
+            {
+                Email = newUser.Email,
+                Password = password,
+            });
+            Console.WriteLine(response.Login.Email);
         }
 
         [Test]
         public async Task Test3_DecodeToken()
         {
-            var result = await client.DecodeTokenAsync(new DecodeTokenParam(token));
-            Console.WriteLine(result.Data.Email);
+            var response = await client.DecodeTokenAsync(new DecodeJwtTokenParam()
+            {
+                Token = token
+            });
+            Console.WriteLine(response.DecodeJwtToken.Status);
         }
 
         [Test]
         public async Task Test4_UserInfo()
         {
-            var result = await client.UserInfoAsync(new UserInfoParam(newUser.Id));
-            Console.WriteLine(result.Email);
+            var response = await client.UserInfoAsync(new UserParam()
+            {
+                Id = newUser._Id
+            });
+            Console.WriteLine(response.User.Email);
         }
 
         [Test]
         public async Task Test5_RefreshToken()
         {
-            var result = await client.RefreshTokenAsync(new RefreshTokenParam(newUser.Id));
-            Console.WriteLine(result.Token);
-            newUser.Token = result.Token;
+            var response = await client.RefreshTokenAsync(new RefreshTokenParam()
+            {
+                User = newUser._Id
+            });
+            Console.WriteLine(response.RefreshToken.Token);
+            newUser.Token = response.RefreshToken.Token;
         }
 
         [Test]
         public async Task Test6_UpdateUserInfo()
         {
-            var result = await client.UpdateUserInfoAsync(new UpdateUserInfoParam("5ed734577e04d330d5520f10")
+            var response = await client.UpdateUserInfoAsync(new UpdateUserParam()
             {
-                Nickname = "test user"
+                Options = new UserUpdateInput
+                {
+                    _Id = "5ed734577e04d330d5520f10",
+                    Nickname = "test user"
+                }
             });
 
-            Console.WriteLine(result.Nickname);
+            Console.WriteLine(response.UpdateUser.Nickname);
         }
 
         [Test]
         public async Task Test7_CheckLoginStatus()
         {
-            var result = await client.CheckLoginStatusAsync(new CheckLoginStatusParam(token));
+            var response = await client.CheckLoginStatusAsync(new CheckLoginStatusParam()
+            {
+                Token = token
+            });
 
-            Console.WriteLine(result.Message);
+            Console.WriteLine(response.CheckLoginStatus.Message);
         }
     }
 }

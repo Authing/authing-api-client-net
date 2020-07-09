@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Authing.ApiClient.GrqphQL
+namespace Authing.ApiClient.GraphQL
 {
     /// <summary>
     /// The message object of the error

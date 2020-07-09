@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 
-namespace Authing.ApiClient.GrqphQL
+namespace Authing.ApiClient.GraphQL
 {
     /// <summary>
     /// An exception thrown on unexpected <see cref="System.Net.Http.HttpResponseMessage"/>

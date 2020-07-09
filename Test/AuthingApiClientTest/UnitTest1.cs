@@ -1,5 +1,5 @@
 using Authing.ApiClient;
-using Authing.ApiClient.Params;
+using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
@@ -22,7 +22,8 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test1_GetAccessToken()
         {
-            await client.GetAccessTokenAsync();
+            var response = await client.GetAccessTokenAsync();
+            Console.WriteLine(response);
         }
 
         [Test]
@@ -30,8 +31,15 @@ namespace AuthingApiClientTest
         {
             var email = new Random().Next().ToString() + "@gmail.com";
             var password = "123456";
-            var newUser = await client.RegisterAsync(new RegisterParam(email, password));
-            Console.WriteLine(newUser.Email);
+            var response = await client.RegisterAsync(new RegisterParam()
+            {
+                UserInfo = new UserRegisterInput()
+                {
+                    Email = email,
+                    Password = password
+                }
+            });
+            Console.WriteLine(response.Register.Email);
         }
 
         [Test]

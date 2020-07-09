@@ -1,8 +1,8 @@
-﻿using Authing.ApiClient.Params;
-using Authing.ApiClient.Results;
+﻿using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Authing.ApiClient
@@ -12,124 +12,104 @@ namespace Authing.ApiClient
         /// <summary>
         /// 获取用户信息
         /// </summary>
+        /// <param name="param">用户 ID</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserInfoResult> UserInfoAsync(UserInfoParam param)
+        public async Task<UserResponse> UserInfoAsync(UserParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
+            param.RegisterInClient = UserPoolId;
 
-            var result = await userGqlClient.SendQueryAsync<UserInfoResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.User;
+            return await Request<UserResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 刷新用户 token
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<RefreshTokenResult> RefreshTokenAsync(RefreshTokenParam param)
+        public async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
+            param.Client = UserPoolId;
 
-            var result = await userGqlClient.SendMutationAsync<RefreshTokenResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.RefreshToken;
+            return await Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 更新用户信息
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserInfoResult> UpdateUserInfoAsync(UpdateUserInfoParam param)
+        public async Task<UpdateUserResponse> UpdateUserInfoAsync(UpdateUserParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
-            if (param.Password != null)
-            {
-                param.Password = Encrypt(param.Password);
-            }
-            if (param.OldPassword != null)
-            {
-                param.OldPassword = Encrypt(param.OldPassword);
-            }
+            param.Options = param.Options ?? new UserUpdateInput();
+            param.Options.RegisterInClient = UserPoolId;
+            param.Options.Password = Encrypt(param.Options.Password);
+            param.Options.OldPassword = Encrypt(param.Options.OldPassword);
 
-            var result = await userGqlClient.SendMutationAsync<UpdateUserInfoResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.UpdateUser;
+            return await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 检查用户登录状态
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<CheckLoginStatusResult> CheckLoginStatusAsync(CheckLoginStatusParam param)
+        public async Task<CheckLoginStatusResponse> CheckLoginStatusAsync(CheckLoginStatusParam param, CancellationToken cancellationToken = default)
         {
-            var result = await userGqlClient.SendQueryAsync<CheckLoginStatusResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.CheckLoginStatus;
+            return await Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 通过用户 ID 列表批量查询用户信息
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserInfoResult>> UsersInfoByIdsAsync(UsersInfoByIdsParam param)
+        public async Task<UserPatchResponse> UsersInfoByIdsAsync(UserPatchParam param, CancellationToken cancellationToken = default)
         {
-            var result = await userGqlClient.SendQueryAsync<UsersInfoByIdsResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.UserPatch.List;
+            return await Request<UserPatchResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 查询用户池中的用户列表
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UsersInfoByCountResult> UsersInfoByCountAsync(UsersInfoByCountParam param)
+        public async Task<UsersResponse> UsersInfoByCountAsync(UsersParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
+            param.RegisterInClient = UserPoolId;
 
-            var result = await userGqlClient.SendQueryAsync<UsersInfoByCountResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.Users;
+            return await Request<UsersResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 通过用户 ID 列表批量删除用户
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<UserInfoResult>> RemoveUsersAsync(RemoveUsersParam param)
+        public async Task<RemoveUsersResponse> RemoveUsersAsync(RemoveUsersParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
+            param.RegisterInClient = UserPoolId;
 
-            var result = await userGqlClient.SendMutationAsync<RemoveUsersResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.RemoveUsers;
+            return await Request<RemoveUsersResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
         /// 解绑邮箱
         /// </summary>
         /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserInfoResult> UnbindEmailAsync(UnbindEmailParam param)
+        public async Task<UnbindEmailResponse> UnbindEmailAsync(UnbindEmailParam param, CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
+            param.Client = UserPoolId;
 
-            var result = await userGqlClient.SendMutationAsync<UnbindEmailResponse>(param.CreateRequest());
-            CheckResult(result);
-
-            return result.Data.unbindEmail;
+            return await Request<UnbindEmailResponse>(param.CreateRequest(), cancellationToken);
         }
     }
 }
