@@ -88,7 +88,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, GraphqlHostType hostType = GraphqlHostType.User)
+        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, GraphqlHostType hostType = GraphqlHostType.User)
         {
             var client = hostType == GraphqlHostType.User ? userGqlClient : oAuthGqlClient;
             var result = await client.SendQueryAsync<TResponse>(request, cancellationToken);
@@ -101,7 +101,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public string Encrypt(string message)
+        protected string Encrypt(string message)
         {
             if (message == null)
             {

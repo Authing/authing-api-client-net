@@ -1,4 +1,4 @@
-# authing-api-client-net
+# authing-api-client-net 2.0
 
 Authing 的 .Net SDK 为开发者提供了简单、安全的操作接口，支持在客户端和服务端使用。
 
@@ -73,6 +73,8 @@ var client = new AuthingApiClient("userPoolId")
 
 ## API
 
+> 注：Param 中的 Client、ClientId、UserPoolId 和 RegisterInClient 均等同于 UserpoolId，接口方法内已自动为其赋值。
+
 ### 注册
 
 client.RegisterAsync(RegisterParam param)
@@ -93,14 +95,18 @@ client.RegisterAsync(RegisterParam param)
 ```c#
 var email = "";
 var password = "";
-var result = await client.RegisterAsync(new RegisterParam(email, password));
+var result = await client.RegisterAsync(new RegisterParam()
+{
+  Email = email,
+  Pasword = password,
+});
 ```
 
 ### 使用邮箱登录
 
-client.LoginByEmailAsync(LoginByEmailParam param)
+client.LoginByEmailAsync(LoginParam param)
 
-- param {LoginByEmailParam}
+- param {LoginParam}
   - param.Email {string}，必填，用户邮箱
   - param.Password {string}，必填，用户密码
 
@@ -109,21 +115,87 @@ client.LoginByEmailAsync(LoginByEmailParam param)
 ```c#
 var email = "";
 var password = "";
-var result = await client.LoginByEmailAsync(new LoginByEmailParam(email, password));
+var result = await client.LoginByEmailAsync(new LoginParam()
+{
+  Email = email,
+  Pasword = password,
+});
 ```
 
-### 使用手机号登录
+### 使用用户名登录
 
-client.LoginByPhoneAsync(LoginByPhoneParam param)
+client.LoginByUsernameAsync(LoginParam param)
 
-- param {LoginByPhoneParam}
-  - param.PhoneNumber {string}，手机号
-  - param.VerifyCode {int}，短信验证码
+- param {LoginParam}
+  - param.Username {string}，必填，用户邮箱
+  - param.Password {string}，必填，用户密码
 
 示例
 
 ```c#
-var result = await client.LoginByPhoneAsync(new LoginByPhone("phone number", 1234));
+var username = "";
+var password = "";
+var result = await client.LoginByUsernameAsync(new LoginParam()
+{
+  Username = username,
+  Pasword = password,
+});
+```
+
+### 使用 AD 账号登录
+
+client.LoginByAdAsync(LoginByAdParam param)
+
+- param {LoginByAdParam}
+  - param.AdConnectorId {string}，必填，AD Connector ID
+  - param.Username {string}，必填，用户名
+  - param.Password {string}，必填，密码
+
+示例
+
+```c#
+var result = await client.LoginByAdAsync(new LoginByAdParam()
+{
+  adConnectorId = "adConnectorId",
+  Username = "username",
+  Password = "password",
+});
+```
+
+### 使用 LDAP 账号登录
+
+client.LoginByLdapAsync(LoginByLdapParam param)
+
+- param {LoginByLdapParam}
+  - param.Password {string}，必填，密码
+  - param.Username {string}，必填，用户名
+
+示例
+
+```c#
+var result = await client.LoginByLdapAsync(new LoginByLdapParam()
+{
+  Username = "username",
+  Password = "password",
+});
+```
+
+### 使用手机号登录
+
+client.LoginByPhoneAsync(LoginParam param)
+
+- param {LoginParam}
+  - param.Phone {string}，手机号
+  - param.PhoneCode {int}，短信验证码
+
+示例
+
+```c#
+var result = await client.LoginByPhoneAsync(new LoginParam()
+{
+  Phone = "phone",
+  PhoneCode = 1234,
+});
 ```
 
 ### 发送手机号验证码
@@ -164,15 +236,18 @@ await client.GetAccessTokenAsync();
 
 ### 解析 User Token
 
-client.DecodeTokenAsync(DecodeTokenParam param)
+client.DecodeJwtTokenAsync(DecodeJwtTokenParam param)
 
-- param {DecodeTokenParam}
+- param {DecodeJwtTokenParam}
   - param.Token {string}，必填，用户 Authing Token
 
 示例
 
 ```c#
-var result = await client.DecodeTokenAsync(new DecodeTokenParam("token"));
+var result = await client.DecodeJwtTokenAsync(new DecodeJwtTokenParam()
+{
+  Token = "token",
+});
 ```
 
 ### 刷新 User Token
@@ -180,28 +255,36 @@ var result = await client.DecodeTokenAsync(new DecodeTokenParam("token"));
 client.RefreshTokenAsync(RefreshTokenParam param)
 
 - param {RefreshTokenParam}
-  - param.UserId {string}，必填，用户 ID
+  - param.User {string}，必填，用户 ID
 
 ```c#
-var result = await client.RefreshTokenAsync(new RefreshTokenParam("user ID"));
+var result = await client.RefreshTokenAsync(new RefreshTokenParam()
+{
+  User = "user id"
+});
 ```
 
 ### 获取用户信息
 
-client.UserInfoAsync(UserInfoParam param)
+client.UserAsync(UserInfoParam param)
 
-- param {UserInfoParam}
-  - param.UserId {string}，必填，用户 ID
+- param {UserParam}
+  - param.Token {string}，用户登录后的 token，非管理员身份必填
+  - param.Id {string}，被查询用户的 ID
 
 ```c#
-var result = await client.UserInfoAsync(new UserInfoParam("user ID"));
+var result = await client.UserAsync(new UserParam()
+{
+  Token = "token",
+  Id = "id",
+});
 ```
 
 ### 更新用户信息
 
-client.UpdateUserInfoAsync(UpdateUserInfoParam param)
+client.UpdateUserAsync(UpdateUserParam param)
 
-- param {UpdateUserInfoParam}
+- param {UpdateUserParam}
   - param.UserId {string}，必填，用户 ID
   - param.Blocked {bool}，可选，是否被锁定
   - param.Browser {string}，可选，浏览器信息
@@ -215,15 +298,16 @@ client.UpdateUserInfoAsync(UpdateUserInfoParam param)
   - param.SignUp {string}，可选，注册时间
   - param.Photo {string}，可选，头像
   - param.Password {string}，可选，密码
-  - param.Token {string}，可选，Authing Token
+  - param.Token {string}，可选，Authing Token，非管理员必填
   - param.TokenExpiredAt {string}，可选，Authing Token 过期时间
-param.Username {string}，可选，用户名
+  - param.Username {string}，可选，用户名
 
 示例
 
 ```c#
-var result = await client.UpdateUserInfoAsync(new UpdateUserInfoParam("user ID")
+var result = await client.UpdateUserAsync(new UpdateUserParam()
 {
+  _Id = "user id",
   Nickname = "nick name"
 });
 ```
@@ -238,23 +322,12 @@ client.CheckLoginStatusAsync(CheckLoginStatusParam param)
 示例
 
 ```c#
-var result = await client.CheckLoginStatusAsync(new CheckLoginStatusParam("token"));
+var result = await client.CheckLoginStatusAsync(new CheckLoginStatusParam()
+{
+  Token = "token"
+});
 ```
 
-### 使用 AD 账号登录
-
-client.LoginByAdAsync(LoginByAdParam param)
-
-- param {LoginByAdParam}
-  - param.AdConnectorId {string}，必填，AD Connector ID
-  - param.Username {string}，必填，用户名
-  - param.Password {string}，必填，密码
-
-示例
-
-```c#
-var result = await client.LoginByAdAsync(new LoginByAdParam("adConnectorId", "username", "password"));
-```
 
 ### 发送验证邮件
 
@@ -268,7 +341,10 @@ client.SendVerifyEmailAsync(SendVerifyEmailParam param)
 示例
 
 ```c#
-await client.SendVerifyEmailAsync(new SendVerifyEmailParam("email"));
+await client.SendVerifyEmailAsync(new SendVerifyEmailParam()
+{
+  Email = "email",
+});
 ```
 
 ### 发送重置密码的验证邮件
@@ -283,7 +359,10 @@ client.SendResetPasswordEmailAsync(SendResetPasswordEmailParam param)
 示例
 
 ```c#
-await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam("email"));
+await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam()
+{
+  Email = "email",
+});
 ```
 
 ### 验证重置密码的邮件验证码
@@ -297,7 +376,11 @@ client.VerifyResetPasswordVerifyCodeAsync(VerifyResetPasswordVerifyCodeParam par
 示例
 
 ```c#
-var result = await client.VerifyResetPasswordVerifyCodeAsync(new VerifyResetPasswordVerifyCodeParam("email", "code"));
+var result = await client.VerifyResetPasswordVerifyCodeAsync(new VerifyResetPasswordVerifyCodeParam()
+{
+  Email = "email",
+  VerifyCode = "verifyCode",
+});
 ```
 
 ### 修改密码
@@ -312,7 +395,12 @@ client.ChangePasswordAsync(ChangePasswordParam param)
 示例
 
 ```c#
-var result = await client.ChangePasswordAsync(new ChangePasswordParam("email", "new password", "code"));
+var result = await client.ChangePasswordAsync(new ChangePasswordParam()
+{
+  Email = "email",
+  Password = "password",
+  VerifyCode = "verifyCode",
+});
 ```
 
 ### 判断用户是否存在
@@ -334,34 +422,35 @@ var result = await client.UserExistAsync(new UserExistParam() {
 
 ### 批量查询用户池中的用户信息
 
-client.UsersInfoByCountAsync(UsersInfoByCountParam param)
+client.UsersAsync(UsersParam param)
 
-- param {UsersInfoByCountParam}
-  - param.Count {int}，必填，每页用户数量
+- param {UsersParam}
+  - param.Count {int}，可选，每页用户数量
   - param.Page {int}，当前页数，默认为 1
 
 示例
 
 ```c#
-var result = await client.UsersInfoByCountAsync(new UsersInfoByCountParam(10));
+var result = await client.UsersInfoByCountAsync(new UsersInfoByCountParam()
+{
+  Count = 10,
+});
 ```
 
 ### 根据 ID 列表查询用户信息
 
-client.UsersInfoByIdsAsync(UsersInfoByIdsParam param)
+client.UserPatchAsync(UserPatchParam param)
 
-- param {UsersInfoByIdsParam}
-  - param.UserIdList {List}，必填，用户 ID 列表
+- param {UserPatchParam}
+  - param.Ids {string}，必填，用户 ID 列表，用英文逗号分隔
 
 示例
 
 ```c#
-var result = await client.UsersInfoByIdsAsync(new UsersInfoByIdsParam(new List<string>()
+var result = await client.UsersInfoByIdsAsync(new UsersInfoByIdsParam()
 {
-  "ID1",
-  "ID2",
-  "ID3"
-}));
+  Ids = "id1,id2,id3",
+});
 ```
 
 ### 解绑邮箱
@@ -369,12 +458,15 @@ var result = await client.UsersInfoByIdsAsync(new UsersInfoByIdsParam(new List<s
 client.UnbindEmailAsync(UnbindEmailParam param)
 
 - param {UnbindEmailParam}
-  - param.UserId {string}，必填，用户 ID
+  - param.User {string}，必填，用户 ID
 
 示例
 
 ```c#
-var result = await client.UnbindEmailAsync(new UnbindEmailParam("ID"));
+var result = await client.UnbindEmailAsync(new UnbindEmailParam()
+{
+  User = "user id",
+});
 ```
 
 ### 批量删除用户
@@ -382,17 +474,34 @@ var result = await client.UnbindEmailAsync(new UnbindEmailParam("ID"));
 client.RemoveUsersAsync(RemoveUsersParam param)
 
 - param {RemoveUsersParam}
-  - param.UserIdList {string}，必填，用户 ID 列表
+  - param.Ids {string}，必填，用户 ID 列表，用英文逗号分隔
 
 示例
 
 ```c#
-var result = await client.RemoveUsersAsync(new RemoveUsersParam(new List<string>()
+var result = await client.RemoveUsersAsync(new RemoveUsersParam()
 {
-  "ID1",
-  "ID2",
-  "ID3"
-}));
+  Ids = "id1,id2,id3",
+});
+```
+
+### 更多接口
+
+SDK 中提供了所有线上 Graphql 的 Param、Response 类型，但由于工作量较大，并未封装完成所有的接口，如需调用还未封装的 Graphql 接口，可以继承 AuthingApiClient 类并实现对应的方法，例如：
+
+```c#
+public class AuthingApiClientExtends : AuthingApiClient
+{
+  public AuthingApiClientExtends(): base("userPoolId") {}
+
+  public async Task<SignInResponse> SignInAsync(SignInParam param, CancellationToken cancellationToken = default)
+  {
+    param.UserPoolId = UserPoolId;
+    param.Password = Encrypt(param.Password);
+
+    return await Request<SignInResponse>(param.CreateRequest(), cancellationToken);
+  }
+}
 ```
 
 ## 获取帮助
