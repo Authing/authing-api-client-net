@@ -19,9 +19,9 @@ namespace AuthingApiClientTest
         [SetUp]
         public void Setup()
         {
-            client = new AuthingApiClient("5e72d65c77932a59a266a5ca")
+            client = new AuthingApiClient("5efff68f9e93c9d3f2f89eec")
             {
-                Secret = "699b99005bdf51d5f7ca97014ed9fdea"
+                Secret = "69d658f9d6eaf3ce32ef499eedaec6e6"
             };
             client.GetAccessTokenAsync().Wait();
             string email = new Random().Next().ToString() + "@gmail.com";
@@ -49,6 +49,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test2_LoginByEmail()
         {
+            Console.WriteLine(newUser._Id);
             var response = await client.LoginByEmailAsync(new LoginParam()
             {
                 Email = newUser.Email,
@@ -60,7 +61,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test3_DecodeToken()
         {
-            var response = await client.DecodeTokenAsync(new DecodeJwtTokenParam()
+            var response = await client.DecodeJwtTokenAsync(new DecodeJwtTokenParam()
             {
                 Token = token
             });
@@ -70,7 +71,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test4_UserInfo()
         {
-            var response = await client.UserInfoAsync(new UserParam()
+            var response = await client.UserAsync(new UserParam()
             {
                 Id = newUser._Id
             });
@@ -91,7 +92,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test6_UpdateUserInfo()
         {
-            var response = await client.UpdateUserInfoAsync(new UpdateUserParam()
+            var response = await client.UpdateUserAsync(new UpdateUserParam()
             {
                 Options = new UserUpdateInput
                 {

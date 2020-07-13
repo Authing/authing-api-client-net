@@ -13,9 +13,9 @@ namespace AuthingApiClientTest
         [SetUp]
         public void Setup()
         {
-            client = new AuthingApiClient("5e72d65c77932a59a266a5ca")
+            client = new AuthingApiClient("5efff68f9e93c9d3f2f89eec")
             {
-                Secret = "699b99005bdf51d5f7ca97014ed9fdea"
+                Secret = "69d658f9d6eaf3ce32ef499eedaec6e6"
             };
         }
 

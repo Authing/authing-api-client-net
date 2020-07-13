@@ -78,7 +78,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test05_UsersInfoByCount()
         {
-            var response = await client.UsersInfoByCountAsync(new UsersParam()
+            var response = await client.UsersAsync(new UsersParam()
             {
                 Count = 10
             });
@@ -88,7 +88,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test06_UsersInfoByIds()
         {
-            var response = await client.UsersInfoByIdsAsync(new UserPatchParam()
+            var response = await client.UsersPatchAsync(new UserPatchParam()
             {
                 Ids = string.Join(',', new List<string>()
                 {

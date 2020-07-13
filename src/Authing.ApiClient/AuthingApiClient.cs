@@ -10,6 +10,9 @@ using System.Security.Cryptography;
 
 namespace Authing.ApiClient
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class AuthingApiClient
     {
         /// <summary>
@@ -30,12 +33,12 @@ namespace Authing.ApiClient
         /// <summary>
         /// Graphql 接口地址
         /// </summary>
-        public string UserHost { get; set; } = "https://users.authing.cn/graphql";
+        public string UserHost { get; set; } = "http://192.168.50.57:5510/graphql";
 
         /// <summary>
         /// Graphql 接口地址
         /// </summary>
-        public string OAuthHost { get; set; } = "https://oauth.authing.cn/graphql";
+        public string OAuthHost { get; set; } = "http://192.168.50.57:5510/graphql";
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -82,8 +85,10 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default) {
-            var result = await userGqlClient.SendQueryAsync<TResponse>(request, cancellationToken);
+        public async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, GraphqlHostType hostType = GraphqlHostType.User)
+        {
+            var client = hostType == GraphqlHostType.User ? userGqlClient : oAuthGqlClient;
+            var result = await client.SendQueryAsync<TResponse>(request, cancellationToken);
             CheckResult(result);
             return result.Data;
         }
@@ -116,16 +121,16 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <returns>access token</returns>
         public async Task<string> GetAccessTokenAsync()
         {
-            var param = new GetClientWhenSdkInitParam()
+            var param = new GetAccessTokenByAppSecretParam()
             {
                 ClientId = UserPoolId,
                 Secret = Secret ?? throw new ArgumentNullException("AuthingApiClient.Secret")
             };
 
-            var result = await userGqlClient.SendQueryAsync<GetClientWhenSdkInitResponse>(param.CreateRequest());
+            var result = await userGqlClient.SendQueryAsync<GetAccessTokenByAppSecretResponse>(param.CreateRequest());
             CheckResult(result);
 
-            accessToken = result.Data.GetClientWhenSdkInit.AccessToken;
+            accessToken = result.Data.GetAccessTokenByAppSecret;
             userGqlClient.SetAccessToken(accessToken);
             oAuthGqlClient.SetAccessToken(accessToken);
 

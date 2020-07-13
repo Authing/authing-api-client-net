@@ -15,7 +15,7 @@ namespace Authing.ApiClient
         /// <param name="param">用户 ID</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserResponse> UserInfoAsync(UserParam param, CancellationToken cancellationToken = default)
+        public async Task<UserResponse> UserAsync(UserParam param, CancellationToken cancellationToken = default)
         {
             param.RegisterInClient = UserPoolId;
 
@@ -41,7 +41,7 @@ namespace Authing.ApiClient
         /// <param name="param"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UpdateUserResponse> UpdateUserInfoAsync(UpdateUserParam param, CancellationToken cancellationToken = default)
+        public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserParam param, CancellationToken cancellationToken = default)
         {
             param.Options = param.Options ?? new UserUpdateInput();
             param.Options.RegisterInClient = UserPoolId;
@@ -68,7 +68,7 @@ namespace Authing.ApiClient
         /// <param name="param"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UserPatchResponse> UsersInfoByIdsAsync(UserPatchParam param, CancellationToken cancellationToken = default)
+        public async Task<UserPatchResponse> UsersPatchAsync(UserPatchParam param, CancellationToken cancellationToken = default)
         {
             return await Request<UserPatchResponse>(param.CreateRequest(), cancellationToken);
         }
@@ -79,7 +79,7 @@ namespace Authing.ApiClient
         /// <param name="param"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<UsersResponse> UsersInfoByCountAsync(UsersParam param, CancellationToken cancellationToken = default)
+        public async Task<UsersResponse> UsersAsync(UsersParam param, CancellationToken cancellationToken = default)
         {
             param.RegisterInClient = UserPoolId;
 
@@ -110,6 +110,165 @@ namespace Authing.ApiClient
             param.Client = UserPoolId;
 
             return await Request<UnbindEmailResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 读取用户绑定的社会化登录列表
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<NotBindOAuthListResponse> UserOAuthListAsync(NotBindOAuthListParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<NotBindOAuthListResponse>(param.CreateRequest(), cancellationToken, GraphqlHostType.OAuth);
+        }
+
+        /// <summary>
+        /// 绑定用户第三方登录方式
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<BindOtherOAuthResponse> BindOtherOAuthAsync(BindOtherOAuthParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<BindOtherOAuthResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 解绑用户第三方登录方式
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UnbindOtherOAuthResponse> UnBindOtherOAuthAsync(UnbindOtherOAuthParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<UnbindOtherOAuthResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+
+        /// <summary>
+        /// 开启或关闭手机号注册时的白名单限制
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<SetInvitationStateResponse> SetInvitationStateAsync(SetInvitationStateParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<SetInvitationStateResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+
+        /// <summary>
+        /// 查看手机号白名单开启状态
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<QueryInvitationStateResponse> QueryInvitationStateAsync(QueryInvitationStateParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<QueryInvitationStateResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+
+        /// <summary>
+        /// 增加手机号到白名单
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<AddToInvitationResponse> AddToInvitationAsync(AddToInvitationParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<AddToInvitationResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 从白名单中删除手机号
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<RemoveFromInvitationResponse> RemoveFromInvitationAsync(RemoveFromInvitationParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<RemoveFromInvitationResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 查看白名单中的手机号
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<QueryInvitationParam> QueryInvitationAsync(QueryInvitationParam param, CancellationToken cancellationToken = default)
+        {
+            param.Client = UserPoolId;
+
+            return await Request<QueryInvitationParam>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 查询 MFA 信息
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<QueryMfaResponse> QueryMfaAsync(QueryMfaParam param, CancellationToken cancellationToken = default)
+        {
+            param.UserPoolId = UserPoolId;
+
+            return await Request<QueryMfaResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 修改 MFA 信息
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ChangeMfaResponse> ChangeMfaAsync(ChangeMfaParam param, CancellationToken cancellationToken = default)
+        {
+            param.UserPoolId = UserPoolId;
+
+            return await Request<ChangeMfaResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 查询用户授权过的 SSO 应用列表
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<GetUserAuthorizedAppsResponse> GetUserAuthorizedAppsAsync(GetUserAuthorizedAppsParam param, CancellationToken cancellationToken = default)
+        {
+            param.ClientId = UserPoolId;
+
+            return await Request<GetUserAuthorizedAppsResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 撤回用户对 SSO 应用的授权
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<RevokeUserAuthorizedAppResponse> RevokeUserAuthorizedAppAsync(RevokeUserAuthorizedAppParam param, CancellationToken cancellationToken = default)
+        {
+            param.UserPoolId = UserPoolId;
+
+            return await Request<RevokeUserAuthorizedAppResponse>(param.CreateRequest(), cancellationToken);
         }
     }
 }

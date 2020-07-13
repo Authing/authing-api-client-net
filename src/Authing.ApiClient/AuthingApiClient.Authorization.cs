@@ -19,7 +19,9 @@ namespace Authing.ApiClient
         {
             param.UserInfo = param.UserInfo ?? new UserRegisterInput();
             param.UserInfo.RegisterInClient = UserPoolId;
+            Console.WriteLine(param.UserInfo.Password);
             param.UserInfo.Password = Encrypt(param.UserInfo.Password);
+            Console.WriteLine(param.UserInfo.Password);
 
             return await Request<RegisterResponse>(param.CreateRequest(), cancellationToken);
         }
@@ -39,6 +41,20 @@ namespace Authing.ApiClient
         }
 
         /// <summary>
+        /// 使用用户名和密码登录
+        /// </summary>
+        /// <param name="param">需要提供 Username 和 Password</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<LoginResponse> LoginByUsernameAsync(LoginParam param, CancellationToken cancellationToken = default)
+        {
+            param.RegisterInClient = UserPoolId;
+            param.Password = Encrypt(param.Password);
+
+            return await Request<LoginResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
         /// 使用 Ad 账号进行登录
         /// </summary>
         /// <param name="param"></param>
@@ -49,6 +65,20 @@ namespace Authing.ApiClient
             param.Password = Encrypt(param.Password);
 
             return await Request<LoginByAdResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 使用 LDAP 账号进行登录
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<LoginByLdapResponse> LoginByLdapAsync(LoginByLdapParam param, CancellationToken cancellationToken = default)
+        {
+            param.ClientId = UserPoolId;
+            param.Password = Encrypt(param.Password);
+
+            return await Request<LoginByLdapResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
@@ -117,12 +147,39 @@ namespace Authing.ApiClient
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<SignInResponse> SignInAsync(SignInParam param, CancellationToken cancellationToken = default)
+        {
+            param.UserPoolId = UserPoolId;
+            param.Password = Encrypt(param.Password);
+
+            return await Request<SignInResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<RefreshSignInTokenResponse> RefreshSignInTokenAsync(RefreshSignInTokenParam param, CancellationToken cancellationToken = default)
+        {
+            param.UserPoolId = UserPoolId;
+
+            return await Request<RefreshSignInTokenResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
         /// 解析 user token
         /// </summary>
         /// <param name="param"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<DecodeJwtTokenResponse> DecodeTokenAsync(DecodeJwtTokenParam param, CancellationToken cancellationToken = default)
+        public async Task<DecodeJwtTokenResponse> DecodeJwtTokenAsync(DecodeJwtTokenParam param, CancellationToken cancellationToken = default)
         {
             return await Request<DecodeJwtTokenResponse>(param.CreateRequest(), cancellationToken);
         }
