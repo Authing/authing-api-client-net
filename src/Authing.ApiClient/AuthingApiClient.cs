@@ -33,12 +33,12 @@ namespace Authing.ApiClient
         /// <summary>
         /// Graphql 接口地址
         /// </summary>
-        public string UserHost { get; set; } = "http://192.168.50.57:5510/graphql";
+        public string UserHost { get; set; } = "https://users.authing.cn/graphql";
 
         /// <summary>
         /// Graphql 接口地址
         /// </summary>
-        public string OAuthHost { get; set; } = "http://192.168.50.57:5510/graphql";
+        public string OAuthHost { get; set; } = "https://oauth.authing.cn/graphql";
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -53,6 +53,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         private string accessToken;
         private GraphQLHttpClient userGqlClient;
         private GraphQLHttpClient oAuthGqlClient;
+
+        private readonly string type = "SDK";
+        private readonly string version = "c-sharp:2.0.0";
 
         /// <summary>
         /// 通过 userPoolId 和可选的一些参数来初始化
@@ -147,10 +150,16 @@ GKl64GDcIq3au+aqJQIDAQAB
 
         private HttpClient CreateHttpClient()
         {
-            return new HttpClient()
+            var client = new HttpClient()
             {
                 Timeout = Timeout
             };
+
+            client.DefaultRequestHeaders.Add("x-authing-userpool-id", UserPoolId);
+            client.DefaultRequestHeaders.Add("x-authing-request-from", type);
+            client.DefaultRequestHeaders.Add("x-authing-sdk-version", version);
+
+            return client;
         }
 
         private void CheckResult<T>(GraphQLResponse<T> result)

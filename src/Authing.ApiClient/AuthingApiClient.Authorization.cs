@@ -19,9 +19,7 @@ namespace Authing.ApiClient
         {
             param.UserInfo = param.UserInfo ?? new UserRegisterInput();
             param.UserInfo.RegisterInClient = UserPoolId;
-            Console.WriteLine(param.UserInfo.Password);
             param.UserInfo.Password = Encrypt(param.UserInfo.Password);
-            Console.WriteLine(param.UserInfo.Password);
 
             return await Request<RegisterResponse>(param.CreateRequest(), cancellationToken);
         }
