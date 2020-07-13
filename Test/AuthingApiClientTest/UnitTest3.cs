@@ -50,7 +50,7 @@ namespace AuthingApiClientTest
         {
             var response = await client.SendVerifyEmailAsync(new SendVerifyEmailParam()
             {
-                Email = "recallsufuture@gmail.com"
+                Email = "1498881550@qq.com"
             });
             Console.WriteLine(response.SendVerifyEmail.Code);
         }
@@ -60,7 +60,7 @@ namespace AuthingApiClientTest
         {
             var response = await client.SendResetPasswordEmailAsync(new SendResetPasswordEmailParam()
             {
-                Email = "recallsufuture@gmail.com"
+                Email = "1498881550@qq.com"
             });
             Console.WriteLine(response.SendResetPasswordEmail.Code);
         }
