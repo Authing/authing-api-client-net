@@ -31,14 +31,9 @@ namespace Authing.ApiClient
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
 
         /// <summary>
-        /// Graphql 接口地址
+        /// Authing 接口 URL
         /// </summary>
-        public string UserHost { get; set; } = "https://users.authing.cn/graphql";
-
-        /// <summary>
-        /// Graphql 接口地址
-        /// </summary>
-        public string OAuthHost { get; set; } = "https://oauth.authing.cn/graphql";
+        public string Host { get; set; } = "https://core.authing.cn";
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -51,11 +46,24 @@ GKl64GDcIq3au+aqJQIDAQAB
 -----END PUBLIC KEY-----";
 
         private string accessToken;
-        private GraphQLHttpClient userGqlClient;
-        private GraphQLHttpClient oAuthGqlClient;
+        private GraphQLHttpClient client;
+
+        private string Endpoint { get { return Host + "/graphql"; } }
 
         private readonly string type = "SDK";
         private readonly string version = "c-sharp:2.0.0";
+
+        /// <summary>
+        /// 设置 AccessToken 以访问某些接口
+        /// </summary>
+        public string AccessToken
+        {
+            set
+            {
+                accessToken = value;
+                client.SetAccessToken(accessToken);
+            }
+        }
 
         /// <summary>
         /// 通过 userPoolId 和可选的一些参数来初始化
@@ -64,8 +72,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         public AuthingApiClient(string userPoolId)
         {
             UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
-            userGqlClient = CreateGqlClient(UserHost);
-            oAuthGqlClient = CreateGqlClient(OAuthHost);
+            client = CreateGqlClient(Endpoint);
         }
 
         /// <summary>
@@ -88,9 +95,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, GraphqlHostType hostType = GraphqlHostType.User)
+        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default)
         {
-            var client = hostType == GraphqlHostType.User ? userGqlClient : oAuthGqlClient;
             var result = await client.SendQueryAsync<TResponse>(request, cancellationToken);
             CheckResult(result);
             return result.Data;
@@ -122,22 +128,17 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// 需要提供 Secret
         /// </summary>
         /// <returns>access token</returns>
-        public async Task<string> GetAccessTokenAsync()
+        public async Task<string> LoginBySecret()
         {
-            var param = new GetAccessTokenByAppSecretParam()
+            var param = new LoginBySecretParam()
             {
                 ClientId = UserPoolId,
                 Secret = Secret ?? throw new ArgumentNullException("AuthingApiClient.Secret")
             };
 
-            var result = await userGqlClient.SendQueryAsync<GetAccessTokenByAppSecretResponse>(param.CreateRequest());
-            CheckResult(result);
+            var response =  await Request<LoginBySecretResponse>(param.CreateRequest());
 
-            accessToken = result.Data.GetAccessTokenByAppSecret;
-            userGqlClient.SetAccessToken(accessToken);
-            oAuthGqlClient.SetAccessToken(accessToken);
-
-            return accessToken;
+            return response.Result;
         }
 
         private GraphQLHttpClient CreateGqlClient(string endPoint)

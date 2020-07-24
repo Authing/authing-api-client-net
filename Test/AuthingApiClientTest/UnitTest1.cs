@@ -22,7 +22,7 @@ namespace AuthingApiClientTest
         [Test]
         public async Task Test1_GetAccessToken()
         {
-            var response = await client.GetAccessTokenAsync();
+            var response = await client.LoginBySecret();
             Console.WriteLine(response);
         }
 
@@ -39,7 +39,7 @@ namespace AuthingApiClientTest
                     Password = password
                 }
             });
-            Console.WriteLine(response.Register.Email);
+            Console.WriteLine(response.Result.Email);
         }
 
         [Test]

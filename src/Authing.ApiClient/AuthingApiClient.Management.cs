@@ -122,7 +122,7 @@ namespace Authing.ApiClient
         {
             param.Client = UserPoolId;
 
-            return await Request<NotBindOAuthListResponse>(param.CreateRequest(), cancellationToken, GraphqlHostType.OAuth);
+            return await Request<NotBindOAuthListResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>

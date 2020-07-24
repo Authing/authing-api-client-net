@@ -30,12 +30,12 @@ namespace Authing.ApiClient
         /// <param name="param">需要提供 Email 和 Password</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<LoginResponse> LoginByEmailAsync(LoginParam param, CancellationToken cancellationToken = default)
+        public async Task<LoginByEmailResponse> LoginByEmailAsync(LoginByEmailParam param, CancellationToken cancellationToken = default)
         {
-            param.RegisterInClient = UserPoolId;
+            param.ClientId = UserPoolId;
             param.Password = Encrypt(param.Password);
 
-            return await Request<LoginResponse>(param.CreateRequest(), cancellationToken);
+            return await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
@@ -44,12 +44,12 @@ namespace Authing.ApiClient
         /// <param name="param">需要提供 Username 和 Password</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<LoginResponse> LoginByUsernameAsync(LoginParam param, CancellationToken cancellationToken = default)
+        public async Task<LoginByUsernameResponse> LoginByUsernameAsync(LoginByUsernameParam param, CancellationToken cancellationToken = default)
         {
-            param.RegisterInClient = UserPoolId;
+            param.ClientId = UserPoolId;
             param.Password = Encrypt(param.Password);
 
-            return await Request<LoginResponse>(param.CreateRequest(), cancellationToken);
+            return await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
@@ -85,11 +85,25 @@ namespace Authing.ApiClient
         /// <param name="param">需要提供 Phone 和 PhoneCode</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<LoginResponse> LoginByPhoneAsync(LoginParam param, CancellationToken cancellationToken = default)
+        public async Task<LoginByPhoneCodeResponse> LoginByPhoneCodeAsync(LoginByPhoneCodeParam param, CancellationToken cancellationToken = default)
         {
-            param.RegisterInClient = UserPoolId;
+            param.ClientId = UserPoolId;
 
-            return await Request<LoginResponse>(param.CreateRequest(), cancellationToken);
+            return await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 使用手机号和密码登录
+        /// </summary>
+        /// <param name="param">需要提供 Phone 和 Password</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<LoginByPhonePasswordResponse> LoginByPhonePasswordAsync(LoginByPhonePasswordParam param, CancellationToken cancellationToken = default)
+        {
+            param.ClientId = UserPoolId;
+            param.Password = Encrypt(param.Password);
+
+            return await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
@@ -101,7 +115,7 @@ namespace Authing.ApiClient
         public async Task SendPhoneCodeAsync(string phone, CancellationToken cancellationToken = default)
         {
             var httpClient = CreateHttpClient();
-            var url = $"https://users.authing.cn/send_smscode/{phone}/{UserPoolId}";
+            var url = $"{Host}/send_smscode/{phone}/{UserPoolId}";
             var result = await httpClient.GetAsync(url, cancellationToken);
 
             if (!result.IsSuccessStatusCode)
@@ -127,7 +141,7 @@ namespace Authing.ApiClient
         public async Task SendRegisterPhoneCodeAsync(string phone, CancellationToken cancellationToken = default)
         {
             var httpClient = CreateHttpClient();
-            var url = $"https://users.authing.cn/notification/send_register_smscode/{phone}/{UserPoolId}";
+            var url = $"{Host}/notification/send_register_smscode/{phone}/{UserPoolId}";
             var result = await httpClient.GetAsync(url, cancellationToken);
 
             if (!result.IsSuccessStatusCode)
@@ -142,33 +156,6 @@ namespace Authing.ApiClient
             {
                 throw new AuthingApiException(response.Message, response.Code);
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<SignInResponse> SignInAsync(SignInParam param, CancellationToken cancellationToken = default)
-        {
-            param.UserPoolId = UserPoolId;
-            param.Password = Encrypt(param.Password);
-
-            return await Request<SignInResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<RefreshSignInTokenResponse> RefreshSignInTokenAsync(RefreshSignInTokenParam param, CancellationToken cancellationToken = default)
-        {
-            param.UserPoolId = UserPoolId;
-
-            return await Request<RefreshSignInTokenResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>
@@ -209,17 +196,17 @@ namespace Authing.ApiClient
         }
 
         /// <summary>
-        /// 在忘记密码的时候使用邮件验证码来修改密码
+        /// 在忘记密码的时候使用邮件验证码来重置密码
         /// </summary>
         /// <param name="param"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordParam param, CancellationToken cancellationToken = default)
+        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordParam param, CancellationToken cancellationToken = default)
         {
-            param.Client = UserPoolId;
+            param.ClientId = UserPoolId;
             param.Password = Encrypt(param.Password);
 
-            return await Request<ChangePasswordResponse>(param.CreateRequest(), cancellationToken);
+            return await Request<ResetPasswordResponse>(param.CreateRequest(), cancellationToken);
         }
 
         /// <summary>

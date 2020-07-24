@@ -23,7 +23,10 @@ namespace AuthingApiClientTest
             {
                 Secret = "699b99005bdf51d5f7ca97014ed9fdea"
             };
-            client.GetAccessTokenAsync().Wait();
+            client.LoginBySecret().ContinueWith((result) =>
+            {
+                client.AccessToken = result.Result;
+            }).Wait();
             string email = new Random().Next().ToString() + "@gmail.com";
             client.RegisterAsync(new RegisterParam()
             {
@@ -35,27 +38,20 @@ namespace AuthingApiClientTest
                 }
             }).ContinueWith((result) =>
             {
-                newUser = result.Result.Register;
+                newUser = result.Result.Result;
             }).Wait();
-        }
-
-        [Test]
-        public async Task Test1_GetAccessToken()
-        {
-            var response = await client.GetAccessTokenAsync();
-            Console.WriteLine(response);
         }
 
         [Test]
         public async Task Test2_LoginByEmail()
         {
             Console.WriteLine(newUser._Id);
-            var response = await client.LoginByEmailAsync(new LoginParam()
+            var response = await client.LoginByEmailAsync(new LoginByEmailParam()
             {
                 Email = newUser.Email,
                 Password = password,
             });
-            Console.WriteLine(response.Login.Email);
+            Console.WriteLine(response.Result.Email);
         }
 
         [Test]
@@ -65,7 +61,7 @@ namespace AuthingApiClientTest
             {
                 Token = token
             });
-            Console.WriteLine(response.DecodeJwtToken.Status);
+            Console.WriteLine(response.Result.Status);
         }
 
         [Test]
@@ -75,7 +71,7 @@ namespace AuthingApiClientTest
             {
                 Id = newUser._Id
             });
-            Console.WriteLine(response.User.Email);
+            Console.WriteLine(response.Result.Email);
         }
 
         [Test]
@@ -85,8 +81,8 @@ namespace AuthingApiClientTest
             {
                 User = newUser._Id
             });
-            Console.WriteLine(response.RefreshToken.Token);
-            newUser.Token = response.RefreshToken.Token;
+            Console.WriteLine(response.Result.Token);
+            newUser.Token = response.Result.Token;
         }
 
         [Test]
@@ -101,7 +97,7 @@ namespace AuthingApiClientTest
                 }
             });
 
-            Console.WriteLine(response.UpdateUser.Nickname);
+            Console.WriteLine(response.Result.Nickname);
         }
 
         [Test]
@@ -112,7 +108,7 @@ namespace AuthingApiClientTest
                 Token = token
             });
 
-            Console.WriteLine(response.CheckLoginStatus.Message);
+            Console.WriteLine(response.Result.Message);
         }
     }
 }

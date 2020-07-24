@@ -21,7 +21,10 @@ namespace AuthingApiClientTest
             {
                 Secret = "699b99005bdf51d5f7ca97014ed9fdea"
             };
-            client.GetAccessTokenAsync().Wait();
+            client.LoginBySecret().ContinueWith((result) =>
+            {
+                client.AccessToken = result.Result;
+            }).Wait();
 
             var email = new Random().Next().ToString() + "@gmail.com";
             var password = "123456";
@@ -35,7 +38,7 @@ namespace AuthingApiClientTest
                 }
             }).ContinueWith((result) =>
             {
-                newUser = result.Result.Register;
+                newUser = result.Result.Result;
             }).Wait();
         }
 
@@ -52,7 +55,7 @@ namespace AuthingApiClientTest
             {
                 Email = "1498881550@qq.com"
             });
-            Console.WriteLine(response.SendVerifyEmail.Code);
+            Console.WriteLine(response.Result.Code);
         }
 
         [Test]
@@ -62,7 +65,7 @@ namespace AuthingApiClientTest
             {
                 Email = "1498881550@qq.com"
             });
-            Console.WriteLine(response.SendResetPasswordEmail.Code);
+            Console.WriteLine(response.Result.Code);
         }
 
         [Test]
@@ -82,7 +85,7 @@ namespace AuthingApiClientTest
             {
                 Count = 10
             });
-            Console.WriteLine(response.Users.TotalCount);
+            Console.WriteLine(response.Result.TotalCount);
         }
 
         [Test]
@@ -95,7 +98,7 @@ namespace AuthingApiClientTest
                     newUser._Id
                 })
             });
-            Console.WriteLine(response.UserPatch.TotalCount);
+            Console.WriteLine(response.Result.TotalCount);
         }
 
         [Test]
@@ -121,7 +124,7 @@ namespace AuthingApiClientTest
             {
                 User = newUser._Id
             });
-            Console.WriteLine(response.UnbindEmail.Email);
+            Console.WriteLine(response.Result.Email);
         }
 
         [Test]
@@ -134,7 +137,7 @@ namespace AuthingApiClientTest
                     newUser._Id
                 })
             });
-            Console.WriteLine(response.RemoveUsers.Count());
+            Console.WriteLine(response.Result.Count());
         }
     }
 }

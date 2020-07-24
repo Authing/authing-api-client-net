@@ -102,11 +102,27 @@ var result = await client.RegisterAsync(new RegisterParam()
 });
 ```
 
+### 使用 Secret 登录
+
+登录后会得到管理员的 access token，
+设置到 client 的 AccessToken 属性后可以获得调用所有接口的权限
+
+client.LoginBySecretAsync()
+
+**需要在初始化时传入 Secret**
+
+示例
+
+```c#
+var accessToken = await client.LoginBySecretAsync();
+client.AccessToken = accessToken;
+```
+
 ### 使用邮箱登录
 
-client.LoginByEmailAsync(LoginParam param)
+client.LoginByEmailAsync(LoginByEmailParam param)
 
-- param {LoginParam}
+- param {LoginByEmailParam}
   - param.Email {string}，必填，用户邮箱
   - param.Password {string}，必填，用户密码
 
@@ -115,7 +131,7 @@ client.LoginByEmailAsync(LoginParam param)
 ```c#
 var email = "";
 var password = "";
-var result = await client.LoginByEmailAsync(new LoginParam()
+var result = await client.LoginByEmailAsync(new LoginByEmailParam()
 {
   Email = email,
   Pasword = password,
@@ -124,9 +140,9 @@ var result = await client.LoginByEmailAsync(new LoginParam()
 
 ### 使用用户名登录
 
-client.LoginByUsernameAsync(LoginParam param)
+client.LoginByUsernameAsync(LoginByUsernameParam param)
 
-- param {LoginParam}
+- param {LoginByUsernameParam}
   - param.Username {string}，必填，用户邮箱
   - param.Password {string}，必填，用户密码
 
@@ -135,7 +151,7 @@ client.LoginByUsernameAsync(LoginParam param)
 ```c#
 var username = "";
 var password = "";
-var result = await client.LoginByUsernameAsync(new LoginParam()
+var result = await client.LoginByUsernameAsync(new LoginByUsernameParam()
 {
   Username = username,
   Pasword = password,
@@ -180,18 +196,36 @@ var result = await client.LoginByLdapAsync(new LoginByLdapParam()
 });
 ```
 
-### 使用手机号登录
+### 使用手机号和密码登录
 
-client.LoginByPhoneAsync(LoginParam param)
+client.LoginByPhonePasswordAsync(LoginByPhonePasswordParam param)
 
-- param {LoginParam}
+- param {LoginByPhonePasswordParam}
   - param.Phone {string}，手机号
   - param.PhoneCode {int}，短信验证码
 
 示例
 
 ```c#
-var result = await client.LoginByPhoneAsync(new LoginParam()
+var result = await client.LoginByPhonePasswordAsync(new LoginByPhonePasswordParam()
+{
+  Phone = "phone",
+  PhoneCode = 1234,
+});
+```
+
+### 使用手机号和验证码登录
+
+client.LoginByPhoneCodeAsync(LoginByPhoneCodeParam param)
+
+- param {LoginByPhoneCodeParam}
+  - param.Phone {string}，手机号
+  - param.PhoneCode {int}，短信验证码
+
+示例
+
+```c#
+var result = await client.LoginByPhoneCodeAsync(new LoginByPhoneCodeParam()
 {
   Phone = "phone",
   PhoneCode = 1234,
@@ -220,18 +254,6 @@ client.SendRegisterPhoneCodeAsync(string phone)
 
 ```c#
 await client.SendRegisterPhoneCodeAsync("phone number");
-```
-
-### 获取 Access Token
-
-client.GetAccessTokenAsync()
-
-**需要在初始化时传入 Secret**
-
-示例
-
-```c#
-await client.GetAccessTokenAsync();
 ```
 
 ### 解析 User Token
@@ -385,9 +407,9 @@ var result = await client.VerifyResetPasswordVerifyCodeAsync(new VerifyResetPass
 
 ### 修改密码
 
-client.ChangePasswordAsync(ChangePasswordParam param)
+client.ResetPasswordAsync(ResetPasswordParam param)
 
-- param {ChangePasswordParam}
+- param {ResetPasswordParam}
   - param.Email {string}，必填，邮箱
   - param.Password {string}，必填，新密码
   - param.VerifyCode {string}，必填，上一步的验证码
@@ -395,7 +417,7 @@ client.ChangePasswordAsync(ChangePasswordParam param)
 示例
 
 ```c#
-var result = await client.ChangePasswordAsync(new ChangePasswordParam()
+var result = await client.ResetPasswordAsync(new ResetPasswordParam()
 {
   Email = "email",
   Password = "password",

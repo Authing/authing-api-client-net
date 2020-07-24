@@ -8554,7 +8554,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("AddEmailProvider")]
-        public EmailProviderList AddEmailProvider { get; set; }
+        public EmailProviderList Result { get; set; }
     }
 
     public class AddEmailProviderParam
@@ -8620,7 +8620,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("AddLDAPServer")]
-        public LDAPSingleServer AddLdapServer { get; set; }
+        public LDAPSingleServer Result { get; set; }
     }
 
     public class AddLdapServerParam
@@ -8737,7 +8737,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("AddOAuthList")]
-        public OAuthList AddOAuthList { get; set; }
+        public OAuthList Result { get; set; }
     }
 
     public class AddOAuthListParam
@@ -8816,7 +8816,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("AddSystemPricing")]
-        public PricingList AddSystemPricing { get; set; }
+        public PricingList Result { get; set; }
     }
 
     public class AddSystemPricingParam
@@ -8866,7 +8866,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ClearAvatarSrc")]
-        public OAuthList ClearAvatarSrc { get; set; }
+        public OAuthList Result { get; set; }
     }
 
     public class ClearAvatarSrcParam
@@ -8951,7 +8951,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ContinuePay")]
-        public OrderSuccess ContinuePay { get; set; }
+        public OrderSuccess Result { get; set; }
     }
 
     public class ContinuePayParam
@@ -8996,7 +8996,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("CreateDefaultSAMLIdentityProviderSettings")]
-        public SAMLDefaultIdentityProviderSettings CreateDefaultSamlIdentityProviderSettings { get; set; }
+        public SAMLDefaultIdentityProviderSettings Result { get; set; }
     }
 
     public class CreateDefaultSamlIdentityProviderSettingsParam
@@ -9069,7 +9069,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("CreateOAuthProvider")]
-        public OAuthProviderClient CreateOAuthProvider { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class CreateOAuthProviderParam
@@ -9175,7 +9175,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("CreateOIDCApp")]
-        public OIDCProviderClient CreateOidcApp { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class CreateOidcAppParam
@@ -9445,7 +9445,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("CreateSAMLIdentityProvider")]
-        public SAMLIdentityProviderClient CreateSamlIdentityProvider { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class CreateSamlIdentityProviderParam
@@ -9555,7 +9555,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("CreateSAMLServiceProvider")]
-        public SAMLServiceProviderClient CreateSamlServiceProvider { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class CreateSamlServiceProviderParam
@@ -9705,7 +9705,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("EnableSAMLIdentityProvider")]
-        public SAMLIdentityProviderClient EnableSamlIdentityProvider { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class EnableSamlIdentityProviderParam
@@ -9791,7 +9791,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("EnableSAMLServiceProvider")]
-        public SAMLServiceProviderClient EnableSamlServiceProvider { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class EnableSamlServiceProviderParam
@@ -9899,7 +9899,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("IncClientFlowNumber")]
-        public OrderSuccess IncClientFlowNumber { get; set; }
+        public OrderSuccess Result { get; set; }
     }
 
     public class IncClientFlowNumberParam
@@ -9962,7 +9962,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("LoginByLDAP")]
-        public User LoginByLdap { get; set; }
+        public User Result { get; set; }
     }
 
     public class LoginByLdapParam
@@ -10075,7 +10075,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveEmailProvider")]
-        public IEnumerable<EmailProviderList> RemoveEmailProvider { get; set; }
+        public IEnumerable<EmailProviderList> Result { get; set; }
     }
 
     public class RemoveEmailProviderParam
@@ -10141,7 +10141,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveLDAPServer")]
-        public LDAPSingleServer RemoveLdapServer { get; set; }
+        public LDAPSingleServer Result { get; set; }
     }
 
     public class RemoveLdapServerParam
@@ -10204,7 +10204,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveOAuthList")]
-        public IEnumerable<string> RemoveOAuthList { get; set; }
+        public IEnumerable<string> Result { get; set; }
     }
 
     public class RemoveOAuthListParam
@@ -10245,7 +10245,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveOAuthProvider")]
-        public OAuthProviderClient RemoveOAuthProvider { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class RemoveOAuthProviderParam
@@ -10309,7 +10309,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveOIDCApp")]
-        public OIDCProviderClient RemoveOidcApp { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class RemoveOidcAppParam
@@ -10405,7 +10405,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveSAMLIdentityProvider")]
-        public SAMLIdentityProviderClient RemoveSamlIdentityProvider { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class RemoveSamlIdentityProviderParam
@@ -10485,7 +10485,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RemoveSAMLServiceProvider")]
-        public SAMLServiceProviderClient RemoveSamlServiceProvider { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class RemoveSamlServiceProviderParam
@@ -10587,7 +10587,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("RevokeUserAuthorizedApp")]
-        public UserAuthorizedApp RevokeUserAuthorizedApp { get; set; }
+        public UserAuthorizedApp Result { get; set; }
     }
 
     public class RevokeUserAuthorizedAppParam
@@ -10648,7 +10648,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("SaveEmailProviderWithClient")]
-        public EmailProviderWithClientList SaveEmailProviderWithClient { get; set; }
+        public EmailProviderWithClientList Result { get; set; }
     }
 
     public class SaveEmailProviderWithClientParam
@@ -10708,7 +10708,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("SendEmail")]
-        public EmailSentList SendEmail { get; set; }
+        public EmailSentList Result { get; set; }
     }
 
     public class SendEmailParam
@@ -10815,7 +10815,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("SendEmailByType")]
-        public EmailSentList SendEmailByType { get; set; }
+        public EmailSentList Result { get; set; }
     }
 
     public class SendEmailByTypeParam
@@ -10892,7 +10892,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("SendWebhookTest")]
-        public bool? SendWebhookTest { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class SendWebhookTestParam
@@ -10933,7 +10933,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("SetApplicationOAuthEnableOrDisable")]
-        public OAuthList SetApplicationOAuthEnableOrDisable { get; set; }
+        public OAuthList Result { get; set; }
     }
 
     public class SetApplicationOAuthEnableOrDisableParam
@@ -11024,7 +11024,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateApplicationOAuth")]
-        public OAuthList UpdateApplicationOAuth { get; set; }
+        public OAuthList Result { get; set; }
     }
 
     public class UpdateApplicationOAuthParam
@@ -11121,7 +11121,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateEmailProvider")]
-        public EmailProviderList UpdateEmailProvider { get; set; }
+        public EmailProviderList Result { get; set; }
     }
 
     public class UpdateEmailProviderParam
@@ -11187,7 +11187,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateEmailTemplate")]
-        public EmailTemplate UpdateEmailTemplate { get; set; }
+        public EmailTemplate Result { get; set; }
     }
 
     public class UpdateEmailTemplateParam
@@ -11238,7 +11238,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateEmailTemplateWithClient")]
-        public EmailProviderWithClientList UpdateEmailTemplateWithClient { get; set; }
+        public EmailProviderWithClientList Result { get; set; }
     }
 
     public class UpdateEmailTemplateWithClientParam
@@ -11298,7 +11298,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateLDAPServer")]
-        public LDAPSingleServer UpdateLdapServer { get; set; }
+        public LDAPSingleServer Result { get; set; }
     }
 
     public class UpdateLdapServerParam
@@ -11421,7 +11421,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateOAuthList")]
-        public OAuthList UpdateOAuthList { get; set; }
+        public OAuthList Result { get; set; }
     }
 
     public class UpdateOAuthListParam
@@ -11500,7 +11500,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateOAuthProvider")]
-        public OAuthProviderClient UpdateOAuthProvider { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class UpdateOAuthProviderParam
@@ -11612,7 +11612,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateOIDCApp")]
-        public OIDCProviderClient UpdateOidcApp { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class UpdateOidcAppParam
@@ -11876,7 +11876,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateSAMLIdentityProvider")]
-        public SAMLIdentityProviderClient UpdateSamlIdentityProvider { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class UpdateSamlIdentityProviderParam
@@ -12106,7 +12106,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateSAMLServiceProvider")]
-        public SAMLServiceProviderClient UpdateSamlServiceProvider { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class UpdateSamlServiceProviderParam
@@ -12376,7 +12376,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UpdateSystemPricing")]
-        public PricingList UpdateSystemPricing { get; set; }
+        public PricingList Result { get; set; }
     }
 
     public class UpdateSystemPricingParam
@@ -12426,7 +12426,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("UseDefaultEmailProvider")]
-        public bool? UseDefaultEmailProvider { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class UseDefaultEmailProviderParam
@@ -12473,7 +12473,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addClientWebhook")]
-        public ClientWebhook AddClientWebhook { get; set; }
+        public ClientWebhook Result { get; set; }
     }
 
     public class AddClientWebhookParam
@@ -12563,7 +12563,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addCollaborator")]
-        public Collaboration AddCollaborator { get; set; }
+        public Collaboration Result { get; set; }
     }
 
     public class AddCollaboratorParam
@@ -12614,11 +12614,67 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class AddGroupMetadataResponse
+    {
+
+        [JsonProperty("addGroupMetadata")]
+        public IEnumerable<GroupMetadata> Result { get; set; }
+    }
+
+    public class AddGroupMetadataParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("groupId")]
+        public string GroupId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("value")]
+        public string Value { get; set; }
+
+        /// <summary>
+        /// AddGroupMetadataParam.Request 
+        /// <para>Required variables:<br/> { groupId=(string), key=(string), value=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = AddGroupMetadataDocument,
+                OperationName = "addGroupMetadata",
+                Variables = this
+            };
+        }
+
+
+        public static string AddGroupMetadataDocument = @"
+        mutation addGroupMetadata($groupId: String!, $key: String!, $value: String!) {
+          addGroupMetadata(groupId: $groupId, key: $key, value: $value) {
+            key
+            value
+          }
+        }
+        ";
+    }
+
+
+
     public class AddOrgNodeResponse
     {
 
         [JsonProperty("addOrgNode")]
-        public Org AddOrgNode { get; set; }
+        public Org Result { get; set; }
     }
 
     public class AddOrgNodeParam
@@ -12670,7 +12726,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addPermission")]
-        public Permission AddPermission { get; set; }
+        public Permission Result { get; set; }
     }
 
     public class AddPermissionParam
@@ -12722,7 +12778,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addPermissionToRBACRole")]
-        public RBACRole AddPermissionToRbacRole { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class AddPermissionToRbacRoleParam
@@ -12794,7 +12850,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addPermissionToRBACRoleBatch")]
-        public RBACRole AddPermissionToRbacRoleBatch { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class AddPermissionToRbacRoleBatchParam
@@ -12866,7 +12922,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addRoleToRBACGroup")]
-        public RBACGroup AddRoleToRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class AddRoleToRbacGroupParam
@@ -12941,7 +12997,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addRoleToRBACGroupBatch")]
-        public RBACGroup AddRoleToRbacGroupBatch { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class AddRoleToRbacGroupBatchParam
@@ -13016,7 +13072,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addSuperAdminUser")]
-        public UsersInGroupListItem AddSuperAdminUser { get; set; }
+        public UsersInGroupListItem Result { get; set; }
     }
 
     public class AddSuperAdminUserParam
@@ -13062,7 +13118,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addToInvitation")]
-        public Invitation AddToInvitation { get; set; }
+        public Invitation Result { get; set; }
     }
 
     public class AddToInvitationParam
@@ -13115,7 +13171,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addUserToRBACGroup")]
-        public RBACGroup AddUserToRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class AddUserToRbacGroupParam
@@ -13190,7 +13246,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("addUserToRBACGroupBatch")]
-        public RBACGroup AddUserToRbacGroupBatch { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class AddUserToRbacGroupBatchParam
@@ -13265,7 +13321,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("assignRBACRoleToUser")]
-        public RBACRole AssignRbacRoleToUser { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class AssignRbacRoleToUserParam
@@ -13337,7 +13393,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("assignRBACRoleToUserBatch")]
-        public RBACRole AssignRbacRoleToUserBatch { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class AssignRbacRoleToUserBatchParam
@@ -13409,7 +13465,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("assignUserToRole")]
-        public PagedUserGroup AssignUserToRole { get; set; }
+        public PagedUserGroup Result { get; set; }
     }
 
     public class AssignUserToRoleParam
@@ -13468,7 +13524,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("bindOtherOAuth")]
-        public UserOAuthBind BindOtherOAuth { get; set; }
+        public UserOAuthBind Result { get; set; }
     }
 
     public class BindOtherOAuthParam
@@ -13541,7 +13597,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("changeMFA")]
-        public MFA ChangeMfa { get; set; }
+        public MFA Result { get; set; }
     }
 
     public class ChangeMfaParam
@@ -13612,7 +13668,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("changePassword")]
-        public ExtendUser ChangePassword { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class ChangePasswordParam
@@ -13754,7 +13810,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createAdConnector")]
-        public ADConnector CreateAdConnector { get; set; }
+        public ADConnector Result { get; set; }
     }
 
     public class CreateAdConnectorParam
@@ -13817,7 +13873,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createCustomMFA")]
-        public CustomMFA CreateCustomMfa { get; set; }
+        public CustomMFA Result { get; set; }
     }
 
     public class CreateCustomMfaParam
@@ -13904,11 +13960,80 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class CreateInterConnectionResponse
+    {
+
+        [JsonProperty("createInterConnection")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class CreateInterConnectionParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("sourceUserPoolId")]
+        public string SourceUserPoolId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("sourceUserId")]
+        public string SourceUserId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetUserPoolId")]
+        public string TargetUserPoolId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetUserId")]
+        public string TargetUserId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("maxAge")]
+        public int MaxAge { get; set; }
+
+        /// <summary>
+        /// CreateInterConnectionParam.Request 
+        /// <para>Required variables:<br/> { sourceUserPoolId=(string), sourceUserId=(string), targetUserPoolId=(string), targetUserId=(string), maxAge=(int) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = CreateInterConnectionDocument,
+                OperationName = "createInterConnection",
+                Variables = this
+            };
+        }
+
+
+        public static string CreateInterConnectionDocument = @"
+        mutation createInterConnection($sourceUserPoolId: String!, $sourceUserId: String!, $targetUserPoolId: String!, $targetUserId: String!, $maxAge: Int!) {
+          createInterConnection(sourceUserPoolId: $sourceUserPoolId, sourceUserId: $sourceUserId, targetUserId: $targetUserId, targetUserPoolId: $targetUserPoolId, maxAge: $maxAge) {
+            message
+            code
+            status
+          }
+        }
+        ";
+    }
+
+
+
     public class CreateOrgResponse
     {
 
         [JsonProperty("createOrg")]
-        public Org CreateOrg { get; set; }
+        public Org Result { get; set; }
     }
 
     public class CreateOrgParam
@@ -13960,7 +14085,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createRBACGroup")]
-        public RBACGroup CreateRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class CreateRbacGroupParam
@@ -14008,7 +14133,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createRBACPermission")]
-        public RBACPermission CreateRbacPermission { get; set; }
+        public RBACPermission Result { get; set; }
     }
 
     public class CreateRbacPermissionParam
@@ -14056,7 +14181,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createRBACRole")]
-        public RBACRole CreateRbacRole { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class CreateRbacRoleParam
@@ -14128,7 +14253,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createRole")]
-        public Group CreateRole { get; set; }
+        public Group Result { get; set; }
     }
 
     public class CreateRoleParam
@@ -14188,7 +14313,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createRule")]
-        public Rule CreateRule { get; set; }
+        public Rule Result { get; set; }
     }
 
     public class CreateRuleParam
@@ -14242,7 +14367,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("createUser")]
-        public ExtendUser CreateUser { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class CreateUserParam
@@ -14374,11 +14499,110 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class CreateUserWithoutAuthenticationResponse
+    {
+
+        [JsonProperty("createUserWithoutAuthentication")]
+        public User Result { get; set; }
+    }
+
+    public class CreateUserWithoutAuthenticationParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userPoolId")]
+        public string UserPoolId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userInfo")]
+        public UserRegisterInput UserInfo { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("forceLogin")]
+        public bool ForceLogin { get; set; }
+
+        /// <summary>
+        /// CreateUserWithoutAuthenticationParam.Request 
+        /// <para>Required variables:<br/> { userPoolId=(string), userInfo=(UserRegisterInput) }</para>
+        /// <para>Optional variables:<br/> { forceLogin=(bool) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = CreateUserWithoutAuthenticationDocument,
+                OperationName = "createUserWithoutAuthentication",
+                Variables = this
+            };
+        }
+
+
+        public static string CreateUserWithoutAuthenticationDocument = @"
+        mutation createUserWithoutAuthentication($userPoolId: String!, $userInfo: UserRegisterInput!, $forceLogin: Boolean) {
+          createUserWithoutAuthentication(userPoolId: $userPoolId, userInfo: $userInfo, forceLogin: $forceLogin) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
     public class DeleteClientWebhookResponse
     {
 
         [JsonProperty("deleteClientWebhook")]
-        public ClientWebhook DeleteClientWebhook { get; set; }
+        public ClientWebhook Result { get; set; }
     }
 
     public class DeleteClientWebhookParam
@@ -14432,7 +14656,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteOrg")]
-        public CommonMessage DeleteOrg { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteOrgParam
@@ -14477,7 +14701,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACGroup")]
-        public CommonMessage DeleteRbacGroup { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacGroupParam
@@ -14522,7 +14746,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACGroupBatch")]
-        public CommonMessage DeleteRbacGroupBatch { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacGroupBatchParam
@@ -14567,7 +14791,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACPermission")]
-        public CommonMessage DeleteRbacPermission { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacPermissionParam
@@ -14612,7 +14836,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACPermissionBatch")]
-        public CommonMessage DeleteRbacPermissionBatch { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacPermissionBatchParam
@@ -14657,7 +14881,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACRole")]
-        public CommonMessage DeleteRbacRole { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacRoleParam
@@ -14702,7 +14926,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRBACRoleBatch")]
-        public CommonMessage DeleteRbacRoleBatch { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRbacRoleBatchParam
@@ -14747,7 +14971,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRule")]
-        public CommonMessage DeleteRule { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRuleParam
@@ -14792,7 +15016,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("disableAdConnector")]
-        public bool? DisableAdConnector { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class DisableAdConnectorParam
@@ -14833,7 +15057,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("disableAdConnectorForProvider")]
-        public bool? DisableAdConnectorForProvider { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class DisableAdConnectorForProviderParam
@@ -14880,7 +15104,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("enableAdConnector")]
-        public bool? EnableAdConnector { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class EnableAdConnectorParam
@@ -14921,7 +15145,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("enableAdConnectorForProvider")]
-        public bool? EnableAdConnectorForProvider { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class EnableAdConnectorForProviderParam
@@ -14974,7 +15198,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("enablePasswordFaas")]
-        public PaaswordFaas EnablePasswordFaas { get; set; }
+        public PaaswordFaas Result { get; set; }
     }
 
     public class EnablePasswordFaasParam
@@ -15030,7 +15254,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("encryptPassword")]
-        public EncryptPassword EncryptPassword { get; set; }
+        public EncryptPassword Result { get; set; }
     }
 
     public class EncryptPasswordParam
@@ -15094,7 +15318,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("generateInvitationCode")]
-        public InvitationCode GenerateInvitationCode { get; set; }
+        public InvitationCode Result { get; set; }
     }
 
     public class GenerateInvitationCodeParam
@@ -15147,7 +15371,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("login")]
-        public ExtendUser Login { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class LoginParam
@@ -15349,7 +15573,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("loginByAd")]
-        public User LoginByAd { get; set; }
+        public User Result { get; set; }
     }
 
     public class LoginByAdParam
@@ -15452,11 +15676,555 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class LoginByEmailResponse
+    {
+
+        [JsonProperty("login")]
+        public ExtendUser Result { get; set; }
+    }
+
+    public class LoginByEmailParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// LoginByEmailParam.Request 
+        /// <para>Required variables:<br/> { clientId=(string) }</para>
+        /// <para>Optional variables:<br/> { email=(string), password=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginByEmailDocument,
+                OperationName = "loginByEmail",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginByEmailDocument = @"
+        mutation loginByEmail($clientId: String!, $email: String, $password: String) {
+          login(registerInClient: $clientId, email: $email, password: $password) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            group {
+              _id
+              name
+              descriptions
+              client
+              permissions
+              createdAt
+            }
+            clientType {
+              _id
+              name
+              description
+              image
+              example
+            }
+            userLocation {
+              _id
+              when
+              where
+            }
+            userLoginHistory {
+              totalCount
+            }
+            systemApplicationType {
+              _id
+              name
+              descriptions
+              price
+            }
+            thirdPartyIdentity {
+              provider
+              refreshToken
+              accessToken
+              expiresIn
+              updatedAt
+            }
+            customData
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
+    public class LoginByPhoneCodeResponse
+    {
+
+        [JsonProperty("login")]
+        public ExtendUser Result { get; set; }
+    }
+
+    public class LoginByPhoneCodeParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("phoneCode")]
+        public int PhoneCode { get; set; }
+
+        /// <summary>
+        /// LoginByPhoneCodeParam.Request 
+        /// <para>Required variables:<br/> { clientId=(string) }</para>
+        /// <para>Optional variables:<br/> { phone=(string), phoneCode=(int) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginByPhoneCodeDocument,
+                OperationName = "loginByPhoneCode",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginByPhoneCodeDocument = @"
+        mutation loginByPhoneCode($clientId: String!, $phone: String, $phoneCode: Int) {
+          login(registerInClient: $clientId, phone: $phone, phoneCode: $phoneCode) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            group {
+              _id
+              name
+              descriptions
+              client
+              permissions
+              createdAt
+            }
+            clientType {
+              _id
+              name
+              description
+              image
+              example
+            }
+            userLocation {
+              _id
+              when
+              where
+            }
+            userLoginHistory {
+              totalCount
+            }
+            systemApplicationType {
+              _id
+              name
+              descriptions
+              price
+            }
+            thirdPartyIdentity {
+              provider
+              refreshToken
+              accessToken
+              expiresIn
+              updatedAt
+            }
+            customData
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
+    public class LoginByPhonePasswordResponse
+    {
+
+        [JsonProperty("login")]
+        public ExtendUser Result { get; set; }
+    }
+
+    public class LoginByPhonePasswordParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// LoginByPhonePasswordParam.Request 
+        /// <para>Required variables:<br/> { clientId=(string) }</para>
+        /// <para>Optional variables:<br/> { phone=(string), password=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginByPhonePasswordDocument,
+                OperationName = "loginByPhonePassword",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginByPhonePasswordDocument = @"
+        mutation loginByPhonePassword($clientId: String!, $phone: String, $password: String) {
+          login(registerInClient: $clientId, phone: $phone, password: $password) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            group {
+              _id
+              name
+              descriptions
+              client
+              permissions
+              createdAt
+            }
+            clientType {
+              _id
+              name
+              description
+              image
+              example
+            }
+            userLocation {
+              _id
+              when
+              where
+            }
+            userLoginHistory {
+              totalCount
+            }
+            systemApplicationType {
+              _id
+              name
+              descriptions
+              price
+            }
+            thirdPartyIdentity {
+              provider
+              refreshToken
+              accessToken
+              expiresIn
+              updatedAt
+            }
+            customData
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
+    public class LoginByUsernameResponse
+    {
+
+        [JsonProperty("login")]
+        public ExtendUser Result { get; set; }
+    }
+
+    public class LoginByUsernameParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// LoginByUsernameParam.Request 
+        /// <para>Required variables:<br/> { clientId=(string) }</para>
+        /// <para>Optional variables:<br/> { username=(string), password=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginByUsernameDocument,
+                OperationName = "loginByUsername",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginByUsernameDocument = @"
+        mutation loginByUsername($clientId: String!, $username: String, $password: String) {
+          login(registerInClient: $clientId, username: $username, password: $password) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            group {
+              _id
+              name
+              descriptions
+              client
+              permissions
+              createdAt
+            }
+            clientType {
+              _id
+              name
+              description
+              image
+              example
+            }
+            userLocation {
+              _id
+              when
+              where
+            }
+            userLoginHistory {
+              totalCount
+            }
+            systemApplicationType {
+              _id
+              name
+              descriptions
+              price
+            }
+            thirdPartyIdentity {
+              provider
+              refreshToken
+              accessToken
+              expiresIn
+              updatedAt
+            }
+            customData
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
     public class NewClientResponse
     {
 
         [JsonProperty("newClient")]
-        public UserClient NewClient { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class NewClientParam
@@ -15604,7 +16372,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("oauthPasswordLogin")]
-        public ExtendUser OauthPasswordLogin { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class OauthPasswordLoginParam
@@ -15764,7 +16532,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("order")]
-        public OrderSuccess Order { get; set; }
+        public OrderSuccess Result { get; set; }
     }
 
     public class OrderParam
@@ -15805,11 +16573,104 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class PasswordLessForceLoginResponse
+    {
+
+        [JsonProperty("passwordLessForceLogin")]
+        public User Result { get; set; }
+    }
+
+    public class PasswordLessForceLoginParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userPoolId")]
+        public string UserPoolId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// PasswordLessForceLoginParam.Request 
+        /// <para>Required variables:<br/> { userPoolId=(string), userId=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = PasswordLessForceLoginDocument,
+                OperationName = "passwordLessForceLogin",
+                Variables = this
+            };
+        }
+
+
+        public static string PasswordLessForceLoginDocument = @"
+        mutation passwordLessForceLogin($userPoolId: String!, $userId: String!) {
+          passwordLessForceLogin(userPoolId: $userPoolId, userId: $userId) {
+            _id
+            email
+            unionid
+            openid
+            emailVerified
+            phone
+            phoneVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            device
+            password
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            country
+            updatedAt
+            metadata
+          }
+        }
+        ";
+    }
+
+
+
     public class RecordAuthAuditResponse
     {
 
         [JsonProperty("recordAuthAudit")]
-        public CommonMessage RecordAuthAudit { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class RecordAuthAuditParam
@@ -15884,7 +16745,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("recordRequest")]
-        public CommonMessage RecordRequest { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class RecordRequestParam
@@ -15953,7 +16814,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("refreshAdConnectorSecret")]
-        public ADConnector RefreshAdConnectorSecret { get; set; }
+        public ADConnector Result { get; set; }
     }
 
     public class RefreshAdConnectorSecretParam
@@ -16004,7 +16865,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("refreshAppSecret")]
-        public UserClient RefreshAppSecret { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class RefreshAppSecretParam
@@ -16152,7 +17013,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("refreshSignInToken")]
-        public RefreshedSignInToken RefreshSignInToken { get; set; }
+        public RefreshedSignInToken Result { get; set; }
     }
 
     public class RefreshSignInTokenParam
@@ -16211,7 +17072,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("refreshThirdPartyToken")]
-        public RefreshThirdPartyIdentityResult RefreshThirdPartyToken { get; set; }
+        public RefreshThirdPartyIdentityResult Result { get; set; }
     }
 
     public class RefreshThirdPartyTokenParam
@@ -16265,7 +17126,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("refreshToken")]
-        public RefreshToken RefreshToken { get; set; }
+        public RefreshToken Result { get; set; }
     }
 
     public class RefreshTokenParam
@@ -16316,7 +17177,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("register")]
-        public ExtendUser Register { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class RegisterParam
@@ -16415,7 +17276,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeAdConnector")]
-        public bool? RemoveAdConnector { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class RemoveAdConnectorParam
@@ -16456,7 +17317,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeCollaborator")]
-        public Collaboration RemoveCollaborator { get; set; }
+        public Collaboration Result { get; set; }
     }
 
     public class RemoveCollaboratorParam
@@ -16621,7 +17482,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeCustomMFA")]
-        public CustomMFA RemoveCustomMfa { get; set; }
+        public CustomMFA Result { get; set; }
     }
 
     public class RemoveCustomMfaParam
@@ -16688,7 +17549,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeFromInvitation")]
-        public Invitation RemoveFromInvitation { get; set; }
+        public Invitation Result { get; set; }
     }
 
     public class RemoveFromInvitationParam
@@ -16741,7 +17602,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeOrgNode")]
-        public Org RemoveOrgNode { get; set; }
+        public Org Result { get; set; }
     }
 
     public class RemoveOrgNodeParam
@@ -16793,7 +17654,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removePermissionFromRBACRole")]
-        public RBACRole RemovePermissionFromRbacRole { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class RemovePermissionFromRbacRoleParam
@@ -16865,7 +17726,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removePermissionFromRBACRoleBatch")]
-        public RBACRole RemovePermissionFromRbacRoleBatch { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class RemovePermissionFromRbacRoleBatchParam
@@ -16937,7 +17798,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeRoleFromRBACGroup")]
-        public RBACGroup RemoveRoleFromRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class RemoveRoleFromRbacGroupParam
@@ -17012,7 +17873,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeRoleFromRBACGroupBatch")]
-        public RBACGroup RemoveRoleFromRbacGroupBatch { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class RemoveRoleFromRbacGroupBatchParam
@@ -17087,7 +17948,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeRuleEnv")]
-        public PagedRuleEnvVariable RemoveRuleEnv { get; set; }
+        public PagedRuleEnvVariable Result { get; set; }
     }
 
     public class RemoveRuleEnvParam
@@ -17134,7 +17995,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeSuperAdminUser")]
-        public UsersInGroupListItem RemoveSuperAdminUser { get; set; }
+        public UsersInGroupListItem Result { get; set; }
     }
 
     public class RemoveSuperAdminUserParam
@@ -17186,7 +18047,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUserClients")]
-        public IEnumerable<UserClient> RemoveUserClients { get; set; }
+        public IEnumerable<UserClient> Result { get; set; }
     }
 
     public class RemoveUserClientsParam
@@ -17334,7 +18195,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUserFromGroup")]
-        public UserGroup RemoveUserFromGroup { get; set; }
+        public UserGroup Result { get; set; }
     }
 
     public class RemoveUserFromGroupParam
@@ -17466,7 +18327,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUserFromRBACGroup")]
-        public RBACGroup RemoveUserFromRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class RemoveUserFromRbacGroupParam
@@ -17541,7 +18402,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUserFromRBACGroupBatch")]
-        public RBACGroup RemoveUserFromRbacGroupBatch { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class RemoveUserFromRbacGroupBatchParam
@@ -17616,7 +18477,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUserMetadata")]
-        public UserMetaDataList RemoveUserMetadata { get; set; }
+        public UserMetaDataList Result { get; set; }
     }
 
     public class RemoveUserMetadataParam
@@ -17663,7 +18524,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUsers")]
-        public IEnumerable<User> RemoveUsers { get; set; }
+        public IEnumerable<User> Result { get; set; }
     }
 
     public class RemoveUsersParam
@@ -17714,11 +18575,90 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class ResetPasswordResponse
+    {
+
+        [JsonProperty("changePassword")]
+        public ExtendUser Result { get; set; }
+    }
+
+    public class ResetPasswordParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("verifyCode")]
+        public string VerifyCode { get; set; }
+
+        /// <summary>
+        /// ResetPasswordParam.Request 
+        /// <para>Required variables:<br/> { email=(string), clientId=(string), password=(string), verifyCode=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = ResetPasswordDocument,
+                OperationName = "resetPassword",
+                Variables = this
+            };
+        }
+
+
+        public static string ResetPasswordDocument = @"
+        mutation resetPassword($email: String!, $clientId: String!, $password: String!, $verifyCode: String!) {
+          changePassword(email: $email, client: $clientId, password: $password, verifyCode: $verifyCode) {
+            _id
+            email
+            emailVerified
+            username
+            nickname
+            company
+            photo
+            browser
+            registerInClient
+            registerMethod
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+          }
+        }
+        ";
+    }
+
+
+
     public class ResetUserPoolFromWechatResponse
     {
 
         [JsonProperty("resetUserPoolFromWechat")]
-        public PagedUsers ResetUserPoolFromWechat { get; set; }
+        public PagedUsers Result { get; set; }
     }
 
     public class ResetUserPoolFromWechatParam
@@ -17821,7 +18761,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("revokeRBACRoleFromUser")]
-        public RBACRole RevokeRbacRoleFromUser { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class RevokeRbacRoleFromUserParam
@@ -17893,7 +18833,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("revokeRBACRoleFromUserBatch")]
-        public RBACRole RevokeRbacRoleFromUserBatch { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class RevokeRbacRoleFromUserBatchParam
@@ -17965,7 +18905,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("sendChangeEmailVerifyCode")]
-        public CommonMessage SendChangeEmailVerifyCode { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class SendChangeEmailVerifyCodeParam
@@ -18016,7 +18956,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("sendResetPasswordEmail")]
-        public CommonMessage SendResetPasswordEmail { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class SendResetPasswordEmailParam
@@ -18067,7 +19007,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("sendVerifyEmail")]
-        public CommonMessage SendVerifyEmail { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class SendVerifyEmailParam
@@ -18124,7 +19064,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("setInvitationState")]
-        public InvitationState SetInvitationState { get; set; }
+        public InvitationState Result { get; set; }
     }
 
     public class SetInvitationStateParam
@@ -18176,7 +19116,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("setRuleEnv")]
-        public PagedRuleEnvVariable SetRuleEnv { get; set; }
+        public PagedRuleEnvVariable Result { get; set; }
     }
 
     public class SetRuleEnvParam
@@ -18223,7 +19163,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("setUserMetadata")]
-        public UserMetaDataList SetUserMetadata { get; set; }
+        public UserMetaDataList Result { get; set; }
     }
 
     public class SetUserMetadataParam
@@ -18270,7 +19210,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("signIn")]
-        public OidcPasswordModeUserInfo SignIn { get; set; }
+        public OidcPasswordModeUserInfo Result { get; set; }
     }
 
     public class SignInParam
@@ -18386,7 +19326,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("unbindEmail")]
-        public User UnbindEmail { get; set; }
+        public User Result { get; set; }
     }
 
     public class UnbindEmailParam
@@ -18487,7 +19427,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("unbindOtherOAuth")]
-        public UserOAuthBind UnbindOtherOAuth { get; set; }
+        public UserOAuthBind Result { get; set; }
     }
 
     public class UnbindOtherOAuthParam
@@ -18548,7 +19488,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateAdConnector")]
-        public ADConnector UpdateAdConnector { get; set; }
+        public ADConnector Result { get; set; }
     }
 
     public class UpdateAdConnectorParam
@@ -18611,7 +19551,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateClientWebhook")]
-        public ClientWebhook UpdateClientWebhook { get; set; }
+        public ClientWebhook Result { get; set; }
     }
 
     public class UpdateClientWebhookParam
@@ -18701,7 +19641,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateCollaborator")]
-        public Collaboration UpdateCollaborator { get; set; }
+        public Collaboration Result { get; set; }
     }
 
     public class UpdateCollaboratorParam
@@ -18872,7 +19812,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateEmail")]
-        public User UpdateEmail { get; set; }
+        public User Result { get; set; }
     }
 
     public class UpdateEmailParam
@@ -18991,7 +19931,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updatePasswordStrengthSettingsByUserPoolId")]
-        public PasswordStrengthSettings UpdatePasswordStrengthSettingsByUserPoolId { get; set; }
+        public PasswordStrengthSettings Result { get; set; }
     }
 
     public class UpdatePasswordStrengthSettingsByUserPoolIdParam
@@ -19041,7 +19981,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updatePermissions")]
-        public Group UpdatePermissions { get; set; }
+        public Group Result { get; set; }
     }
 
     public class UpdatePermissionsParam
@@ -19101,7 +20041,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updatePhone")]
-        public User UpdatePhone { get; set; }
+        public User Result { get; set; }
     }
 
     public class UpdatePhoneParam
@@ -19220,7 +20160,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRBACGroup")]
-        public RBACGroup UpdateRbacGroup { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class UpdateRbacGroupParam
@@ -19295,7 +20235,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRBACPermission")]
-        public RBACPermission UpdateRbacPermission { get; set; }
+        public RBACPermission Result { get; set; }
     }
 
     public class UpdateRbacPermissionParam
@@ -19343,7 +20283,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRBACRole")]
-        public RBACRole UpdateRbacRole { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class UpdateRbacRoleParam
@@ -19415,7 +20355,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRole")]
-        public Group UpdateRole { get; set; }
+        public Group Result { get; set; }
     }
 
     public class UpdateRoleParam
@@ -19487,7 +20427,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRule")]
-        public Rule UpdateRule { get; set; }
+        public Rule Result { get; set; }
     }
 
     public class UpdateRuleParam
@@ -19541,7 +20481,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateRuleOrder")]
-        public CommonMessage UpdateRuleOrder { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class UpdateRuleOrderParam
@@ -19586,7 +20526,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateSuperAdminUser")]
-        public UsersInGroupListItem UpdateSuperAdminUser { get; set; }
+        public UsersInGroupListItem Result { get; set; }
     }
 
     public class UpdateSuperAdminUserParam
@@ -19632,7 +20572,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateUser")]
-        public User UpdateUser { get; set; }
+        public User Result { get; set; }
     }
 
     public class UpdateUserParam
@@ -19727,7 +20667,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("updateUserClient")]
-        public UserClient UpdateUserClient { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class UpdateUserClientParam
@@ -19875,7 +20815,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("verifyResetPasswordVerifyCode")]
-        public CommonMessage VerifyResetPasswordVerifyCode { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class VerifyResetPasswordVerifyCodeParam
@@ -19932,7 +20872,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetOIDCAppInfo")]
-        public OIDCProviderClient GetOidcAppInfo { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class GetOidcAppInfoParam
@@ -20022,7 +20962,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetOIDCAppList")]
-        public OIDCAppPagedList GetOidcAppList { get; set; }
+        public OIDCAppPagedList Result { get; set; }
     }
 
     public class GetOidcAppListParam
@@ -20115,7 +21055,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetSAMLIdentityProviderInfo")]
-        public SAMLIdentityProviderClient GetSamlIdentityProviderInfo { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class GetSamlIdentityProviderInfoParam
@@ -20189,7 +21129,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetSAMLIdentityProviderList")]
-        public SAMLIdentityProviderAppPagedList GetSamlIdentityProviderList { get; set; }
+        public SAMLIdentityProviderAppPagedList Result { get; set; }
     }
 
     public class GetSamlIdentityProviderListParam
@@ -20278,7 +21218,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetSAMLServiceProviderInfo")]
-        public SAMLServiceProviderClient GetSamlServiceProviderInfo { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class GetSamlServiceProviderInfoParam
@@ -20374,7 +21314,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetSAMLServiceProviderList")]
-        public SAMLServiceProviderAppPagedList GetSamlServiceProviderList { get; set; }
+        public SAMLServiceProviderAppPagedList Result { get; set; }
     }
 
     public class GetSamlServiceProviderListParam
@@ -20465,7 +21405,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("GetUserAuthorizedApps")]
-        public UserAuthorizedAppPagedList GetUserAuthorizedApps { get; set; }
+        public UserAuthorizedAppPagedList Result { get; set; }
     }
 
     public class GetUserAuthorizedAppsParam
@@ -20582,7 +21522,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("PreviewEmailByType")]
-        public string PreviewEmailByType { get; set; }
+        public string Result { get; set; }
     }
 
     public class PreviewEmailByTypeParam
@@ -20635,7 +21575,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryAppInfoByAppID")]
-        public OAuthProviderClient QueryAppInfoByAppId { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class QueryAppInfoByAppIdParam
@@ -20705,7 +21645,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryAppInfoByDomain")]
-        public OAuthProviderClient QueryAppInfoByDomain { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class QueryAppInfoByDomainParam
@@ -20763,7 +21703,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryClientHasLDAPConfigs")]
-        public ClientHasLDAPConfigs QueryClientHasLdapConfigs { get; set; }
+        public ClientHasLDAPConfigs Result { get; set; }
     }
 
     public class QueryClientHasLdapConfigsParam
@@ -20806,7 +21746,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryClientIdByAppId")]
-        public OAuthProviderClient QueryClientIdByAppId { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class QueryClientIdByAppIdParam
@@ -20864,7 +21804,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryDefaultSAMLIdentityProviderSettingsList")]
-        public SAMLDefaultIdentityProviderSettingsList QueryDefaultSamlIdentityProviderSettingsList { get; set; }
+        public SAMLDefaultIdentityProviderSettingsList Result { get; set; }
     }
 
     public class QueryDefaultSamlIdentityProviderSettingsListParam
@@ -20920,7 +21860,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryLDAPServerList")]
-        public LDAPServerList QueryLdapServerList { get; set; }
+        public LDAPServerList Result { get; set; }
     }
 
     public class QueryLdapServerListParam
@@ -20992,7 +21932,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryOIDCAppInfoByAppID")]
-        public OIDCProviderClient QueryOidcAppInfoByAppId { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class QueryOidcAppInfoByAppIdParam
@@ -21094,7 +22034,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QueryOIDCAppInfoByDomain")]
-        public OIDCProviderClient QueryOidcAppInfoByDomain { get; set; }
+        public OIDCProviderClient Result { get; set; }
     }
 
     public class QueryOidcAppInfoByDomainParam
@@ -21184,7 +22124,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QuerySAMLIdentityProviderInfoByAppID")]
-        public SAMLIdentityProviderClient QuerySamlIdentityProviderInfoByAppId { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class QuerySamlIdentityProviderInfoByAppIdParam
@@ -21258,7 +22198,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QuerySAMLIdentityProviderInfoByDomain")]
-        public SAMLIdentityProviderClient QuerySamlIdentityProviderInfoByDomain { get; set; }
+        public SAMLIdentityProviderClient Result { get; set; }
     }
 
     public class QuerySamlIdentityProviderInfoByDomainParam
@@ -21332,7 +22272,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QuerySAMLServiceProviderInfoByAppID")]
-        public SAMLServiceProviderClient QuerySamlServiceProviderInfoByAppId { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class QuerySamlServiceProviderInfoByAppIdParam
@@ -21428,7 +22368,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("QuerySAMLServiceProviderInfoByDomain")]
-        public SAMLServiceProviderClient QuerySamlServiceProviderInfoByDomain { get; set; }
+        public SAMLServiceProviderClient Result { get; set; }
     }
 
     public class QuerySamlServiceProviderInfoByDomainParam
@@ -21524,7 +22464,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailProvider")]
-        public IEnumerable<EmailProviderList> ReadEmailProvider { get; set; }
+        public IEnumerable<EmailProviderList> Result { get; set; }
     }
 
     public class ReadEmailProviderParam
@@ -21590,7 +22530,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailProviderByClientAndName")]
-        public IEnumerable<EmailProviderWithClientList> ReadEmailProviderByClientAndName { get; set; }
+        public IEnumerable<EmailProviderWithClientList> Result { get; set; }
     }
 
     public class ReadEmailProviderByClientAndNameParam
@@ -21650,7 +22590,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailProviderWithClient")]
-        public IEnumerable<EmailProviderWithClientList> ReadEmailProviderWithClient { get; set; }
+        public IEnumerable<EmailProviderWithClientList> Result { get; set; }
     }
 
     public class ReadEmailProviderWithClientParam
@@ -21702,7 +22642,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailSentList")]
-        public Email ReadEmailSentList { get; set; }
+        public Email Result { get; set; }
     }
 
     public class ReadEmailSentListParam
@@ -21765,7 +22705,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailSentListByClient")]
-        public EmailListPaged ReadEmailSentListByClient { get; set; }
+        public EmailListPaged Result { get; set; }
     }
 
     public class ReadEmailSentListByClientParam
@@ -21833,7 +22773,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailTemplateByClientAndType")]
-        public EmailTemplate ReadEmailTemplateByClientAndType { get; set; }
+        public EmailTemplate Result { get; set; }
     }
 
     public class ReadEmailTemplateByClientAndTypeParam
@@ -21890,7 +22830,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailTemplatesByClient")]
-        public IEnumerable<EmailTemplateWithClient> ReadEmailTemplatesByClient { get; set; }
+        public IEnumerable<EmailTemplateWithClient> Result { get; set; }
     }
 
     public class ReadEmailTemplatesByClientParam
@@ -21954,7 +22894,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadEmailTemplatesBySystem")]
-        public IEnumerable<EmailTemplateWithClient> ReadEmailTemplatesBySystem { get; set; }
+        public IEnumerable<EmailTemplateWithClient> Result { get; set; }
     }
 
     public class ReadEmailTemplatesBySystemParam
@@ -22010,7 +22950,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadOauthList")]
-        public IEnumerable<OAuthList> ReadOauthList { get; set; }
+        public IEnumerable<OAuthList> Result { get; set; }
     }
 
     public class ReadOauthListParam
@@ -22095,7 +23035,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadOrders")]
-        public PagedOrders ReadOrders { get; set; }
+        public PagedOrders Result { get; set; }
     }
 
     public class ReadOrdersParam
@@ -22162,7 +23102,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadSAMLSPList")]
-        public IEnumerable<SAMLSPListItem> ReadSamlspList { get; set; }
+        public IEnumerable<SAMLSPListItem> Result { get; set; }
     }
 
     public class ReadSamlspListParam
@@ -22207,7 +23147,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadSystemPricing")]
-        public IEnumerable<PricingList> ReadSystemPricing { get; set; }
+        public IEnumerable<PricingList> Result { get; set; }
     }
 
     public class ReadSystemPricingParam
@@ -22249,7 +23189,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ReadUserPricing")]
-        public UserPricingType ReadUserPricing { get; set; }
+        public UserPricingType Result { get; set; }
     }
 
     public class ReadUserPricingParam
@@ -22304,7 +23244,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("TestLDAPServer")]
-        public LDAPServerTesterType TestLdapServer { get; set; }
+        public LDAPServerTesterType Result { get; set; }
     }
 
     public class TestLdapServerParam
@@ -22407,7 +23347,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("TestLDAPUser")]
-        public LDAPUserTesterType TestLdapUser { get; set; }
+        public LDAPUserTesterType Result { get; set; }
     }
 
     public class TestLdapUserParam
@@ -22522,7 +23462,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("adConnectorByProvider")]
-        public ADConnctorCommonInfo AdConnectorByProvider { get; set; }
+        public ADConnctorCommonInfo Result { get; set; }
     }
 
     public class AdConnectorByProviderParam
@@ -22574,7 +23514,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("adConnectorList")]
-        public IEnumerable<ADConnector> AdConnectorList { get; set; }
+        public IEnumerable<ADConnector> Result { get; set; }
     }
 
     public class AdConnectorListParam
@@ -22631,7 +23571,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("bindedOAuthList")]
-        public IEnumerable<UserOAuthBind> BindedOAuthList { get; set; }
+        public IEnumerable<UserOAuthBind> Result { get; set; }
     }
 
     public class BindedOAuthListParam
@@ -22686,7 +23626,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("checkAdConnectorStatus")]
-        public bool? CheckAdConnectorStatus { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class CheckAdConnectorStatusParam
@@ -22727,7 +23667,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("checkIsReservedDomain")]
-        public IsReservedDomain CheckIsReservedDomain { get; set; }
+        public IsReservedDomain Result { get; set; }
     }
 
     public class CheckIsReservedDomainParam
@@ -22771,7 +23711,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("checkLoginStatus")]
-        public JWTDecodedDataCheckLogin CheckLoginStatus { get; set; }
+        public JWTDecodedDataCheckLogin Result { get; set; }
     }
 
     public class CheckLoginStatusParam
@@ -22820,7 +23760,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("checkPhoneCode")]
-        public CommonMessage CheckPhoneCode { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class CheckPhoneCodeParam
@@ -22877,7 +23817,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("client")]
-        public UserClient Client { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class ClientParam
@@ -22890,7 +23830,7 @@ namespace Authing.ApiClient.Types
         public string Id { get; set; }
 
         /// <summary>
-        /// Required
+        /// Optional
         /// </summary>
         [JsonProperty("userId")]
         public string UserId { get; set; }
@@ -22903,8 +23843,8 @@ namespace Authing.ApiClient.Types
 
         /// <summary>
         /// ClientParam.Request 
-        /// <para>Required variables:<br/> { id=(string), userId=(string) }</para>
-        /// <para>Optional variables:<br/> { fromAdmin=(bool) }</para>
+        /// <para>Required variables:<br/> { id=(string) }</para>
+        /// <para>Optional variables:<br/> { userId=(string), fromAdmin=(bool) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -22918,7 +23858,7 @@ namespace Authing.ApiClient.Types
 
 
         public static string ClientDocument = @"
-        query client($id: String!, $userId: String!, $fromAdmin: Boolean) {
+        query client($id: String!, $userId: String, $fromAdmin: Boolean) {
           client(id: $id, userId: $userId, fromAdmin: $fromAdmin) {
             _id
             user {
@@ -23037,7 +23977,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("clientRoles")]
-        public PagedRoles ClientRoles { get; set; }
+        public PagedRoles Result { get; set; }
     }
 
     public class ClientRolesParam
@@ -23100,7 +24040,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("decodeJwtToken")]
-        public JwtDecodedData DecodeJwtToken { get; set; }
+        public JwtDecodedData Result { get; set; }
     }
 
     public class DecodeJwtTokenParam
@@ -23155,7 +24095,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("emailDomainTopNList")]
-        public IEnumerable<LoginTopEmailList> EmailDomainTopNList { get; set; }
+        public IEnumerable<LoginTopEmailList> Result { get; set; }
     }
 
     public class EmailDomainTopNListParam
@@ -23199,7 +24139,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("findClientsByIdArray")]
-        public PagedUserClientList FindClientsByIdArray { get; set; }
+        public PagedUserClientList Result { get; set; }
     }
 
     public class FindClientsByIdArrayParam
@@ -23248,7 +24188,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getAccessTokenByAppSecret")]
-        public string GetAccessTokenByAppSecret { get; set; }
+        public string Result { get; set; }
     }
 
     public class GetAccessTokenByAppSecretParam
@@ -23319,7 +24259,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getAllWebhooks")]
-        public IEnumerable<ClientWebhook> GetAllWebhooks { get; set; }
+        public IEnumerable<ClientWebhook> Result { get; set; }
     }
 
     public class GetAllWebhooksParam
@@ -23373,7 +24313,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getAppSecretByClientId")]
-        public AppSecretByClientId GetAppSecretByClientId { get; set; }
+        public AppSecretByClientId Result { get; set; }
     }
 
     public class GetAppSecretByClientIdParam
@@ -23423,7 +24363,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getClientWhenSdkInit")]
-        public ClientInfoAndAccessToken GetClientWhenSdkInit { get; set; }
+        public ClientInfoAndAccessToken Result { get; set; }
     }
 
     public class GetClientWhenSdkInitParam
@@ -23516,7 +24456,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getCustomMFA")]
-        public PagedCustomMFAList GetCustomMfa { get; set; }
+        public PagedCustomMFAList Result { get; set; }
     }
 
     public class GetCustomMfaParam
@@ -23578,7 +24518,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getOAuthedAppInfo")]
-        public OAuthProviderClient GetOAuthedAppInfo { get; set; }
+        public OAuthProviderClient Result { get; set; }
     }
 
     public class GetOAuthedAppInfoParam
@@ -23636,7 +24576,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getOAuthedAppList")]
-        public OAuthAppPagedList GetOAuthedAppList { get; set; }
+        public OAuthAppPagedList Result { get; set; }
     }
 
     public class GetOAuthedAppListParam
@@ -23709,7 +24649,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getUserLoginAreaStatisticOfClient")]
-        public string GetUserLoginAreaStatisticOfClient { get; set; }
+        public string Result { get; set; }
     }
 
     public class GetUserLoginAreaStatisticOfClientParam
@@ -23762,7 +24702,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getUserPoolSettings")]
-        public UserClient GetUserPoolSettings { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class GetUserPoolSettingsParam
@@ -23910,7 +24850,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getWebhookDetail")]
-        public ClientWebhook GetWebhookDetail { get; set; }
+        public ClientWebhook Result { get; set; }
     }
 
     public class GetWebhookDetailParam
@@ -23964,7 +24904,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getWebhookLogDetail")]
-        public WebhookLog GetWebhookLogDetail { get; set; }
+        public WebhookLog Result { get; set; }
     }
 
     public class GetWebhookLogDetailParam
@@ -24021,7 +24961,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getWebhookLogs")]
-        public IEnumerable<WebhookLog> GetWebhookLogs { get; set; }
+        public IEnumerable<WebhookLog> Result { get; set; }
     }
 
     public class GetWebhookLogsParam
@@ -24078,7 +25018,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("getWebhookSettingOptions")]
-        public WebhookSettingOptions GetWebhookSettingOptions { get; set; }
+        public WebhookSettingOptions Result { get; set; }
     }
 
     public class GetWebhookSettingOptionsParam
@@ -24117,11 +25057,59 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class InterConnectionsResponse
+    {
+
+        [JsonProperty("interConnections")]
+        public IEnumerable<InterConnection> Result { get; set; }
+    }
+
+    public class InterConnectionsParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userPoolId")]
+        public string UserPoolId { get; set; }
+
+        /// <summary>
+        /// InterConnectionsParam.Request 
+        /// <para>Required variables:<br/> { userPoolId=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = InterConnectionsDocument,
+                OperationName = "interConnections",
+                Variables = this
+            };
+        }
+
+
+        public static string InterConnectionsDocument = @"
+        query interConnections($userPoolId: String!) {
+          interConnections(userPoolId: $userPoolId) {
+            sourceUserId
+            sourceUserPoolId
+            targetUserId
+            targetUserPoolId
+            enabled
+            expiresdAt
+          }
+        }
+        ";
+    }
+
+
+
     public class IsAdConnectorAliveResponse
     {
 
         [JsonProperty("isAdConnectorAlive")]
-        public isAdConenctorAlive IsAdConnectorAlive { get; set; }
+        public isAdConenctorAlive Result { get; set; }
     }
 
     public class IsAdConnectorAliveParam
@@ -24164,7 +25152,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isAppAuthorizedByUser")]
-        public IsAppAuthorizedByUser IsAppAuthorizedByUser { get; set; }
+        public IsAppAuthorizedByUser Result { get; set; }
     }
 
     public class IsAppAuthorizedByUserParam
@@ -24213,7 +25201,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isClientBelongToUser")]
-        public bool? IsClientBelongToUser { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class IsClientBelongToUserParam
@@ -24266,7 +25254,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isClientOfUser")]
-        public bool? IsClientOfUser { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class IsClientOfUserParam
@@ -24319,7 +25307,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isDomainAvaliable")]
-        public bool? IsDomainAvaliable { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class IsDomainAvaliableParam
@@ -24360,7 +25348,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isLoginExpired")]
-        public bool? IsLoginExpired { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class IsLoginExpiredParam
@@ -24401,7 +25389,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("isRootNodeOfOrg")]
-        public bool? IsRootNodeOfOrg { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class IsRootNodeOfOrgParam
@@ -24438,11 +25426,105 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class IsUserInGroupResponse
+    {
+
+        [JsonProperty("isUserInGroup")]
+        public bool? Result { get; set; }
+    }
+
+    public class IsUserInGroupParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("groupId")]
+        public string GroupId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// IsUserInGroupParam.Request 
+        /// <para>Required variables:<br/> { groupId=(string), userId=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = IsUserInGroupDocument,
+                OperationName = "isUserInGroup",
+                Variables = this
+            };
+        }
+
+
+        public static string IsUserInGroupDocument = @"
+        query isUserInGroup($groupId: String!, $userId: String!) {
+          isUserInGroup(groupId: $groupId, userId: $userId)
+        }
+        ";
+    }
+
+
+
+    public class LoginBySecretResponse
+    {
+
+        [JsonProperty("getAccessTokenByAppSecret")]
+        public string Result { get; set; }
+    }
+
+    public class LoginBySecretParam
+    {
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("secret")]
+        public string Secret { get; set; }
+
+        /// <summary>
+        /// LoginBySecretParam.Request 
+        /// <para>Required variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { clientId=(string), secret=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginBySecretDocument,
+                OperationName = "loginBySecret",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginBySecretDocument = @"
+        query loginBySecret($clientId: String, $secret: String) {
+          getAccessTokenByAppSecret(clientId: $clientId, secret: $secret)
+        }
+        ";
+    }
+
+
+
     public class LoginCountResponse
     {
 
         [JsonProperty("loginCount")]
-        public UserLoginCount LoginCount { get; set; }
+        public UserLoginCount Result { get; set; }
     }
 
     public class LoginCountParam
@@ -24502,7 +25584,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("loginHotDotPicData")]
-        public LoginHotDotPicData LoginHotDotPicData { get; set; }
+        public LoginHotDotPicData Result { get; set; }
     }
 
     public class LoginHotDotPicDataParam
@@ -24545,7 +25627,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("notBindOAuthList")]
-        public IEnumerable<NotBindOAuth> NotBindOAuthList { get; set; }
+        public IEnumerable<NotBindOAuth> Result { get; set; }
     }
 
     public class NotBindOAuthListParam
@@ -24598,7 +25680,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("org")]
-        public Org Org { get; set; }
+        public Org Result { get; set; }
     }
 
     public class OrgParam
@@ -24650,7 +25732,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("orgChildrenNodes")]
-        public IEnumerable<OrgChildNode> OrgChildrenNodes { get; set; }
+        public IEnumerable<OrgChildNode> Result { get; set; }
     }
 
     public class OrgChildrenNodesParam
@@ -24701,7 +25783,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("orgNodeUserList")]
-        public PagedUsers OrgNodeUserList { get; set; }
+        public PagedUsers Result { get; set; }
     }
 
     public class OrgNodeUserListParam
@@ -24816,7 +25898,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("orgRootNode")]
-        public RBACGroup OrgRootNode { get; set; }
+        public RBACGroup Result { get; set; }
     }
 
     public class OrgRootNodeParam
@@ -24891,7 +25973,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("orgs")]
-        public PagedOrg Orgs { get; set; }
+        public PagedOrg Result { get; set; }
     }
 
     public class OrgsParam
@@ -24925,6 +26007,16 @@ namespace Authing.ApiClient.Types
             totalCount
             list {
               _id
+              logo
+              nodes {
+                _id
+                name
+                description
+                createdAt
+                updatedAt
+                children
+                root
+              }
             }
           }
         }
@@ -24937,7 +26029,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("platformUserGrowthTrend")]
-        public IEnumerable<DayUserGrowth> PlatformUserGrowthTrend { get; set; }
+        public IEnumerable<DayUserGrowth> Result { get; set; }
     }
 
     public class PlatformUserGrowthTrendParam
@@ -24981,7 +26073,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("previewEmailTemplate")]
-        public CommonMessage PreviewEmailTemplate { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class PreviewEmailTemplateParam
@@ -25032,7 +26124,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("providerListByADConnector")]
-        public IEnumerable<ADConnectorEnabledProvider> ProviderListByAdConnector { get; set; }
+        public IEnumerable<ADConnectorEnabledProvider> Result { get; set; }
     }
 
     public class ProviderListByAdConnectorParam
@@ -25078,7 +26170,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("qiNiuUploadToken")]
-        public string QiNiuUploadToken { get; set; }
+        public string Result { get; set; }
     }
 
     public class QiNiuUploadTokenParam
@@ -25119,7 +26211,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("qpsByTime")]
-        public IEnumerable<QpsByTime> QpsByTime { get; set; }
+        public IEnumerable<QpsByTime> Result { get; set; }
     }
 
     public class QpsByTimeParam
@@ -25175,7 +26267,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryAuthAuditRecords")]
-        public AuthAuditRecordsList QueryAuthAuditRecords { get; set; }
+        public AuthAuditRecordsList Result { get; set; }
     }
 
     public class QueryAuthAuditRecordsParam
@@ -25244,7 +26336,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryAuthorizedUserPool")]
-        public PagedUserPoolWithMFA QueryAuthorizedUserPool { get; set; }
+        public PagedUserPoolWithMFA Result { get; set; }
     }
 
     public class QueryAuthorizedUserPoolParam
@@ -25314,7 +26406,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryClient")]
-        public UserClient QueryClient { get; set; }
+        public UserClient Result { get; set; }
     }
 
     public class QueryClientParam
@@ -25462,7 +26554,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryCollaborationByUserPoolIdAndUserId")]
-        public Collaboration QueryCollaborationByUserPoolIdAndUserId { get; set; }
+        public Collaboration Result { get; set; }
     }
 
     public class QueryCollaborationByUserPoolIdAndUserIdParam
@@ -25633,7 +26725,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryCollaborativeUserPoolByUserId")]
-        public CollaborativeUserPoolList QueryCollaborativeUserPoolByUserId { get; set; }
+        public CollaborativeUserPoolList Result { get; set; }
     }
 
     public class QueryCollaborativeUserPoolByUserIdParam
@@ -25692,7 +26784,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryCollaboratorPermissions")]
-        public CollaboratorPermissions QueryCollaboratorPermissions { get; set; }
+        public CollaboratorPermissions Result { get; set; }
     }
 
     public class QueryCollaboratorPermissionsParam
@@ -25793,7 +26885,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryCollaboratorsByUserPoolId")]
-        public Collaborators QueryCollaboratorsByUserPoolId { get; set; }
+        public Collaborators Result { get; set; }
     }
 
     public class QueryCollaboratorsByUserPoolIdParam
@@ -25852,7 +26944,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryInvitation")]
-        public IEnumerable<Invitation> QueryInvitation { get; set; }
+        public IEnumerable<Invitation> Result { get; set; }
     }
 
     public class QueryInvitationParam
@@ -25899,7 +26991,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryInvitationState")]
-        public InvitationState QueryInvitationState { get; set; }
+        public InvitationState Result { get; set; }
     }
 
     public class QueryInvitationStateParam
@@ -25945,7 +27037,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryMFA")]
-        public MFA QueryMfa { get; set; }
+        public MFA Result { get; set; }
     }
 
     public class QueryMfaParam
@@ -26004,7 +27096,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryOperationLogs")]
-        public OperationLogsList QueryOperationLogs { get; set; }
+        public OperationLogsList Result { get; set; }
     }
 
     public class QueryOperationLogsParam
@@ -26079,7 +27171,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryPasswordFaasEnabled")]
-        public PaaswordFaas QueryPasswordFaasEnabled { get; set; }
+        public PaaswordFaas Result { get; set; }
     }
 
     public class QueryPasswordFaasEnabledParam
@@ -26129,7 +27221,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryPasswordStrengthSettingsByUserPoolId")]
-        public PasswordStrengthSettings QueryPasswordStrengthSettingsByUserPoolId { get; set; }
+        public PasswordStrengthSettings Result { get; set; }
     }
 
     public class QueryPasswordStrengthSettingsByUserPoolIdParam
@@ -26173,7 +27265,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryPermissionList")]
-        public PermissionList QueryPermissionList { get; set; }
+        public PermissionList Result { get; set; }
     }
 
     public class QueryPermissionListParam
@@ -26214,7 +27306,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryProviderInfoByAppId")]
-        public ProviderGeneralInfo QueryProviderInfoByAppId { get; set; }
+        public ProviderGeneralInfo Result { get; set; }
     }
 
     public class QueryProviderInfoByAppIdParam
@@ -26265,7 +27357,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryProviderInfoByDomain")]
-        public ProviderGeneralInfo QueryProviderInfoByDomain { get; set; }
+        public ProviderGeneralInfo Result { get; set; }
     }
 
     public class QueryProviderInfoByDomainParam
@@ -26312,11 +27404,98 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class QueryRbacGroupUserListResponse
+    {
+
+        [JsonProperty("rbacGroup")]
+        public RBACGroup Result { get; set; }
+    }
+
+    public class QueryRbacGroupUserListParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("_id")]
+        public string _Id { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("sortBy")]
+        public SortByEnum SortBy { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("page")]
+        public int Page { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("count")]
+        public int Count { get; set; }
+
+        /// <summary>
+        /// QueryRbacGroupUserListParam.Request 
+        /// <para>Required variables:<br/> { _id=(string) }</para>
+        /// <para>Optional variables:<br/> { sortBy=(SortByEnum), page=(int), count=(int) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = QueryRbacGroupUserListDocument,
+                OperationName = "QueryRBACGroupUserList",
+                Variables = this
+            };
+        }
+
+
+        public static string QueryRbacGroupUserListDocument = @"
+        query QueryRBACGroupUserList($_id: String!, $sortBy: SortByEnum = CREATEDAT_DESC, $page: Int = 0, $count: Int = 10) {
+          rbacGroup(_id: $_id) {
+            users(sortBy: $sortBy, page: $page, count: $count) {
+              totalCount
+              list {
+                _id
+                unionid
+                email
+                emailVerified
+                username
+                nickname
+                company
+                photo
+                phone
+                browser
+                registerInClient
+                registerMethod
+                oauth
+                token
+                tokenExpiredAt
+                loginsCount
+                lastLogin
+                lastIP
+                signedUp
+                blocked
+                isDeleted
+                metadata
+              }
+            }
+          }
+        }
+        ";
+    }
+
+
+
     public class QueryRoleByUserIdResponse
     {
 
         [JsonProperty("queryRoleByUserId")]
-        public PagedUserGroup QueryRoleByUserId { get; set; }
+        public PagedUserGroup Result { get; set; }
     }
 
     public class QueryRoleByUserIdParam
@@ -26369,7 +27548,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("querySMSSendCount")]
-        public SMSCountInfo QuerySmsSendCount { get; set; }
+        public SMSCountInfo Result { get; set; }
     }
 
     public class QuerySmsSendCountParam
@@ -26413,7 +27592,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("querySystemOAuthSetting")]
-        public IEnumerable<OAuthList> QuerySystemOAuthSetting { get; set; }
+        public IEnumerable<OAuthList> Result { get; set; }
     }
 
     public class QuerySystemOAuthSettingParam
@@ -26478,7 +27657,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("queryUserPoolCommonInfo")]
-        public UserPoolCommonInfo QueryUserPoolCommonInfo { get; set; }
+        public UserPoolCommonInfo Result { get; set; }
     }
 
     public class QueryUserPoolCommonInfoParam
@@ -26523,86 +27702,11 @@ namespace Authing.ApiClient.Types
 
 
 
-    public class RbacGroupResponse
-    {
-
-        [JsonProperty("rbacGroup")]
-        public RBACGroup RbacGroup { get; set; }
-    }
-
-    public class RbacGroupParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        public SortByEnum SortBy { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("count")]
-        public int Count { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("_id")]
-        public string _Id { get; set; }
-
-        /// <summary>
-        /// RbacGroupParam.Request 
-        /// <para>Required variables:<br/> { _id=(string) }</para>
-        /// <para>Optional variables:<br/> { sortBy=(SortByEnum), page=(int), count=(int) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = RbacGroupDocument,
-                OperationName = "rbacGroup",
-                Variables = this
-            };
-        }
-
-
-        public static string RbacGroupDocument = @"
-        query rbacGroup($sortBy: SortByEnum, $page: Int, $count: Int, $_id: String!) {
-          rbacGroup(_id: $_id) {
-            _id
-            userPoolId
-            name
-            description
-            createdAt
-            updatedAt
-            roles {
-              totalCount
-            }
-            permissions {
-              totalCount
-            }
-            users(sortBy: $sortBy, page: $page, count: $count) {
-              totalCount
-            }
-          }
-        }
-        ";
-    }
-
-
-
     public class RbacGroupListResponse
     {
 
         [JsonProperty("rbacGroupList")]
-        public PagedRBACGroup RbacGroupList { get; set; }
+        public PagedRBACGroup Result { get; set; }
     }
 
     public class RbacGroupListParam
@@ -26671,7 +27775,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("rbacPermission")]
-        public RBACPermission RbacPermission { get; set; }
+        public RBACPermission Result { get; set; }
     }
 
     public class RbacPermissionParam
@@ -26719,7 +27823,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("rbacPermissionList")]
-        public PagedRBACPermission RbacPermissionList { get; set; }
+        public PagedRBACPermission Result { get; set; }
     }
 
     public class RbacPermissionListParam
@@ -26788,7 +27892,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("rbacRole")]
-        public RBACRole RbacRole { get; set; }
+        public RBACRole Result { get; set; }
     }
 
     public class RbacRoleParam
@@ -26860,7 +27964,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("rbacRoleList")]
-        public PagedRBACRole RbacRoleList { get; set; }
+        public PagedRBACRole Result { get; set; }
     }
 
     public class RbacRoleListParam
@@ -26929,7 +28033,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("recentServiceCall")]
-        public DayServiceCallListOfAllServices RecentServiceCall { get; set; }
+        public DayServiceCallListOfAllServices Result { get; set; }
     }
 
     public class RecentServiceCallParam
@@ -26987,7 +28091,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("registerEveryDayCount")]
-        public RegisterEveryDayCount RegisterEveryDayCount { get; set; }
+        public RegisterEveryDayCount Result { get; set; }
     }
 
     public class RegisterEveryDayCountParam
@@ -27030,7 +28134,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("registerMethodTopList")]
-        public IEnumerable<RegisterMethodList> RegisterMethodTopList { get; set; }
+        public IEnumerable<RegisterMethodList> Result { get; set; }
     }
 
     public class RegisterMethodTopListParam
@@ -27074,7 +28178,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("requestList")]
-        public PagedRequestList RequestList { get; set; }
+        public PagedRequestList Result { get; set; }
     }
 
     public class RequestListParam
@@ -27132,7 +28236,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ruleById")]
-        public Rule RuleById { get; set; }
+        public Rule Result { get; set; }
     }
 
     public class RuleByIdParam
@@ -27186,7 +28290,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("ruleEnv")]
-        public PagedRuleEnvVariable RuleEnv { get; set; }
+        public PagedRuleEnvVariable Result { get; set; }
     }
 
     public class RuleEnvParam
@@ -27233,7 +28337,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("rules")]
-        public PagedRules Rules { get; set; }
+        public PagedRules Result { get; set; }
     }
 
     public class RulesParam
@@ -27286,11 +28390,70 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class SearchOrgNodesResponse
+    {
+
+        [JsonProperty("searchOrgNodes")]
+        public IEnumerable<RBACGroup> Result { get; set; }
+    }
+
+    public class SearchOrgNodesParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("orgId")]
+        public string OrgId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("metadata")]
+        public KeyValuePair Metadata { get; set; }
+
+        /// <summary>
+        /// SearchOrgNodesParam.Request 
+        /// <para>Required variables:<br/> { orgId=(string) }</para>
+        /// <para>Optional variables:<br/> { name=(string), metadata=(KeyValuePair[]) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = SearchOrgNodesDocument,
+                OperationName = "searchOrgNodes",
+                Variables = this
+            };
+        }
+
+
+        public static string SearchOrgNodesDocument = @"
+        query searchOrgNodes($orgId: String!, $name: String, $metadata: [KeyValuePair!]) {
+          searchOrgNodes(orgId: $orgId, name: $name, metadata: $metadata) {
+            _id
+            name
+            description
+            createdAt
+            updatedAt
+          }
+        }
+        ";
+    }
+
+
+
     public class SearchUserResponse
     {
 
         [JsonProperty("searchUser")]
-        public PagedUsers SearchUser { get; set; }
+        public PagedUsers Result { get; set; }
     }
 
     public class SearchUserParam
@@ -27405,7 +28568,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("searchUserBasicInfoById")]
-        public BasicUserInfo SearchUserBasicInfoById { get; set; }
+        public BasicUserInfo Result { get; set; }
     }
 
     public class SearchUserBasicInfoByIdParam
@@ -27451,7 +28614,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("statistic")]
-        public Statistic Statistic { get; set; }
+        public Statistic Result { get; set; }
     }
 
     public class StatisticParam
@@ -27514,7 +28677,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("todayGeoDistribution")]
-        public IEnumerable<GeographicalDistributionList> TodayGeoDistribution { get; set; }
+        public IEnumerable<GeographicalDistributionList> Result { get; set; }
     }
 
     public class TodayGeoDistributionParam
@@ -27559,7 +28722,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("user")]
-        public ExtendUser User { get; set; }
+        public ExtendUser Result { get; set; }
     }
 
     public class UserParam
@@ -27676,7 +28839,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userAnalytics")]
-        public UserAnalytics UserAnalytics { get; set; }
+        public UserAnalytics Result { get; set; }
     }
 
     public class UserAnalyticsParam
@@ -27732,7 +28895,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userClientList")]
-        public PagedUserClientList UserClientList { get; set; }
+        public PagedUserClientList Result { get; set; }
     }
 
     public class UserClientListParam
@@ -27793,7 +28956,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userClientTypes")]
-        public IEnumerable<UserClientType> UserClientTypes { get; set; }
+        public IEnumerable<UserClientType> Result { get; set; }
     }
 
     public class UserClientTypesParam
@@ -27832,7 +28995,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userClients")]
-        public PagedUserClients UserClients { get; set; }
+        public PagedUserClients Result { get; set; }
     }
 
     public class UserClientsParam
@@ -27913,7 +29076,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userExist")]
-        public bool? UserExist { get; set; }
+        public bool? Result { get; set; }
     }
 
     public class UserExistParam
@@ -27972,7 +29135,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userGroup")]
-        public PagedUserGroup UserGroup { get; set; }
+        public PagedUserGroup Result { get; set; }
     }
 
     public class UserGroupParam
@@ -28037,7 +29200,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userGroupList")]
-        public UserGroupList UserGroupList { get; set; }
+        public UserGroupList Result { get; set; }
     }
 
     public class UserGroupListParam
@@ -28089,7 +29252,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userMetadata")]
-        public UserMetaDataList UserMetadata { get; set; }
+        public UserMetaDataList Result { get; set; }
     }
 
     public class UserMetadataParam
@@ -28136,7 +29299,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userOAuthCount")]
-        public IEnumerable<int?> UserOAuthCount { get; set; }
+        public IEnumerable<int?> Result { get; set; }
     }
 
     public class UserOAuthCountParam
@@ -28177,7 +29340,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userPatch")]
-        public PatchExtendUser UserPatch { get; set; }
+        public PatchExtendUser Result { get; set; }
     }
 
     public class UserPatchParam
@@ -28268,7 +29431,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userPermissionList")]
-        public UserPermissionList UserPermissionList { get; set; }
+        public UserPermissionList Result { get; set; }
     }
 
     public class UserPermissionListParam
@@ -28320,7 +29483,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("userRoleList")]
-        public UserRoleList UserRoleList { get; set; }
+        public UserRoleList Result { get; set; }
     }
 
     public class UserRoleListParam
@@ -28372,7 +29535,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("users")]
-        public PagedUsers Users { get; set; }
+        public PagedUsers Result { get; set; }
     }
 
     public class UsersParam
@@ -28481,7 +29644,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("usersByOidcApp")]
-        public UserIds UsersByOidcApp { get; set; }
+        public UserIds Result { get; set; }
     }
 
     public class UsersByOidcAppParam
@@ -28543,7 +29706,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("usersInGroup")]
-        public UsersInGroup UsersInGroup { get; set; }
+        public UsersInGroup Result { get; set; }
     }
 
     public class UsersInGroupParam
@@ -28604,7 +29767,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("validatePassword")]
-        public ValidateResult ValidatePassword { get; set; }
+        public ValidateResult Result { get; set; }
     }
 
     public class ValidatePasswordParam
@@ -28659,7 +29822,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("wxQRCodeLog")]
-        public WxQRCodeLog WxQrCodeLog { get; set; }
+        public WxQRCodeLog Result { get; set; }
     }
 
     public class WxQrCodeLogParam
