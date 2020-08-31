@@ -46,7 +46,16 @@ GKl64GDcIq3au+aqJQIDAQAB
 -----END PUBLIC KEY-----";
 
         private string accessToken;
+
         private GraphQLHttpClient client;
+        private GraphQLHttpClient Client
+        {
+            get
+            {
+                Console.WriteLine(Endpoint);
+                return client ?? (client = CreateGqlClient(Endpoint));
+            }
+        }
 
         private string Endpoint { get { return Host + "/graphql"; } }
 
@@ -61,7 +70,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             set
             {
                 accessToken = value;
-                client.SetAccessToken(accessToken);
+                Client.SetAccessToken(accessToken);
             }
         }
 
@@ -72,7 +81,6 @@ GKl64GDcIq3au+aqJQIDAQAB
         public AuthingApiClient(string userPoolId)
         {
             UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
-            client = CreateGqlClient(Endpoint);
         }
 
         /// <summary>
@@ -97,7 +105,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <returns></returns>
         protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default)
         {
-            var result = await client.SendQueryAsync<TResponse>(request, cancellationToken);
+            var result = await Client.SendQueryAsync<TResponse>(request, cancellationToken);
             CheckResult(result);
             return result.Data;
         }
