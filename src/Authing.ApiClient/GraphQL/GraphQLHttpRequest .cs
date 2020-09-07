@@ -29,7 +29,13 @@ namespace Authing.ApiClient.GraphQL
         {
             var message = new HttpRequestMessage(HttpMethod.Post, options.EndPoint)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(this), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(
+                    this,
+                    Formatting.None,
+                    new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    }), Encoding.UTF8, "application/json")
             };
 
             message.Headers.Authorization = options.Authorization;
