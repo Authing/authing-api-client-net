@@ -13,7 +13,12 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 2.1.0
+    <PackageReleaseNotes>Version 2.2.0
+      - 修复某些情况下序列化失败的问题
+      - 增加获取用户角色权限分组的接口
+Version 2.1.1
+      - 修复 Host 参数修改无效的问题
+Version 2.1.0
       - 调整部分接口的参数和返回值
 Version 2.0.0
       - 警告：此版本与 1.x 有较大改动。
@@ -23,7 +28,7 @@ Version 1.1.0
       - 增加十个接口，详见文档。
 Version 1.0.0
       - 提供了注册、登录、更新等 11 个常用的接口。</PackageReleaseNotes>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

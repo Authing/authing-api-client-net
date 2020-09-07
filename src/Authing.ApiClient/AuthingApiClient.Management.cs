@@ -270,5 +270,38 @@ namespace Authing.ApiClient
 
             return await Request<RevokeUserAuthorizedAppResponse>(param.CreateRequest(), cancellationToken);
         }
+
+        /// <summary>
+        /// 获取用户权限列表
+        /// </summary>
+        /// <param name="param">_id: 用户 id，必填</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UserPermissionListResponse> UserPermissionListAsync(UserPermissionListParam param, CancellationToken cancellationToken = default)
+        {
+            return await Request<UserPermissionListResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 获取用户角色列表
+        /// </summary>
+        /// <param name="param">_id: 用户 id，必填</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UserRoleListResponse> UserRoleListAsync(UserRoleListParam param, CancellationToken cancellationToken = default)
+        {
+            return await Request<UserRoleListResponse>(param.CreateRequest(), cancellationToken);
+        }
+
+        /// <summary>
+        /// 获取用户分组列表
+        /// </summary>
+        /// <param name="param">_id: 用户 id，必填</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<UserGroupListResponse> UserGroupListAsync(UserGroupListParam param, CancellationToken cancellationToken = default)
+        {
+            return await Request<UserGroupListResponse>(param.CreateRequest(), cancellationToken);
+        }
     }
 }

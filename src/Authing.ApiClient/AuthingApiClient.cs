@@ -52,7 +52,6 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             get
             {
-                Console.WriteLine(Endpoint);
                 return client ?? (client = CreateGqlClient(Endpoint));
             }
         }
@@ -60,7 +59,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         private string Endpoint { get { return Host + "/graphql"; } }
 
         private readonly string type = "SDK";
-        private readonly string version = "c-sharp:2.0.0";
+        private readonly string version = "c-sharp:2.2.0";
 
         /// <summary>
         /// 设置 AccessToken 以访问某些接口
