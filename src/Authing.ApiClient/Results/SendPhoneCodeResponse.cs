@@ -2,7 +2,7 @@
 
 namespace Authing.ApiClient.Results
 {
-    public class SendPhoneCodeResponse
+    public class SendSmsCodeResponse
     {
         [JsonProperty("code")]
         public int Code { get; set; }

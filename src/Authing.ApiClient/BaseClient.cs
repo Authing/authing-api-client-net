@@ -11,9 +11,9 @@ using System.Security.Cryptography;
 namespace Authing.ApiClient
 {
     /// <summary>
-    /// 
+    /// 客户端基类
     /// </summary>
-    public partial class AuthingApiClient
+    public abstract class BaseClient
     {
         /// <summary>
         /// 用户池 ID，必填
@@ -21,19 +21,19 @@ namespace Authing.ApiClient
         public string UserPoolId { get; set; }
 
         /// <summary>
-        /// 用户池密钥
-        /// </summary>
-        public string Secret { get; set; }
-
-        /// <summary>
-        /// 接口超时时间
+        /// 接口超时时间，默认为 10 秒
         /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
 
         /// <summary>
-        /// Authing 接口 URL
+        /// Authing 接口 URL，默认为 https://core.authing.cn
         /// </summary>
         public string Host { get; set; } = "https://core.authing.cn";
+
+        /// <summary>
+        /// GraphQL Endpoint
+        /// </summary>
+        private string Endpoint { get { return Host + "/graphql"; } }
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -45,21 +45,22 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4xKeUgQ+Aoz7TLfAfs9+paePb
 GKl64GDcIq3au+aqJQIDAQAB
 -----END PUBLIC KEY-----";
 
-        private string accessToken;
 
         private GraphQLHttpClient client;
         private GraphQLHttpClient Client
         {
             get
             {
+                // 直接初始化会导致实例化时修改 Host 无效，这里用了懒加载
                 return client ?? (client = CreateGqlClient(Endpoint));
             }
         }
 
-        private string Endpoint { get { return Host + "/graphql"; } }
 
         private readonly string type = "SDK";
         private readonly string version = "c-sharp:2.2.0";
+
+        private string accessToken;
 
         /// <summary>
         /// 设置 AccessToken 以访问某些接口
@@ -71,15 +72,6 @@ GKl64GDcIq3au+aqJQIDAQAB
                 accessToken = value;
                 Client.SetAccessToken(accessToken);
             }
-        }
-
-        /// <summary>
-        /// 通过 userPoolId 和可选的一些参数来初始化
-        /// </summary>
-        /// <param name="userPoolId"></param>
-        public AuthingApiClient(string userPoolId)
-        {
-            UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
         }
 
         /// <summary>
@@ -123,32 +115,14 @@ GKl64GDcIq3au+aqJQIDAQAB
 
             if (PublicKey == null)
             {
-                throw new NullReferenceException("AuthingApiClient.PublicKey");
+                throw new NullReferenceException("PublicKey");
             }
 
             var util = new RsaPkcs1Util(Encoding.UTF8, PublicKey);
             return util.Encrypt(message, RSAEncryptionPadding.Pkcs1);
         }
 
-        /// <summary>
-        /// 获取 access token，可以用来访问更多接口，
-        /// 需要提供 Secret
-        /// </summary>
-        /// <returns>access token</returns>
-        public async Task<string> LoginBySecret()
-        {
-            var param = new LoginBySecretParam()
-            {
-                ClientId = UserPoolId,
-                Secret = Secret ?? throw new ArgumentNullException("AuthingApiClient.Secret")
-            };
-
-            var response =  await Request<LoginBySecretResponse>(param.CreateRequest());
-
-            return response.Result;
-        }
-
-        private GraphQLHttpClient CreateGqlClient(string endPoint)
+        protected GraphQLHttpClient CreateGqlClient(string endPoint)
         {
             return new GraphQLHttpClient(new GraphQLHttpClientOptions()
             {
@@ -156,7 +130,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             }, CreateHttpClient());
         }
 
-        private HttpClient CreateHttpClient()
+        protected HttpClient CreateHttpClient()
         {
             var client = new HttpClient()
             {
@@ -170,7 +144,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             return client;
         }
 
-        private void CheckResult<T>(GraphQLResponse<T> result)
+        protected static void CheckResult<T>(GraphQLResponse<T> result)
         {
             if (result.Errors != null && result.Errors.Length > 0)
             {

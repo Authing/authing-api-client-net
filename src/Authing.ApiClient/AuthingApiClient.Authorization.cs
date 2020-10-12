@@ -2,121 +2,145 @@
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
 using System;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Authing.ApiClient
 {
-    public partial class AuthingApiClient
+    public class AuthenticationClient : BaseClient
     {
         /// <summary>
-        /// 注册
+        /// 通过邮箱注册
         /// </summary>
-        /// <param name="param">用户信息</param>
+        /// <param name="email">邮箱</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户资料</param>
+        /// <param name="forceLogin">强制登录</param>
+        /// <param name="generateToken">自动生成 token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<RegisterResponse> RegisterAsync(RegisterParam param, CancellationToken cancellationToken = default)
+        /// <returns>User</returns>
+        public async Task<User> RegisterByEmail(
+            string email,
+            string password, 
+            RegisterProfile profile = null, 
+            bool forceLogin = false, 
+            bool generateToken = false, 
+            CancellationToken cancellationToken = default)
         {
-            param.UserInfo = param.UserInfo ?? new UserRegisterInput();
-            param.UserInfo.RegisterInClient = UserPoolId;
-            param.UserInfo.Password = Encrypt(param.UserInfo.Password);
+            var param = new RegisterByEmailParam()
+            {
+                Input = new RegisterByEmailInput()
+                {
+                    Email = email,
+                    Password = Encrypt(password),
+                    Profile = profile,
+                    ForceLogin = forceLogin,
+                    GenerateToken = generateToken,
+                }
+            };
 
-            return await Request<RegisterResponse>(param.CreateRequest(), cancellationToken);
+            var res = await Request<RegisterByEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
 
         /// <summary>
-        /// 使用邮箱和密码登录
+        /// 通过用户名注册
         /// </summary>
-        /// <param name="param">需要提供 Email 和 Password</param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户资料</param>
+        /// <param name="forceLogin">强制登录</param>
+        /// <param name="generateToken">自动生成 token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<LoginByEmailResponse> LoginByEmailAsync(LoginByEmailParam param, CancellationToken cancellationToken = default)
+        /// <returns>User</returns>
+        public async Task<User> RegisterByUsername(
+            string username, 
+            string password,
+            RegisterProfile profile = null,
+            bool forceLogin = false, 
+            bool generateToken = false, 
+            CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
-            param.Password = Encrypt(param.Password);
+            var param = new RegisterByUsernameParam()
+            {
+                Input = new RegisterByUsernameInput()
+                {
+                    Username = username,
+                    Password = Encrypt(password),
+                    Profile = profile,
+                    ForceLogin = forceLogin,
+                    GenerateToken = generateToken,
+                }
+            };
 
-            return await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
+            var res = await Request<RegisterByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
 
         /// <summary>
-        /// 使用用户名和密码登录
+        /// 通过手机号注册
         /// </summary>
-        /// <param name="param">需要提供 Username 和 Password</param>
+        /// <param name="phone">手机号</param>
+        /// <param name="code">手机号验证码</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户资料</param>
+        /// <param name="forceLogin">强制登录</param>
+        /// <param name="generateToken">自动生成 token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<LoginByUsernameResponse> LoginByUsernameAsync(LoginByUsernameParam param, CancellationToken cancellationToken = default)
+        /// <returns>User</returns>
+        public async Task<User> RegisterByPhoneCode(
+            string phone,
+            string code,
+            string password = null,
+            RegisterProfile profile = null,
+            bool forceLogin = false,
+            bool generateToken = false,
+            CancellationToken cancellationToken = default)
         {
-            param.ClientId = UserPoolId;
-            param.Password = Encrypt(param.Password);
+            var param = new RegisterByPhoneCodeParam()
+            {
+                Input = new RegisterByPhoneCodeInput()
+                {
+                    Phone = phone,
+                    Code = code,
+                    Password = Encrypt(password),
+                    Profile = profile,
+                    ForceLogin = forceLogin,
+                    GenerateToken = generateToken,
+                }
+            };
 
-            return await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            var res = await Request<RegisterByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
 
         /// <summary>
-        /// 使用 Ad 账号进行登录
+        /// 发送短信验证码
         /// </summary>
-        /// <param name="param"></param>
+        /// <param name="phone">手机号</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<LoginByAdResponse> LoginByAdAsync(LoginByAdParam param, CancellationToken cancellationToken = default)
-        {
-            param.Password = Encrypt(param.Password);
-
-            return await Request<LoginByAdResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 使用 LDAP 账号进行登录
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<LoginByLdapResponse> LoginByLdapAsync(LoginByLdapParam param, CancellationToken cancellationToken = default)
-        {
-            param.ClientId = UserPoolId;
-            param.Password = Encrypt(param.Password);
-
-            return await Request<LoginByLdapResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 使用手机号和验证码登录
-        /// </summary>
-        /// <param name="param">需要提供 Phone 和 PhoneCode</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<LoginByPhoneCodeResponse> LoginByPhoneCodeAsync(LoginByPhoneCodeParam param, CancellationToken cancellationToken = default)
-        {
-            param.ClientId = UserPoolId;
-
-            return await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 使用手机号和密码登录
-        /// </summary>
-        /// <param name="param">需要提供 Phone 和 Password</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<LoginByPhonePasswordResponse> LoginByPhonePasswordAsync(LoginByPhonePasswordParam param, CancellationToken cancellationToken = default)
-        {
-            param.ClientId = UserPoolId;
-            param.Password = Encrypt(param.Password);
-
-            return await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 发送验证码
-        /// </summary>
-        /// <param name="phone"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task SendPhoneCodeAsync(string phone, CancellationToken cancellationToken = default)
+        public async Task SendSmsCode(string phone, CancellationToken cancellationToken = default)
         {
             var httpClient = CreateHttpClient();
-            var url = $"{Host}/send_smscode/{phone}/{UserPoolId}";
-            var result = await httpClient.GetAsync(url, cancellationToken);
+            var url = $"{Host}/api/v2/sms/send";
+
+            var message = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(
+                    new 
+                    {
+                        phone
+                    },
+                    Formatting.None,
+                    new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    }), Encoding.UTF8, "application/json")
+            };
+            var result = await httpClient.SendAsync(message, cancellationToken);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -124,7 +148,7 @@ namespace Authing.ApiClient
             }
 
             var content = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<SendPhoneCodeResponse>(content);
+            var response = JsonConvert.DeserializeObject<SendSmsCodeResponse>(content);
 
             if (response.Code != 200)
             {
@@ -133,106 +157,94 @@ namespace Authing.ApiClient
         }
 
         /// <summary>
-        /// 发送验证码，如果手机号已注册则会发送失败
+        /// 通过邮箱登录
         /// </summary>
-        /// <param name="phone"></param>
+        /// <param name="email">邮箱</param>
+        /// <param name="password">密码</param>
+        /// <param name="autoRegister">自动注册</param>
+        /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SendRegisterPhoneCodeAsync(string phone, CancellationToken cancellationToken = default)
+        public async Task<User> LoginByEmail(
+            string email, 
+            string password,
+            bool autoRegister = false, 
+            string captchaCode = null,
+            CancellationToken cancellationToken = default)
         {
-            var httpClient = CreateHttpClient();
-            var url = $"{Host}/notification/send_register_smscode/{phone}/{UserPoolId}";
-            var result = await httpClient.GetAsync(url, cancellationToken);
-
-            if (!result.IsSuccessStatusCode)
+            var param = new LoginByEmailParam()
             {
-                throw new AuthingApiException(result.ReasonPhrase, (int)result.StatusCode);
-            }
+                Input = new LoginByEmailInput()
+                {
+                    Email = email,
+                    Password = password,
+                    AutoRegister = autoRegister,
+                    CaptchaCode = captchaCode,
+                }
+            };
 
-            var content = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<SendPhoneCodeResponse>(content);
+            var res = await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
 
-            if (response.Code != 200)
+        /// <summary>
+        /// 通过用户名登录
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="autoRegister">自动注册</param>
+        /// <param name="captchaCode">人机验证码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> LoginByUsername(
+            string username,
+            string password,
+            bool autoRegister = false,
+            string captchaCode = null,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new LoginByUsernameParam()
             {
-                throw new AuthingApiException(response.Message, response.Code);
-            }
+                Input = new LoginByUsernameInput()
+                {
+                    Username = username,
+                    Password = password,
+                    AutoRegister = autoRegister,
+                    CaptchaCode = captchaCode,
+                }
+            };
+
+            var res = await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
 
         /// <summary>
-        /// 解析 user token
+        /// 通过用户名登录
         /// </summary>
-        /// <param name="param"></param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="autoRegister">自动注册</param>
+        /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<DecodeJwtTokenResponse> DecodeJwtTokenAsync(DecodeJwtTokenParam param, CancellationToken cancellationToken = default)
+        public async Task<User> LoginByPhoneCode(
+            string phone,
+            string code,
+            bool autoRegister = false,
+            CancellationToken cancellationToken = default)
         {
-            return await Request<DecodeJwtTokenResponse>(param.CreateRequest(), cancellationToken);
-        }
+            var param = new LoginByPhoneCodeParam()
+            {
+                Input = new LoginByPhoneCodeInput()
+                {
+                    Phone = phone,
+                    Code = code,
+                    AutoRegister = autoRegister,
+                }
+            };
 
-        /// <summary>
-        /// 发送重置密码的邮件验证码
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<SendResetPasswordEmailResponse> SendResetPasswordEmailAsync(SendResetPasswordEmailParam param, CancellationToken cancellationToken = default)
-        {
-            param.Client = UserPoolId;
-
-            return await Request<SendResetPasswordEmailResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 验证重置密码的验证码
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<VerifyResetPasswordVerifyCodeResponse> VerifyResetPasswordVerifyCodeAsync(VerifyResetPasswordVerifyCodeParam param, CancellationToken cancellationToken = default)
-        {
-            param.Client = UserPoolId;
-
-            return await Request<VerifyResetPasswordVerifyCodeResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 在忘记密码的时候使用邮件验证码来重置密码
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordParam param, CancellationToken cancellationToken = default)
-        {
-            param.ClientId = UserPoolId;
-            param.Password = Encrypt(param.Password);
-
-            return await Request<ResetPasswordResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 在忘记密码的时候使用邮件验证码来修改密码
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<SendVerifyEmailResponse> SendVerifyEmailAsync(SendVerifyEmailParam param, CancellationToken cancellationToken = default)
-        {
-            param.Client = UserPoolId;
-
-            return await Request<SendVerifyEmailResponse>(param.CreateRequest(), cancellationToken);
-        }
-
-        /// <summary>
-        /// 查询用户是否存在
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<UserExistResponse> UserExistAsync(UserExistParam param, CancellationToken cancellationToken = default)
-        {
-            param.UserPoolId = UserPoolId;
-
-            return await Request<UserExistResponse>(param.CreateRequest(), cancellationToken);
+            var res = await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
     }
 }
