@@ -73,11 +73,10 @@ GKl64GDcIq3au+aqJQIDAQAB
             {
                 return currentUser;
             }
-
             set
             {
                 currentUser = value;
-                AccessToken = value.Token;
+                AccessToken = value?.Token;
             }
         }
         private User currentUser;

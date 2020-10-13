@@ -122,5 +122,32 @@ GKl64GDcIq3au+aqJQIDAQAB
             var status = await client.CheckLoginStatus();
             Assert.AreEqual(status.Code, 200);
         }
+
+        [Test]
+        public async Task SendEmail()
+        {
+            var message = await client.SendEmail("1498881550@qq.com", EmailScene.RESET_PASSWORD);
+            Assert.AreEqual(message.Code, 200);
+        }
+
+        [Test]
+        public async Task ResetPasswordByPhoneCode()
+        {
+            var phone = "17611161550";
+            var code = "1234";
+            var password = "123456";
+            var message = await client.ResetPasswordByPhoneCode(phone, code, password);
+            Assert.AreEqual(message.Code, 200);
+        }
+
+        [Test]
+        public async Task ResetPasswordByEmailCode()
+        {
+            var email = "1498881550@qq.com";
+            var code = "1234";
+            var password = "123456";
+            var message = await client.ResetPasswordByEmailCode(email, code, password);
+            Assert.AreEqual(message.Code, 200);
+        }
     }
 }

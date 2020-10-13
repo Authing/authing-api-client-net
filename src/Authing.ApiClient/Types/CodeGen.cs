@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Authing.ApiClient.GraphQL;
 
 namespace Authing.ApiClient.Types
@@ -3568,6 +3569,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -3831,6 +3833,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public PolicyAssignmentTargetType TargetType { get; set; }
 
         /// <summary>
@@ -3881,6 +3884,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -3893,6 +3897,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("dataType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfDataType DataType { get; set; }
 
         /// <summary>
@@ -4002,6 +4007,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public WhitelistType Type { get; set; }
 
         /// <summary>
@@ -5555,6 +5561,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
         /// <summary>
@@ -5655,6 +5662,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
         /// <summary>
@@ -6661,6 +6669,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -6802,6 +6811,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public PolicyAssignmentTargetType TargetType { get; set; }
 
         /// <summary>
@@ -6852,6 +6862,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -6905,6 +6916,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -7012,6 +7024,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public WhitelistType Type { get; set; }
 
         /// <summary>
@@ -7199,6 +7212,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("scene")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EmailScene Scene { get; set; }
 
         /// <summary>
@@ -7243,6 +7257,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -7731,6 +7746,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -8683,6 +8699,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -8965,6 +8982,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -9335,6 +9353,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -9525,6 +9544,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -9727,6 +9747,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -9924,6 +9945,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public PolicyAssignmentTargetType TargetType { get; set; }
 
         /// <summary>
@@ -10060,6 +10082,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
         /// <summary>
@@ -10364,6 +10387,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -10434,6 +10458,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -10831,6 +10856,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -10878,6 +10904,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
         /// <summary>
@@ -11264,6 +11291,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -11337,6 +11365,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum SortBy { get; set; }
 
         /// <summary>
@@ -11429,6 +11458,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public WhitelistType Type { get; set; }
 
         /// <summary>

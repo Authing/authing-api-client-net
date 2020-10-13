@@ -2,6 +2,7 @@
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -317,6 +318,274 @@ namespace Authing.ApiClient
             var param = new CheckLoginStatusParam();
             var res = await Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken, accessToken);
             return res.Result;
+        }
+
+        /// <summary>
+        /// 发送邮件
+        /// </summary>
+        /// <param name="email">邮件</param>
+        /// <param name="scene"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<CommonMessage> SendEmail(
+            string email,
+            EmailScene scene,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new SendEmailParam()
+            {
+                Email = email,
+                Scene = scene,
+            };
+            var res = await Request<SendEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 通过手机号验证码重置密码
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="code">验证码</param>
+        /// <param name="newPassword">新密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<CommonMessage> ResetPasswordByPhoneCode(
+            string phone,
+            string code,
+            string newPassword,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new ResetPasswordParam()
+            {
+                Phone = phone,
+                Code = code,
+                NewPassword = Encrypt(newPassword),
+            };
+            var res = await Request<ResetPasswordResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 通过邮箱验证码重置密码
+        /// </summary>
+        /// <param name="email">邮箱</param>
+        /// <param name="code">验证码</param>
+        /// <param name="newPassword">新密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<CommonMessage> ResetPasswordByEmailCode(
+            string email,
+            string code,
+            string newPassword,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new ResetPasswordParam()
+            {
+                Email = email,
+                Code = code,
+                NewPassword = Encrypt(newPassword),
+            };
+            var res = await Request<ResetPasswordResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 更新用户信息
+        /// </summary>
+        /// <param name="updates">更新项</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UpdateProfile(
+            UpdateUserInput updates,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new UpdateUserParam()
+            {
+                Input = updates,
+            };
+            var res = await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 更新密码
+        /// </summary>
+        /// <param name="newPassword">新密码</param>
+        /// <param name="oldPassword">旧密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UpdatePassword(
+            string newPassword,
+            string oldPassword,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UpdatePasswordParam()
+            {
+                NewPassword = Encrypt(newPassword),
+                OldPassword = Encrypt(oldPassword),
+            };
+            var res = await Request<UpdatePasswordResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 更新手机号
+        /// </summary>
+        /// <param name="phone">新手机号</param>
+        /// <param name="phoneCode">新手机号的验证码</param>
+        /// <param name="oldPhone">旧手机号</param>
+        /// <param name="oldPhoneCode">旧手机号的验证码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UpdatePhone(
+            string phone,
+            string phoneCode,
+            string oldPhone = null,
+            string oldPhoneCode = null,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UpdatePhoneParam()
+            {
+                Phone = phone,
+                PhoneCode = phoneCode,
+                OldPhone = oldPhone,
+                OldPhoneCode = oldPhoneCode,
+            };
+            var res = await Request<UpdatePhoneResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 更新邮箱
+        /// </summary>
+        /// <param name="email">新邮箱</param>
+        /// <param name="emailCode">新邮箱的验证码</param>
+        /// <param name="oldEmail">旧邮箱</param>
+        /// <param name="oldEmailCode">旧邮箱的验证码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UpdateEmail(
+            string email,
+            string emailCode,
+            string oldEmail = null,
+            string oldEmailCode = null,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UpdateEmailParam()
+            {
+                Email = email,
+                EmailCode = emailCode,
+                OldEmail = oldEmail,
+                OldEmailCode = oldEmailCode,
+            };
+            var res = await Request<UpdateEmailResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 绑定手机号，如果已绑定则会报错
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="phoneCode">手机号验证码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> BindPhone(
+            string phone,
+            string phoneCode,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new BindPhoneParam()
+            {
+                Phone = phone,
+                PhoneCode = phoneCode,
+            };
+            var res = await Request<BindPhoneResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 解绑定手机号，如果未绑定则会报错
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UnbindPhone(CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UnbindPhoneParam();
+            var res = await Request<UnbindPhoneResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 刷新 access token
+        /// </summary>
+        /// <param name="accessToken">用户 access token</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<RefreshToken> RefreshToken(
+            string accessToken = null,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new RefreshTokenParam();
+            var res = await Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken, accessToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 获取用户自定义字段值列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<UserDefinedData>> ListUdv(CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UdvParam()
+            {
+                TargetId = CurrentUser.Id,
+                TargetType = UdfTargetType.USER,
+            };
+            var res = await Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 注销
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task Logout(CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new UpdateUserParam()
+            {
+                Id = CurrentUser.Id,
+                Input = new UpdateUserInput()
+                {
+                    TokenExpiredAt = "0",
+                }
+            };
+            await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = null;
+        }
+
+        private async Task CheckLoggedIn()
+        {
+            var user = await GetCurrentUser();
+            if (user == null)
+            {
+                throw new AuthingException("请先登录");
+            }
         }
     }
 }
