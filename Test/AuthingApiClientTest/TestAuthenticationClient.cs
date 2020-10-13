@@ -149,5 +149,91 @@ GKl64GDcIq3au+aqJQIDAQAB
             var message = await client.ResetPasswordByEmailCode(email, code, password);
             Assert.AreEqual(message.Code, 200);
         }
+
+        [Test]
+        public async Task UpdateProfile()
+        {
+            var phone = "17611161550";
+            var password = "123456";
+            var nickname = RandomString();
+            await client.LoginByPhonePassword(phone, password);
+            var user = await client.UpdateProfile(new UpdateUserInput()
+            {
+                Nickname = nickname,
+            });
+            Assert.AreEqual(user.Nickname, nickname);
+        }
+
+        [Test]
+        public async Task UpdatePassword()
+        {
+            var username = RandomString();
+            var password = "123456";
+            await client.RegisterByUsername(username, password);
+            await client.UpdatePassword("111111", "123456");
+        }
+
+        [Test]
+        public async Task UpdatePhone()
+        {
+            var username = RandomString();
+            var password = "123456";
+            await client.RegisterByUsername(username, password);
+            await client.LoginByUsername(username, password);
+            await client.UpdatePhone("17611161550", "1234");
+        }
+
+        [Test]
+        public async Task UpdateEmail()
+        {
+            var email = RandomString() + "@gmail.com";
+            var newEmail = RandomString() + "@gmail.com";
+            var password = "123456";
+            await client.RegisterByEmail(email, password);
+            await client.LoginByEmail(email, password);
+            await client.UpdateEmail(newEmail, "1234");
+        }
+
+        [Test]
+        public async Task BindPhone()
+        {
+            var email = RandomString() + "@gmail.com";
+            var password = "123456";
+            await client.RegisterByEmail(email, password);
+            await client.LoginByEmail(email, password);
+            await client.BindPhone("17611161550", "1234");
+        }
+
+        [Test]
+        public async Task UnbindPhone()
+        {
+            var email = RandomString() + "@gmail.com";
+            var password = "123456";
+            await client.RegisterByEmail(email, password);
+            await client.LoginByEmail(email, password);
+            await client.BindPhone("17611161550", "1234");
+            await client.UnbindPhone();
+        }
+
+        [Test]
+        public async Task RefreshToken()
+        {
+            var email = RandomString() + "@gmail.com";
+            var password = "123456";
+            await client.RegisterByEmail(email, password);
+            await client.LoginByEmail(email, password);
+            var refreshToken = await client.RefreshToken();
+            Assert.AreNotEqual(refreshToken.Token, null);
+        }
+
+        [Test]
+        public async Task Logout()
+        {
+            var email = RandomString() + "@gmail.com";
+            var password = "123456";
+            await client.RegisterByEmail(email, password);
+            await client.LoginByEmail(email, password);
+            await client.Logout();
+        }
     }
 }
