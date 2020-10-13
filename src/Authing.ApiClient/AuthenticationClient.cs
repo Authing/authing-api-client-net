@@ -11,6 +11,26 @@ namespace Authing.ApiClient
 {
     public class AuthenticationClient : BaseClient
     {
+        public AuthenticationClient(string userPoolId)
+        {
+            UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof (userPoolId));
+        }
+
+        /// <summary>
+        /// 获取当前用户
+        /// </summary>
+        /// <param name="accessToken">用户 access token</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> GetCurrentUser(
+            string accessToken = null,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new UserParam();
+            var res = await Request<UserResponse>(param.CreateRequest(), cancellationToken, accessToken);
+            return res.Result;
+        }
+
         /// <summary>
         /// 通过邮箱注册
         /// </summary>
@@ -20,7 +40,7 @@ namespace Authing.ApiClient
         /// <param name="forceLogin">强制登录</param>
         /// <param name="generateToken">自动生成 token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>User</returns>
+        /// <returns></returns>
         public async Task<User> RegisterByEmail(
             string email,
             string password, 
@@ -42,6 +62,7 @@ namespace Authing.ApiClient
             };
 
             var res = await Request<RegisterByEmailResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
             return res.Result;
         }
 
@@ -76,6 +97,7 @@ namespace Authing.ApiClient
             };
 
             var res = await Request<RegisterByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
             return res.Result;
         }
 
@@ -113,6 +135,7 @@ namespace Authing.ApiClient
             };
 
             var res = await Request<RegisterByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
             return res.Result;
         }
 
@@ -144,7 +167,7 @@ namespace Authing.ApiClient
 
             if (!result.IsSuccessStatusCode)
             {
-                throw new AuthingApiException(result.ReasonPhrase, (int)result.StatusCode);
+                throw new AuthingException(result.ReasonPhrase, (int)result.StatusCode);
             }
 
             var content = await result.Content.ReadAsStringAsync();
@@ -152,7 +175,7 @@ namespace Authing.ApiClient
 
             if (response.Code != 200)
             {
-                throw new AuthingApiException(response.Message, response.Code);
+                throw new AuthingException(response.Message, response.Code);
             }
         }
 
@@ -177,13 +200,14 @@ namespace Authing.ApiClient
                 Input = new LoginByEmailInput()
                 {
                     Email = email,
-                    Password = password,
+                    Password = Encrypt(password),
                     AutoRegister = autoRegister,
                     CaptchaCode = captchaCode,
                 }
             };
 
             var res = await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
             return res.Result;
         }
 
@@ -208,23 +232,23 @@ namespace Authing.ApiClient
                 Input = new LoginByUsernameInput()
                 {
                     Username = username,
-                    Password = password,
+                    Password = Encrypt(password),
                     AutoRegister = autoRegister,
                     CaptchaCode = captchaCode,
                 }
             };
 
             var res = await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
             return res.Result;
         }
 
         /// <summary>
-        /// 通过用户名登录
+        /// 通过手机号验证码登录
         /// </summary>
-        /// <param name="username">用户名</param>
-        /// <param name="password">密码</param>
+        /// <param name="phone">手机号</param>
+        /// <param name="code">验证码</param>
         /// <param name="autoRegister">自动注册</param>
-        /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<User> LoginByPhoneCode(
@@ -244,6 +268,54 @@ namespace Authing.ApiClient
             };
 
             var res = await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 通过手机号密码登录
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="password">密码</param>
+        /// <param name="autoRegister">自动注册</param>
+        /// <param name="captchaCode">人机验证码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> LoginByPhonePassword(
+            string phone,
+            string password,
+            bool autoRegister = false,
+            string captchaCode = null,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new LoginByPhonePasswordParam()
+            {
+                Input = new LoginByPhonePasswordInput()
+                {
+                    Phone = phone,
+                    Password = Encrypt(password),
+                    AutoRegister = autoRegister,
+                    CaptchaCode = captchaCode,
+                }
+            };
+
+            var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
+            CurrentUser = res.Result;
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 检查登录状态
+        /// </summary>
+        /// <param name="accessToken">用户的 access token</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<JWTTokenStatus> CheckLoginStatus(
+            string accessToken = null,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new CheckLoginStatusParam();
+            var res = await Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken, accessToken);
             return res.Result;
         }
     }

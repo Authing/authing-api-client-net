@@ -33,7 +33,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// GraphQL Endpoint
         /// </summary>
-        private string Endpoint { get { return Host + "/graphql"; } }
+        private string Endpoint { get { return Host + "/v2/graphql"; } }
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -56,23 +56,31 @@ GKl64GDcIq3au+aqJQIDAQAB
             }
         }
 
-
         private readonly string type = "SDK";
         private readonly string version = "c-sharp:2.2.0";
-
-        private string accessToken;
 
         /// <summary>
         /// 设置 AccessToken 以访问某些接口
         /// </summary>
-        public string AccessToken
+        public string AccessToken { get; set; }
+
+        /// <summary>
+        /// 当前用户
+        /// </summary>
+        protected User CurrentUser
         {
+            get
+            {
+                return currentUser;
+            }
+
             set
             {
-                accessToken = value;
-                Client.SetAccessToken(accessToken);
+                currentUser = value;
+                AccessToken = value.Token;
             }
         }
+        private User currentUser;
 
         /// <summary>
         /// 向任意 Graphql 接口发出请求，
@@ -94,8 +102,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default)
+        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, string accessToken = null)
         {
+            Client.SetAccessToken(accessToken ?? AccessToken);
             var result = await Client.SendQueryAsync<TResponse>(request, cancellationToken);
             CheckResult(result);
             return result.Data;
@@ -149,7 +158,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             if (result.Errors != null && result.Errors.Length > 0)
             {
                 var error = result.Errors[0].Message;
-                throw new AuthingApiException(error.Message, error.Code);
+                throw new AuthingException(error.Message, error.Code);
             }
         }
     }

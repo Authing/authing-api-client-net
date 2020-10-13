@@ -48,7 +48,13 @@ namespace Authing.ApiClient.GraphQL
 
         public void SetAccessToken(string accessToken)
         {
-            Options.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            if (accessToken == null)
+            {
+                Options.Authorization = null;
+            } else
+            {
+                Options.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
         }
 
         #region Private Methods
