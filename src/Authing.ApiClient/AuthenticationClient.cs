@@ -10,12 +10,33 @@ using System.Threading.Tasks;
 
 namespace Authing.ApiClient
 {
+    /// <summary>
+    /// Authing 认证客户端类
+    /// </summary>
     public class AuthenticationClient : BaseClient
     {
+        /// <summary>
+        /// 通过用户池 ID 初始化
+        /// </summary>
+        /// <param name="userPoolId">用户池 ID，可以在控制台获取</param>
         public AuthenticationClient(string userPoolId)
         {
             UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof (userPoolId));
         }
+
+        private User CurrentUser
+        {
+            get
+            {
+                return currentUser;
+            }
+            set
+            {
+                currentUser = value;
+                accessToken = value?.Token;
+            }
+        }
+        private User currentUser;
 
         /// <summary>
         /// 获取当前用户
@@ -543,7 +564,7 @@ namespace Authing.ApiClient
         }
 
         /// <summary>
-        /// 获取用户自定义字段值列表
+        /// 获取用户自定义字段的值列表
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -556,6 +577,51 @@ namespace Authing.ApiClient
                 TargetType = UdfTargetType.USER,
             };
             var res = await Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 设置自定义字段值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<UserDefinedData>> AddUdv(
+            string key,
+            object value,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new SetUdvParam()
+            {
+                Key = key,
+                Value = JsonConvert.SerializeObject(value),
+                TargetId = CurrentUser.Id,
+                TargetType = UdfTargetType.USER,
+            };
+            var res = await Request<SetUdvResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        /// <summary>
+        /// 移除用户自定义字段的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<UserDefinedData>> RemoveUdv(
+            string key,
+            CancellationToken cancellationToken = default)
+        {
+            await CheckLoggedIn();
+            var param = new RemoveUdvParam()
+            {
+                Key = key,
+                TargetId = CurrentUser.Id,
+                TargetType = UdfTargetType.USER,
+            };
+            var res = await Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
 
