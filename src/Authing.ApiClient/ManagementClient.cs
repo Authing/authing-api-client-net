@@ -15,7 +15,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 用户池密钥，可以在控制台获取
         /// </summary>
-        public string Secret { get; set; }
+        private readonly string secret;
 
         private UserPool currentUserPool = null;
         private int accessTokenExpriredAt = 0;
@@ -23,8 +23,11 @@ namespace Authing.ApiClient
         /// <summary>
         /// 构造方法
         /// </summary>
-        public ManagementClient()
+        public ManagementClient(string userPoolId, string secret)
         {
+            UserPoolId = userPoolId;
+            this.secret = secret;
+
             users = new UsersManagementClient(this);
             roles = new RolesManagementClient(this);
             acl = new AclManagementClient(this);
@@ -48,7 +51,7 @@ namespace Authing.ApiClient
             var param = new AccessTokenParam()
             {
                 UserPoolId = UserPoolId,
-                Secret = Secret,
+                Secret = secret,
             };
             var res = await Request<AccessTokenResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
@@ -75,13 +78,14 @@ namespace Authing.ApiClient
         /// <param name="fetchUserDetail"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task CheckLoginStatus(
+        public async Task<JWTTokenStatus> CheckLoginStatus(
             string token,
             bool fetchUserDetail = false,
             CancellationToken cancellationToken = default)
         {
-            var jwtSecret = (await GetUserpoolDetail()).JwtSecret;
-            
+            var param = new CheckLoginStatusParam() { Token = token };
+            var res = await Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 用户池 ID，必填
         /// </summary>
-        public string UserPoolId { get; set; }
+        public string UserPoolId { get; protected set; }
 
         /// <summary>
         /// 接口超时时间，默认为 10 秒
