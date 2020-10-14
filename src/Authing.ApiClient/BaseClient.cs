@@ -62,7 +62,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <summary>
         /// 设置 AccessToken 以访问某些接口
         /// </summary>
-        protected string accessToken;
+        public string AccessToken { get; set; }
 
         /// <summary>
         /// 向任意 Graphql 接口发出请求，
@@ -86,7 +86,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <returns></returns>
         protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, string accessToken = null)
         {
-            Client.SetAccessToken(accessToken ?? this.accessToken);
+            Client.SetAccessToken(accessToken ?? this.AccessToken);
             var result = await Client.SendQueryAsync<TResponse>(request, cancellationToken);
             CheckResult(result);
             return result.Data;

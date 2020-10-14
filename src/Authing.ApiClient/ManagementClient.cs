@@ -63,12 +63,12 @@ namespace Authing.ApiClient
 
             if (accessTokenExpriredAt > now + 3600)
             {
-                return accessToken;
+                return AccessToken;
             }
             var res = await GetClientWhenSdkInit(cancellationToken);
-            accessToken = res.AccessToken;
+            AccessToken = res.AccessToken;
             accessTokenExpriredAt = res.Exp ?? 0;
-            return accessToken;
+            return AccessToken;
         }
 
         /// <summary>

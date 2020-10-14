@@ -33,7 +33,7 @@ namespace Authing.ApiClient
             set
             {
                 currentUser = value;
-                accessToken = value?.Token;
+                AccessToken = value?.Token;
             }
         }
         private User currentUser;
