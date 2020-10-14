@@ -3,10 +3,11 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AuthingApiClientTest
 {
-    public class TestUsersManagementClient
+    public class TestAclManagementClient
     {
         private ManagementClient client;
 
@@ -23,6 +24,19 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4xKeUgQ+Aoz7TLfAfs9+paePb
 GKl64GDcIq3au+aqJQIDAQAB
 -----END PUBLIC KEY-----",
             };
+        }
+
+        [Test]
+        public async Task Allow()
+        {
+            await client.acl.Allow("resource id", "role id");
+        }
+
+        [Test]
+        public async Task IsAllowed()
+        {
+            var isAllowed = await client.acl.IsAllowed("user id", "action id", "resource id");
+            Assert.AreEqual(isAllowed, true);
         }
     }
 }
