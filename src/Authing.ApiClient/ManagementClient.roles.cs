@@ -19,7 +19,7 @@ namespace Authing.ApiClient
         /// </summary>
         public class RolesManagementClient
         {
-            private ManagementClient client;
+            private readonly ManagementClient client;
             
             /// <summary>
             /// 构造方法

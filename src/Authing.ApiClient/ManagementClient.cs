@@ -26,6 +26,8 @@ namespace Authing.ApiClient
         public ManagementClient()
         {
             users = new UsersManagementClient(this);
+            roles = new RolesManagementClient(this);
+            acl = new AclManagementClient(this);
         }
 
         private async Task<UserPool> GetUserpoolDetail(CancellationToken cancellationToken = default)
