@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Authing.ApiClient
 {
     /// <summary>
-    /// Authing 管理客户端类
+    /// Authing 管理类
     /// </summary>
     public partial class ManagementClient : BaseClient
     {
