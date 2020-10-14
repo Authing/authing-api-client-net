@@ -27,7 +27,7 @@ namespace Authing.ApiClient.Types
         /// 获取所有社会化登录定义
         /// </summary>
         [JsonProperty("socialConnections")]
-        public List<SocialConnection> SocialConnections { get; set; }
+        public IEnumerable<SocialConnection> SocialConnections { get; set; }
 
         /// <summary>
         /// 获取当前用户池的社会化登录配置
@@ -39,10 +39,10 @@ namespace Authing.ApiClient.Types
         /// 获取当前用户池的所有社会化登录配置
         /// </summary>
         [JsonProperty("socialConnectionInstances")]
-        public List<SocialConnectionInstance> SocialConnectionInstances { get; set; }
+        public IEnumerable<SocialConnectionInstance> SocialConnectionInstances { get; set; }
 
         [JsonProperty("emailTemplates")]
-        public List<EmailTemplate> EmailTemplates { get; set; }
+        public IEnumerable<EmailTemplate> EmailTemplates { get; set; }
 
         [JsonProperty("previewEmail")]
         public string PreviewEmail { get; set; }
@@ -96,7 +96,7 @@ namespace Authing.ApiClient.Types
         /// 查询子节点列表
         /// </summary>
         [JsonProperty("childrenNodes")]
-        public List<Node> ChildrenNodes { get; set; }
+        public IEnumerable<Node> ChildrenNodes { get; set; }
 
         [JsonProperty("rootNode")]
         public Node RootNode { get; set; }
@@ -138,19 +138,19 @@ namespace Authing.ApiClient.Types
         /// 查询某个实体定义的自定义数据
         /// </summary>
         [JsonProperty("udv")]
-        public List<UserDefinedData> Udv { get; set; }
+        public IEnumerable<UserDefinedData> Udv { get; set; }
 
         /// <summary>
         /// 查询用户池定义的自定义字段
         /// </summary>
         [JsonProperty("udf")]
-        public List<UserDefinedField> Udf { get; set; }
+        public IEnumerable<UserDefinedField> Udf { get; set; }
 
         [JsonProperty("user")]
         public User User { get; set; }
 
         [JsonProperty("userBatch")]
-        public List<User> UserBatch { get; set; }
+        public IEnumerable<User> UserBatch { get; set; }
 
         [JsonProperty("users")]
         public PaginatedUsers Users { get; set; }
@@ -177,7 +177,7 @@ namespace Authing.ApiClient.Types
         public PaginatedUserpool Userpools { get; set; }
 
         [JsonProperty("userpoolTypes")]
-        public List<UserPoolType> UserpoolTypes { get; set; }
+        public IEnumerable<UserPoolType> UserpoolTypes { get; set; }
 
         /// <summary>
         /// 获取 accessToken ，如 SDK 初始化
@@ -189,7 +189,7 @@ namespace Authing.ApiClient.Types
         /// 用户池注册白名单列表
         /// </summary>
         [JsonProperty("whitelist")]
-        public List<WhiteList> Whitelist { get; set; }
+        public IEnumerable<WhiteList> Whitelist { get; set; }
         #endregion
     }
     #endregion
@@ -226,7 +226,7 @@ namespace Authing.ApiClient.Types
         /// 表单字段
         /// </summary>
         [JsonProperty("fields")]
-        public List<SocialConnectionField> Fields { get; set; }
+        public IEnumerable<SocialConnectionField> Fields { get; set; }
         #endregion
     }
     #endregion
@@ -248,7 +248,7 @@ namespace Authing.ApiClient.Types
         public string Placeholder { get; set; }
 
         [JsonProperty("children")]
-        public List<SocialConnectionField> Children { get; set; }
+        public IEnumerable<SocialConnectionField> Children { get; set; }
         #endregion
     }
     #endregion
@@ -264,7 +264,7 @@ namespace Authing.ApiClient.Types
         public bool Enabled { get; set; }
 
         [JsonProperty("fields")]
-        public List<SocialConnectionInstanceField> Fields { get; set; }
+        public IEnumerable<SocialConnectionInstanceField> Fields { get; set; }
         #endregion
     }
     #endregion
@@ -449,7 +449,7 @@ namespace Authing.ApiClient.Types
     {
         #region members
         [JsonProperty("list")]
-        public List<Function> List { get; set; }
+        public IEnumerable<Function> List { get; set; }
 
         [JsonProperty("totalCount")]
         public int TotalCount { get; set; }
@@ -508,7 +508,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<User> List { get; set; }
+        public IEnumerable<User> List { get; set; }
         #endregion
     }
     #endregion
@@ -572,7 +572,7 @@ namespace Authing.ApiClient.Types
         /// 用户的身份信息
         /// </summary>
         [JsonProperty("identities")]
-        public List<Identity> Identities { get; set; }
+        public IEnumerable<Identity> Identities { get; set; }
 
         /// <summary>
         /// 昵称，该字段不唯一。
@@ -584,7 +584,7 @@ namespace Authing.ApiClient.Types
         /// 注册方式
         /// </summary>
         [JsonProperty("registerSource")]
-        public List<string> RegisterSource { get; set; }
+        public IEnumerable<string> RegisterSource { get; set; }
 
         /// <summary>
         /// 头像链接，默认为 https://usercontents.authing.cn/authing-avatar.png
@@ -778,7 +778,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<Role> List { get; set; }
+        public IEnumerable<Role> List { get; set; }
         #endregion
     }
     #endregion
@@ -846,7 +846,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<Group> List { get; set; }
+        public IEnumerable<Group> List { get; set; }
         #endregion
     }
     #endregion
@@ -944,7 +944,7 @@ namespace Authing.ApiClient.Types
         public int? Depth { get; set; }
 
         [JsonProperty("path")]
-        public List<string> Path { get; set; }
+        public IEnumerable<string> Path { get; set; }
 
         [JsonProperty("createdAt")]
         public string CreatedAt { get; set; }
@@ -956,7 +956,7 @@ namespace Authing.ApiClient.Types
         /// 该节点的子节点 **ID** 列表
         /// </summary>
         [JsonProperty("children")]
-        public List<string> Children { get; set; }
+        public IEnumerable<string> Children { get; set; }
 
         /// <summary>
         /// 节点的用户列表
@@ -987,7 +987,7 @@ namespace Authing.ApiClient.Types
         /// 组织机构节点列表
         /// </summary>
         [JsonProperty("nodes")]
-        public List<Node> Nodes { get; set; }
+        public IEnumerable<Node> Nodes { get; set; }
         #endregion
     }
     #endregion
@@ -1000,7 +1000,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<Org> List { get; set; }
+        public IEnumerable<Org> List { get; set; }
         #endregion
     }
     #endregion
@@ -1032,7 +1032,7 @@ namespace Authing.ApiClient.Types
         public string Description { get; set; }
 
         [JsonProperty("statements")]
-        public List<PolicyStatement> Statements { get; set; }
+        public IEnumerable<PolicyStatement> Statements { get; set; }
 
         [JsonProperty("createdAt")]
         public string CreatedAt { get; set; }
@@ -1050,7 +1050,7 @@ namespace Authing.ApiClient.Types
         /// 授权记录
         /// </summary>
         [JsonProperty("assignments")]
-        public List<PolicyAssignment> Assignments { get; set; }
+        public IEnumerable<PolicyAssignment> Assignments { get; set; }
         #endregion
     }
     #endregion
@@ -1063,7 +1063,7 @@ namespace Authing.ApiClient.Types
         public string Resource { get; set; }
 
         [JsonProperty("actions")]
-        public List<string> Actions { get; set; }
+        public IEnumerable<string> Actions { get; set; }
 
         [JsonProperty("effect")]
         public PolicyEffect? Effect { get; set; }
@@ -1111,7 +1111,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<Policy> List { get; set; }
+        public IEnumerable<Policy> List { get; set; }
         #endregion
     }
     #endregion
@@ -1124,7 +1124,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<PolicyAssignment> List { get; set; }
+        public IEnumerable<PolicyAssignment> List { get; set; }
         #endregion
     }
     #endregion
@@ -1263,7 +1263,7 @@ namespace Authing.ApiClient.Types
         public string JwtSecret { get; set; }
 
         [JsonProperty("userpoolTypes")]
-        public List<UserPoolType> UserpoolTypes { get; set; }
+        public IEnumerable<UserPoolType> UserpoolTypes { get; set; }
 
         [JsonProperty("logo")]
         public string Logo { get; set; }
@@ -1379,7 +1379,7 @@ namespace Authing.ApiClient.Types
         public string Image { get; set; }
 
         [JsonProperty("sdks")]
-        public List<string> Sdks { get; set; }
+        public IEnumerable<string> Sdks { get; set; }
         #endregion
     }
     #endregion
@@ -1501,7 +1501,7 @@ namespace Authing.ApiClient.Types
         public int TotalCount { get; set; }
 
         [JsonProperty("list")]
-        public List<UserPool> List { get; set; }
+        public IEnumerable<UserPool> List { get; set; }
         #endregion
     }
     #endregion
@@ -1775,16 +1775,16 @@ namespace Authing.ApiClient.Types
         public CommonMessage RevokeRole { get; set; }
 
         [JsonProperty("addUdf")]
-        public List<UserDefinedField> AddUdf { get; set; }
+        public IEnumerable<UserDefinedField> AddUdf { get; set; }
 
         [JsonProperty("removeUdf")]
-        public List<UserDefinedField> RemoveUdf { get; set; }
+        public IEnumerable<UserDefinedField> RemoveUdf { get; set; }
 
         [JsonProperty("setUdv")]
-        public List<UserDefinedData> SetUdv { get; set; }
+        public IEnumerable<UserDefinedData> SetUdv { get; set; }
 
         [JsonProperty("removeUdv")]
-        public List<UserDefinedData> RemoveUdv { get; set; }
+        public IEnumerable<UserDefinedData> RemoveUdv { get; set; }
 
         [JsonProperty("refreshToken")]
         public RefreshToken RefreshToken { get; set; }
@@ -1868,10 +1868,10 @@ namespace Authing.ApiClient.Types
         public RefreshAccessTokenRes RefreshAccessToken { get; set; }
 
         [JsonProperty("addWhitelist")]
-        public List<WhiteList> AddWhitelist { get; set; }
+        public IEnumerable<WhiteList> AddWhitelist { get; set; }
 
         [JsonProperty("removeWhitelist")]
-        public List<WhiteList> RemoveWhitelist { get; set; }
+        public IEnumerable<WhiteList> RemoveWhitelist { get; set; }
         #endregion
     }
     #endregion
@@ -2800,7 +2800,7 @@ namespace Authing.ApiClient.Types
         public string Message { get; set; }
 
         [JsonProperty("errors")]
-        public List<string> Errors { get; set; }
+        public IEnumerable<string> Errors { get; set; }
         #endregion
     }
     #endregion
@@ -3557,26 +3557,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Optional
@@ -3600,13 +3600,13 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("isLeader")]
-        public bool IsLeader { get; set; }
+        public bool? IsLeader { get; set; }
 
         /// <summary>
         /// AddMemberParam.Request 
@@ -3748,7 +3748,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("order")]
-        public int Order { get; set; }
+        public int? Order { get; set; }
 
         /// <summary>
         /// Optional
@@ -3827,7 +3827,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("policies")]
-        public string Policies { get; set; }
+        public IEnumerable<string> Policies { get; set; }
 
         /// <summary>
         /// Required
@@ -3840,7 +3840,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("targetIdentifiers")]
-        public string TargetIdentifiers { get; set; }
+        public IEnumerable<string> TargetIdentifiers { get; set; }
 
         /// <summary>
         /// AddPolicyAssignmentsParam.Request 
@@ -3957,7 +3957,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
@@ -4014,7 +4014,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("list")]
-        public string List { get; set; }
+        public IEnumerable<string> List { get; set; }
 
         /// <summary>
         /// AddWhitelistParam.Request 
@@ -4077,7 +4077,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
@@ -4089,7 +4089,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("roleCodes")]
-        public string RoleCodes { get; set; }
+        public IEnumerable<string> RoleCodes { get; set; }
 
         /// <summary>
         /// AllowParam.Request 
@@ -4139,25 +4139,25 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("roleCodes")]
-        public string RoleCodes { get; set; }
+        public IEnumerable<string> RoleCodes { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("groupCodes")]
-        public string GroupCodes { get; set; }
+        public IEnumerable<string> GroupCodes { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("nodeCodes")]
-        public string NodeCodes { get; set; }
+        public IEnumerable<string> NodeCodes { get; set; }
 
         /// <summary>
         /// AssignRoleParam.Request 
@@ -4305,7 +4305,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("enable")]
-        public bool Enable { get; set; }
+        public bool? Enable { get; set; }
 
         /// <summary>
         /// Optional
@@ -4329,7 +4329,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("refresh")]
-        public bool Refresh { get; set; }
+        public bool? Refresh { get; set; }
 
         /// <summary>
         /// ChangeMfaParam.Request 
@@ -4631,7 +4631,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("statements")]
-        public PolicyStatementInput Statements { get; set; }
+        public IEnumerable<PolicyStatementInput> Statements { get; set; }
 
         /// <summary>
         /// CreatePolicyParam.Request 
@@ -4860,7 +4860,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("keepPassword")]
-        public bool KeepPassword { get; set; }
+        public bool? KeepPassword { get; set; }
 
         /// <summary>
         /// CreateUserParam.Request 
@@ -4982,7 +4982,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("userpoolTypes")]
-        public string UserpoolTypes { get; set; }
+        public IEnumerable<string> UserpoolTypes { get; set; }
 
         /// <summary>
         /// CreateUserpoolParam.Request 
@@ -5121,7 +5121,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("codeList")]
-        public string CodeList { get; set; }
+        public IEnumerable<string> CodeList { get; set; }
 
         /// <summary>
         /// DeleteGroupsParam.Request 
@@ -5259,7 +5259,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("codes")]
-        public string Codes { get; set; }
+        public IEnumerable<string> Codes { get; set; }
 
         /// <summary>
         /// DeletePoliciesParam.Request 
@@ -5391,7 +5391,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("codes")]
-        public string Codes { get; set; }
+        public IEnumerable<string> Codes { get; set; }
 
         /// <summary>
         /// DeleteRolesParam.Request 
@@ -5517,7 +5517,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("ids")]
-        public string Ids { get; set; }
+        public IEnumerable<string> Ids { get; set; }
 
         /// <summary>
         /// DeleteUsersParam.Request 
@@ -6657,26 +6657,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Optional
@@ -6700,7 +6700,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// RemoveMemberParam.Request 
@@ -6805,7 +6805,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("policies")]
-        public string Policies { get; set; }
+        public IEnumerable<string> Policies { get; set; }
 
         /// <summary>
         /// Required
@@ -6818,7 +6818,7 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("targetIdentifiers")]
-        public string TargetIdentifiers { get; set; }
+        public IEnumerable<string> TargetIdentifiers { get; set; }
 
         /// <summary>
         /// RemovePolicyAssignmentsParam.Request 
@@ -6974,7 +6974,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
@@ -7031,7 +7031,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("list")]
-        public string List { get; set; }
+        public IEnumerable<string> List { get; set; }
 
         /// <summary>
         /// RemoveWhitelistParam.Request 
@@ -7144,25 +7144,25 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("roleCodes")]
-        public string RoleCodes { get; set; }
+        public IEnumerable<string> RoleCodes { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("userIds")]
-        public string UserIds { get; set; }
+        public IEnumerable<string> UserIds { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("groupCodes")]
-        public string GroupCodes { get; set; }
+        public IEnumerable<string> GroupCodes { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("nodeCodes")]
-        public string NodeCodes { get; set; }
+        public IEnumerable<string> NodeCodes { get; set; }
 
         /// <summary>
         /// RevokeRoleParam.Request 
@@ -7734,26 +7734,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Required
@@ -8067,7 +8067,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("statements")]
-        public PolicyStatementInput Statements { get; set; }
+        public IEnumerable<PolicyStatementInput> Statements { get; set; }
 
         /// <summary>
         /// UpdatePolicyParam.Request 
@@ -8687,20 +8687,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// FunctionsParam.Request 
@@ -8866,13 +8866,13 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// GroupWithUsersParam.Request 
@@ -8970,20 +8970,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// GroupsParam.Request 
@@ -9341,26 +9341,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Required
@@ -9532,26 +9532,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Required
@@ -9735,20 +9735,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// OrgsParam.Request 
@@ -9824,13 +9824,13 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// PoliciesParam.Request 
@@ -9946,7 +9946,7 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("targetType")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public PolicyAssignmentTargetType TargetType { get; set; }
+        public PolicyAssignmentTargetType? TargetType { get; set; }
 
         /// <summary>
         /// Optional
@@ -9958,13 +9958,13 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// PolicyAssignmentsParam.Request 
@@ -10012,13 +10012,13 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Required
@@ -10375,20 +10375,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// RolesParam.Request 
@@ -10446,26 +10446,26 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("includeChildrenNodes")]
-        public bool IncludeChildrenNodes { get; set; }
+        public bool? IncludeChildrenNodes { get; set; }
 
         /// <summary>
         /// Required
@@ -10535,19 +10535,19 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("fields")]
-        public string Fields { get; set; }
+        public IEnumerable<string> Fields { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// SearchUserParam.Request 
@@ -11054,7 +11054,7 @@ namespace Authing.ApiClient.Types
         /// Required
         /// </summary>
         [JsonProperty("ids")]
-        public string Ids { get; set; }
+        public IEnumerable<string> Ids { get; set; }
 
         /// <summary>
         /// UserBatchParam.Request 
@@ -11279,20 +11279,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// UserpoolsParam.Request 
@@ -11353,20 +11353,20 @@ namespace Authing.ApiClient.Types
         /// Optional
         /// </summary>
         [JsonProperty("page")]
-        public int Page { get; set; }
+        public int? Page { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("limit")]
-        public int Limit { get; set; }
+        public int? Limit { get; set; }
 
         /// <summary>
         /// Optional
         /// </summary>
         [JsonProperty("sortBy")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum SortBy { get; set; }
+        public SortByEnum? SortBy { get; set; }
 
         /// <summary>
         /// UsersParam.Request 
