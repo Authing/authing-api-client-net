@@ -18,7 +18,7 @@ namespace AuthingApiClientTest
         private User user;
 
         [SetUp]
-        public async void Setup()
+        public void Setup()
         {
             client = new ManagementClient("59f86b4832eb28071bdd9214", "4b880fff06b080f154ee48c9e689a541")
             {
@@ -33,17 +33,18 @@ GKl64GDcIq3au+aqJQIDAQAB
 
             email = RandomString() + "@gmail.com";
             password = "123456";
-            user = await client.users.Create(new CreateUserInput()
+            user = client.Users.Create(new CreateUserInput()
             {
                 Email = email,
                 Password = password,
-            });
+            }).Result;
         }
 
         [TearDown]
-        public async void TearDown()
+        public void TearDown()
         {
-            await client.users.Delete(user.Id);
+            if (user == null) return;
+            client.Users.Delete(user.Id).Wait();
         }
 
         private string RandomString()
@@ -54,7 +55,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task List()
         {
-            var users = await client.users.List();
+            var users = await client.Users.List();
             Assert.AreEqual(users.TotalCount > 0, true);
         }
 
@@ -67,7 +68,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Update()
         {
-            user = await client.users.Update(user.Id, new UpdateUserInput()
+            user = await client.Users.Update(user.Id, new UpdateUserInput()
             {
                 Nickname = email,
             });
@@ -77,63 +78,65 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Detail()
         {
-            user = await client.users.Detail(user.Id);
+            user = await client.Users.Detail(user.Id);
             Assert.AreEqual(user.Email, email);
         }
 
         [Test]
         public async Task Search()
         {
-            var users = await client.users.Search("gmail");
+            var users = await client.Users.Search("gmail");
             Assert.AreEqual(users.TotalCount > 0, true);
         }
 
         [Test]
         public async Task Batch()
         {
-            var users = await client.users.Batch(new string[] { user.Id });
+            var users = await client.Users.Batch(new string[] { user.Id });
             Assert.AreEqual(users.Count() == 1, true);
         }
 
         [Test]
         public async Task Delete()
         {
-            var message = await client.users.Delete(user.Id);
+            var message = await client.Users.Delete(user.Id);
+            user = null;
             Assert.AreEqual(message.Code, 200);
         }
 
         [Test]
         public async Task DeleteMany()
         {
-            var message = await client.users.DeleteMany(new string[] { user.Id });
+            var message = await client.Users.DeleteMany(new string[] { user.Id });
+            user = null;
             Assert.AreEqual(message.Code, 200);
         }
 
         [Test]
         public async Task ListRoles()
         {
-            var roles = await client.users.ListRoles(user.Id);
+            var roles = await client.Users.ListRoles(user.Id);
             Assert.AreEqual(roles.TotalCount == 0, true);
         }
 
         [Test]
         public async Task RefreshToken()
         {
-            var token = await client.users.RefreshToken(user.Id);
+            var token = await client.Users.RefreshToken(user.Id);
             Assert.AreEqual(token.Token != null, true);
         }
 
         [Test]
         public async Task ListPolicies()
         {
-            var policies = await client.users.ListPolicies(user.Id);
+            var policies = await client.Users.ListPolicies(user.Id);
             Assert.AreEqual(policies.TotalCount == 0, true);
         }
 
         [Test]
         public async Task ListUdv()
         {
-            var udvs = await client.users.ListUdv(user.Id);
+            var udvs = await client.Users.ListUdv(user.Id);
             Assert.AreEqual(udvs.Count() == 0, true);
         }
     }

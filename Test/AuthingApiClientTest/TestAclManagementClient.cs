@@ -29,13 +29,13 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Allow()
         {
-            await client.acl.Allow("resource id", "role id");
+            await client.Acl.Allow("resource id", "role id");
         }
 
         [Test]
         public async Task IsAllowed()
         {
-            var isAllowed = await client.acl.IsAllowed("user id", "action id", "resource id");
+            var isAllowed = await client.Acl.IsAllowed("user id", "action id", "resource id");
             Assert.AreEqual(isAllowed, true);
         }
     }

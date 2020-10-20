@@ -31,7 +31,7 @@ namespace Authing.ApiClient.GraphQL
         /// <param name="statusCode"></param>
         /// <param name="responseHeaders"></param>
         /// <param name="content"></param>
-        public GraphQLHttpRequestException(HttpStatusCode statusCode, HttpResponseHeaders responseHeaders, string content) : base($"The HTTP request failed with status code {statusCode}")
+        public GraphQLHttpRequestException(HttpStatusCode statusCode, HttpResponseHeaders responseHeaders, string content) : base($"The HTTP request failed with status code {statusCode}\n{content}")
         {
             StatusCode = statusCode;
             ResponseHeaders = responseHeaders;

@@ -13,7 +13,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 用户管理模块
         /// </summary>
-        public UsersManagementClient users;
+        public UsersManagementClient Users { get; private set; }
 
         /// <summary>
         /// 用户管理类
@@ -64,10 +64,7 @@ namespace Authing.ApiClient
                 CancellationToken cancellationToken = default)
             {
                 userInfo.Password = client.Encrypt(userInfo.Password);
-                var param = new CreateUserParam()
-                {
-                    UserInfo = userInfo,
-                };
+                var param = new CreateUserParam(userInfo);
                 await client.GetAccessToken();
                 var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -86,10 +83,9 @@ namespace Authing.ApiClient
                 CancellationToken cancellationToken = default)
             {
                 updates.Password = client.Encrypt(updates.Password);
-                var param = new UpdateUserParam()
+                var param = new UpdateUserParam(updates)
                 {
                     Id = userId,
-                    Input = updates,
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
@@ -126,9 +122,8 @@ namespace Authing.ApiClient
                 int limit = 10,
                 CancellationToken cancellationToken = default)
             {
-                var param = new SearchUserParam()
+                var param = new SearchUserParam(query)
                 {
-                    Query = query,
                     Page = page,
                     Limit = limit,
                 };
@@ -147,7 +142,7 @@ namespace Authing.ApiClient
                 IEnumerable<string> userIds,
                 CancellationToken cancellationToken = default)
             {
-                var param = new UserBatchParam() { Ids = userIds };
+                var param = new UserBatchParam(userIds);
                 await client.GetAccessToken();
                 var res = await client.Request<UserBatchResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -163,7 +158,7 @@ namespace Authing.ApiClient
                 string userId,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteUserParam() { Id = userId };
+                var param = new DeleteUserParam(userId);
                 await client.GetAccessToken();
                 var res = await client.Request<DeleteUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -179,9 +174,24 @@ namespace Authing.ApiClient
                 IEnumerable<string> userIds,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteUsersParam() { Ids = userIds };
+                var param = new DeleteUsersParam(userIds);
                 await client.GetAccessToken();
                 var res = await client.Request<DeleteUsersResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 检查登录状态
+            /// </summary>
+            /// <param name="token"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<JWTTokenStatus> CheckLoginStatus(
+                string token,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new CheckLoginStatusParam() { Token = token };
+                var res = await client.Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
@@ -195,7 +205,7 @@ namespace Authing.ApiClient
                 string userId,
                 CancellationToken cancellationToken = default)
             {
-                var param = new GetUserRolesParam() { Id = userId };
+                var param = new GetUserRolesParam(userId);
                 await client.GetAccessToken();
                 var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result.Roles;
@@ -290,11 +300,9 @@ namespace Authing.ApiClient
                 IEnumerable<string> policies,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AddPolicyAssignmentsParam()
+                var param = new AddPolicyAssignmentsParam(policies, PolicyAssignmentTargetType.USER)
                 {
-                    TargetType = PolicyAssignmentTargetType.USER,
                     TargetIdentifiers = new string[] { userId },
-                    Policies = policies,
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<AddPolicyAssignmentsResponse>(param.CreateRequest(), cancellationToken);
@@ -313,11 +321,9 @@ namespace Authing.ApiClient
                 IEnumerable<string> policies,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RemovePolicyAssignmentsParam()
+                var param = new RemovePolicyAssignmentsParam(policies, PolicyAssignmentTargetType.USER)
                 {
-                    TargetType = PolicyAssignmentTargetType.USER,
                     TargetIdentifiers = new string[] { userId },
-                    Policies = policies,
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<RemovePolicyAssignmentsResponse>(param.CreateRequest(), cancellationToken);
@@ -334,11 +340,7 @@ namespace Authing.ApiClient
                 string userId,
                 CancellationToken cancellationToken = default)
             {
-                var param = new UdvParam()
-                {
-                    TargetId = userId,
-                    TargetType = UdfTargetType.USER,
-                };
+                var param = new UdvParam(UdfTargetType.USER, userId);
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -357,13 +359,7 @@ namespace Authing.ApiClient
                 object value,
                 CancellationToken cancellationToken = default)
             {
-                var param = new SetUdvParam()
-                {
-                    Key = key,
-                    Value = JsonConvert.SerializeObject(value),
-                    TargetId = userId,
-                    TargetType = UdfTargetType.USER,
-                };
+                var param = new SetUdvParam(UdfTargetType.USER, userId, key, JsonConvert.SerializeObject(value));
                 var res = await client.Request<SetUdvResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -380,12 +376,7 @@ namespace Authing.ApiClient
                 string key,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RemoveUdvParam()
-                {
-                    Key = key,
-                    TargetId = userId,
-                    TargetType = UdfTargetType.USER,
-                };
+                var param = new RemoveUdvParam(UdfTargetType.USER, userId, key);
                 var res = await client.Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }

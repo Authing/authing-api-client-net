@@ -12,7 +12,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 权限控制
         /// </summary>
-        public AclManagementClient acl;
+        public AclManagementClient Acl { get; private set; }
 
         /// <summary>
         /// 权限控制类
@@ -46,10 +46,8 @@ namespace Authing.ApiClient
                 string role= null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AllowParam()
+                var param = new AllowParam(resource, action)
                 {
-                    Resource = resource,
-                    Action = action,
                     UserId = userId,
                     RoleCode = role,
                 };
@@ -61,23 +59,18 @@ namespace Authing.ApiClient
             /// <summary>
             /// 是否允许某个用户操作某个资源
             /// </summary>
-            /// <param name="user"></param>
+            /// <param name="userId"></param>
             /// <param name="action"></param>
             /// <param name="resource"></param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
             public async Task<bool> IsAllowed(
-                string user,
+                string userId,
                 string action,
                 string resource,
                 CancellationToken cancellationToken = default)
             {
-                var param = new IsActionAllowedParam()
-                {
-                    UserId = user,
-                    Action = action,
-                    Resource = resource,
-                };
+                var param = new IsActionAllowedParam(resource, action, userId);
                 await client.GetAccessToken();
                 var res = await client.Request<IsActionAllowedResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;

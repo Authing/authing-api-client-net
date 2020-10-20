@@ -164,6 +164,9 @@ namespace Authing.ApiClient.Types
         [JsonProperty("isUserExists")]
         public bool? IsUserExists { get; set; }
 
+        [JsonProperty("findUser")]
+        public User FindUser { get; set; }
+
         /// <summary>
         /// 查询用户池详情
         /// </summary>
@@ -726,12 +729,6 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("updatedAt")]
         public string UpdatedAt { get; set; }
-
-        /// <summary>
-        /// 自定义用户数据，是一个 JSON 序列化过后的字符串
-        /// </summary>
-        [JsonProperty("customData")]
-        public string CustomData { get; set; }
 
         [JsonProperty("roles")]
         public PaginatedRoles Roles { get; set; }
@@ -1358,6 +1355,12 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("whitelist")]
         public RegisterWhiteListConfig Whitelist { get; set; }
+
+        /// <summary>
+        /// 自定义短信服务商配置
+        /// </summary>
+        [JsonProperty("customSMSProvider")]
+        public CustomSMSProvider CustomSmsProvider { get; set; }
         #endregion
     }
     #endregion
@@ -1489,6 +1492,44 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("usernameEnabled")]
         public bool? UsernameEnabled { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region CustomSMSProvider
+    public class CustomSMSProvider
+    {
+        #region members
+        [JsonProperty("enabled")]
+        public bool? Enabled { get; set; }
+
+        [JsonProperty("provider")]
+        public string Provider { get; set; }
+
+        [JsonProperty("config253")]
+        public SMSConfig253 Config253 { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region SMSConfig253
+    public class SMSConfig253
+    {
+        #region members
+        [JsonProperty("sendSmsApi")]
+        public string SendSmsApi { get; set; }
+
+        [JsonProperty("appId")]
+        public string AppId { get; set; }
+
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        [JsonProperty("template")]
+        public string Template { get; set; }
+
+        [JsonProperty("ttl")]
+        public int Ttl { get; set; }
         #endregion
     }
     #endregion
@@ -1774,11 +1815,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("revokeRole")]
         public CommonMessage RevokeRole { get; set; }
 
-        [JsonProperty("addUdf")]
-        public IEnumerable<UserDefinedField> AddUdf { get; set; }
+        [JsonProperty("setUdf")]
+        public UserDefinedField SetUdf { get; set; }
 
         [JsonProperty("removeUdf")]
-        public IEnumerable<UserDefinedField> RemoveUdf { get; set; }
+        public CommonMessage RemoveUdf { get; set; }
 
         [JsonProperty("setUdv")]
         public IEnumerable<UserDefinedData> SetUdv { get; set; }
@@ -1896,8 +1937,22 @@ namespace Authing.ApiClient.Types
         public string Description { get; set; }
 
         [JsonProperty("fields")]
-        public List<SocialConnectionFieldInput> Fields { get; set; }
+        public IEnumerable<SocialConnectionFieldInput> Fields { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="provider">provider</param>
+        /// <param name="name">name</param>
+        /// <param name="logo">logo</param>
+        /// </summary>
+
+        public CreateSocialConnectionInput(string provider, string name, string logo)
+        {
+            this.Provider = provider;
+            this.Name = name;
+            this.Logo = logo;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -1939,8 +1994,15 @@ namespace Authing.ApiClient.Types
         public string Placeholder { get; set; }
 
         [JsonProperty("children")]
-        public List<SocialConnectionFieldInput> Children { get; set; }
+        public IEnumerable<SocialConnectionFieldInput> Children { get; set; }
         #endregion
+
+
+
+        public SocialConnectionFieldInput()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -1977,8 +2039,18 @@ namespace Authing.ApiClient.Types
         public string Provider { get; set; }
 
         [JsonProperty("fields")]
-        public List<CreateSocialConnectionInstanceFieldInput> Fields { get; set; }
+        public IEnumerable<CreateSocialConnectionInstanceFieldInput> Fields { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="provider">社会化登录 provider</param>
+        /// </summary>
+
+        public CreateSocialConnectionInstanceInput(string provider)
+        {
+            this.Provider = provider;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2015,6 +2087,18 @@ namespace Authing.ApiClient.Types
         [JsonRequired]
         public string Value { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        /// </summary>
+
+        public CreateSocialConnectionInstanceFieldInput(string key, string value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2093,6 +2177,24 @@ namespace Authing.ApiClient.Types
         [JsonProperty("expiresIn")]
         public int? ExpiresIn { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="type">邮件模版类型</param>
+        /// <param name="name">模版名称</param>
+        /// <param name="subject">邮件主题</param>
+        /// <param name="sender">显示的邮件发送人</param>
+        /// <param name="content">邮件模版内容</param>
+        /// </summary>
+
+        public ConfigEmailTemplateInput(EmailTemplateType type, string name, string subject, string sender, string content)
+        {
+            this.Type = type;
+            this.Name = name;
+            this.Subject = subject;
+            this.Sender = sender;
+            this.Content = content;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2190,6 +2292,18 @@ namespace Authing.ApiClient.Types
         public string Url { get; set; }
         #endregion
 
+
+        /// <summary>
+        /// <param name="name">函数名称</param>
+        /// <param name="sourceCode">源代码</param>
+        /// </summary>
+
+        public CreateFunctionInput(string name, string sourceCode)
+        {
+            this.Name = name;
+            this.SourceCode = sourceCode;
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -2249,6 +2363,16 @@ namespace Authing.ApiClient.Types
         public string Url { get; set; }
         #endregion
 
+
+        /// <summary>
+        /// <param name="id">ID</param>
+        /// </summary>
+
+        public UpdateFunctionInput(string id)
+        {
+            this.Id = id;
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -2296,6 +2420,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="email">email</param>
+        /// <param name="password">password</param>
+        /// </summary>
+
+        public LoginByEmailInput(string email, string password)
+        {
+            this.Email = email;
+            this.Password = password;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2345,6 +2481,18 @@ namespace Authing.ApiClient.Types
         public bool? AutoRegister { get; set; }
         #endregion
 
+
+        /// <summary>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// </summary>
+
+        public LoginByUsernameInput(string username, string password)
+        {
+            this.Username = username;
+            this.Password = password;
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -2386,6 +2534,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="phone">phone</param>
+        /// <param name="code">code</param>
+        /// </summary>
+
+        public LoginByPhoneCodeInput(string phone, string code)
+        {
+            this.Phone = phone;
+            this.Code = code;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2435,6 +2595,18 @@ namespace Authing.ApiClient.Types
         public bool? AutoRegister { get; set; }
         #endregion
 
+
+        /// <summary>
+        /// <param name="phone">phone</param>
+        /// <param name="password">password</param>
+        /// </summary>
+
+        public LoginByPhonePasswordInput(string phone, string password)
+        {
+            this.Phone = phone;
+            this.Password = password;
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -2468,11 +2640,23 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("actions")]
         [JsonRequired]
-        public List<string> Actions { get; set; }
+        public IEnumerable<string> Actions { get; set; }
 
         [JsonProperty("effect")]
         public PolicyEffect? Effect { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="resource">resource</param>
+        /// <param name="actions">actions</param>
+        /// </summary>
+
+        public PolicyStatementInput(string resource, IEnumerable<string> actions)
+        {
+            this.Resource = resource;
+            this.Actions = actions;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2518,6 +2702,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// </summary>
+
+        public RegisterByUsernameInput(string username, string password)
+        {
+            this.Username = username;
+            this.Password = password;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2622,8 +2818,15 @@ namespace Authing.ApiClient.Types
         public string Country { get; set; }
 
         [JsonProperty("udf")]
-        public List<UserDdfInput> Udf { get; set; }
+        public IEnumerable<UserDdfInput> Udf { get; set; }
         #endregion
+
+
+
+        public RegisterProfile()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2660,6 +2863,18 @@ namespace Authing.ApiClient.Types
         [JsonRequired]
         public string Value { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        /// </summary>
+
+        public UserDdfInput(string key, string value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2705,6 +2920,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="email">email</param>
+        /// <param name="password">password</param>
+        /// </summary>
+
+        public RegisterByEmailInput(string email, string password)
+        {
+            this.Email = email;
+            this.Password = password;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2753,6 +2980,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
         #endregion
+
+
+        /// <summary>
+        /// <param name="phone">phone</param>
+        /// <param name="code">code</param>
+        /// </summary>
+
+        public RegisterByPhoneCodeInput(string phone, string code)
+        {
+            this.Phone = phone;
+            this.Code = code;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -2832,7 +3071,7 @@ namespace Authing.ApiClient.Types
         public string Username { get; set; }
 
         /// <summary>
-        /// 邮箱，用户池内唯一
+        /// 邮箱，不区分大小写，如 Bob@example.com 和 bob@example.com 会识别为同一个邮箱。用户池内唯一。
         /// </summary>
         [JsonProperty("email")]
         public string Email { get; set; }
@@ -2880,7 +3119,7 @@ namespace Authing.ApiClient.Types
         /// 注册方式
         /// </summary>
         [JsonProperty("registerSource")]
-        public List<string> RegisterSource { get; set; }
+        public IEnumerable<string> RegisterSource { get; set; }
 
         [JsonProperty("browser")]
         public string Browser { get; set; }
@@ -2975,6 +3214,13 @@ namespace Authing.ApiClient.Types
         [JsonProperty("country")]
         public string Country { get; set; }
         #endregion
+
+
+
+        public CreateUserInput()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -3154,6 +3400,13 @@ namespace Authing.ApiClient.Types
         public string Country { get; set; }
         #endregion
 
+
+
+        public UpdateUserInput()
+        {
+
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -3194,7 +3447,7 @@ namespace Authing.ApiClient.Types
         public string Description { get; set; }
 
         [JsonProperty("userpoolTypes")]
-        public List<string> UserpoolTypes { get; set; }
+        public IEnumerable<string> UserpoolTypes { get; set; }
 
         [JsonProperty("emailVerifiedDefault")]
         public bool? EmailVerifiedDefault { get; set; }
@@ -3210,12 +3463,6 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("tokenExpiresAfter")]
         public int? TokenExpiresAfter { get; set; }
-
-        [JsonProperty("emailWhitelistEnabled")]
-        public bool? EmailWhitelistEnabled { get; set; }
-
-        [JsonProperty("phoneWhitelistEnabled")]
-        public bool? PhoneWhitelistEnabled { get; set; }
 
         [JsonProperty("frequentRegisterCheck")]
         public FrequentRegisterCheckConfigInput FrequentRegisterCheck { get; set; }
@@ -3237,7 +3484,20 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("whitelist")]
         public RegisterWhiteListConfigInput Whitelist { get; set; }
+
+        /// <summary>
+        /// 自定义短信服务商配置
+        /// </summary>
+        [JsonProperty("customSMSProvider")]
+        public CustomSmsProviderInput CustomSmsProvider { get; set; }
         #endregion
+
+
+
+        public UpdateUserpoolInput()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -3276,6 +3536,13 @@ namespace Authing.ApiClient.Types
         public bool? Enabled { get; set; }
         #endregion
 
+
+
+        public FrequentRegisterCheckConfigInput()
+        {
+
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -3313,6 +3580,13 @@ namespace Authing.ApiClient.Types
         public bool? Enabled { get; set; }
         #endregion
 
+
+
+        public LoginFailCheckConfigInput()
+        {
+
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -3344,6 +3618,11 @@ namespace Authing.ApiClient.Types
         public bool? VerifyOldPhone { get; set; }
         #endregion
 
+        public ChangePhoneStrategyInput()
+        {
+
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -3374,6 +3653,13 @@ namespace Authing.ApiClient.Types
         [JsonProperty("verifyOldEmail")]
         public bool? VerifyOldEmail { get; set; }
         #endregion
+
+
+
+        public ChangeEmailStrategyInput()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -3415,6 +3701,13 @@ namespace Authing.ApiClient.Types
         public int? TicketExpiresAfter { get; set; }
         #endregion
 
+
+
+        public QrcodeLoginStrategyInput()
+        {
+
+        }
+
         #region methods
         public dynamic GetInputObject()
         {
@@ -3448,6 +3741,13 @@ namespace Authing.ApiClient.Types
         [JsonProperty("ticketExchangeUserInfoNeedSecret")]
         public bool? TicketExchangeUserInfoNeedSecret { get; set; }
         #endregion
+
+
+
+        public App2WxappLoginStrategyInput()
+        {
+
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -3485,6 +3785,123 @@ namespace Authing.ApiClient.Types
         [JsonProperty("usernameEnabled")]
         public bool? UsernameEnabled { get; set; }
         #endregion
+
+
+
+        public RegisterWhiteListConfigInput()
+        {
+
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region CustomSmsProviderInput
+    public class CustomSmsProviderInput
+    {
+        #region members
+        [JsonProperty("enabled")]
+        public bool? Enabled { get; set; }
+
+        [JsonProperty("provider")]
+        public string Provider { get; set; }
+
+        [JsonProperty("config253")]
+        public SmsConfig253Input Config253 { get; set; }
+        #endregion
+
+
+
+        public CustomSmsProviderInput()
+        {
+
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region SmsConfig253Input
+    public class SmsConfig253Input
+    {
+        #region members
+        [JsonProperty("appId")]
+        [JsonRequired]
+        public string AppId { get; set; }
+
+        [JsonProperty("key")]
+        [JsonRequired]
+        public string Key { get; set; }
+
+        [JsonProperty("template")]
+        [JsonRequired]
+        public string Template { get; set; }
+
+        [JsonProperty("ttl")]
+        [JsonRequired]
+        public int Ttl { get; set; }
+
+        [JsonProperty("sendSmsApi")]
+        [JsonRequired]
+        public string SendSmsApi { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="appId">appId</param>
+        /// <param name="key">key</param>
+        /// <param name="template">template</param>
+        /// <param name="ttl">ttl</param>
+        /// <param name="sendSmsApi">sendSmsApi</param>
+        /// </summary>
+
+        public SmsConfig253Input(string appId, string key, string template, int ttl, string sendSmsApi)
+        {
+            this.AppId = appId;
+            this.Key = key;
+            this.Template = template;
+            this.Ttl = ttl;
+            this.SendSmsApi = sendSmsApi;
+        }
 
         #region methods
         public dynamic GetInputObject()
@@ -3608,6 +4025,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("isLeader")]
         public bool? IsLeader { get; set; }
 
+        public AddMemberParam(IEnumerable<string> userIds)
+        {
+            this.UserIds = userIds;
+        }
         /// <summary>
         /// AddMemberParam.Request 
         /// <para>Required variables:<br/> { userIds=(string[]) }</para>
@@ -3686,9 +4107,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -3756,6 +4179,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public AddNodeParam(string orgId, string name)
+        {
+            this.OrgId = orgId;
+            this.Name = name;
+        }
         /// <summary>
         /// AddNodeParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), name=(string) }</para>
@@ -3842,6 +4270,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetIdentifiers")]
         public IEnumerable<string> TargetIdentifiers { get; set; }
 
+        public AddPolicyAssignmentsParam(IEnumerable<string> policies, PolicyAssignmentTargetType targetType)
+        {
+            this.Policies = policies;
+            this.TargetType = targetType;
+        }
         /// <summary>
         /// AddPolicyAssignmentsParam.Request 
         /// <para>Required variables:<br/> { policies=(string[]), targetType=(PolicyAssignmentTargetType) }</para>
@@ -3863,79 +4296,6 @@ namespace Authing.ApiClient.Types
           addPolicyAssignments(policies: $policies, targetType: $targetType, targetIdentifiers: $targetIdentifiers) {
             message
             code
-          }
-        }
-        ";
-    }
-
-
-
-    public class AddUdfResponse
-    {
-
-        [JsonProperty("addUdf")]
-        public IEnumerable<UserDefinedField> Result { get; set; }
-    }
-
-    public class AddUdfParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("targetType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public UdfTargetType TargetType { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("key")]
-        public string Key { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("dataType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public UdfDataType DataType { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("label")]
-        public string Label { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("options")]
-        public string Options { get; set; }
-
-        /// <summary>
-        /// AddUdfParam.Request 
-        /// <para>Required variables:<br/> { targetType=(UDFTargetType), key=(string), dataType=(UDFDataType), label=(string) }</para>
-        /// <para>Optional variables:<br/> { options=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = AddUdfDocument,
-                OperationName = "addUdf",
-                Variables = this
-            };
-        }
-
-
-        public static string AddUdfDocument = @"
-        mutation addUdf($targetType: UDFTargetType!, $key: String!, $dataType: UDFDataType!, $label: String!, $options: String) {
-          addUdf(targetType: $targetType, key: $key, dataType: $dataType, label: $label, options: $options) {
-            targetType
-            dataType
-            key
-            label
-            options
           }
         }
         ";
@@ -3965,6 +4325,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public AddUserToGroupParam(IEnumerable<string> userIds)
+        {
+            this.UserIds = userIds;
+        }
         /// <summary>
         /// AddUserToGroupParam.Request 
         /// <para>Required variables:<br/> { userIds=(string[]) }</para>
@@ -4016,6 +4380,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("list")]
         public IEnumerable<string> List { get; set; }
 
+        public AddWhitelistParam(WhitelistType type, IEnumerable<string> list)
+        {
+            this.Type = type;
+            this.List = list;
+        }
         /// <summary>
         /// AddWhitelistParam.Request 
         /// <para>Required variables:<br/> { type=(WhitelistType), list=(string[]) }</para>
@@ -4091,6 +4460,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("roleCodes")]
         public IEnumerable<string> RoleCodes { get; set; }
 
+        public AllowParam(string resource, string action)
+        {
+            this.Resource = resource;
+            this.Action = action;
+        }
         /// <summary>
         /// AllowParam.Request 
         /// <para>Required variables:<br/> { resource=(string), action=(string) }</para>
@@ -4159,6 +4533,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("nodeCodes")]
         public IEnumerable<string> NodeCodes { get; set; }
 
+        public AssignRoleParam()
+        {
+
+        }
         /// <summary>
         /// AssignRoleParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -4209,6 +4587,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("phoneCode")]
         public string PhoneCode { get; set; }
 
+        public BindPhoneParam(string phone, string phoneCode)
+        {
+            this.Phone = phone;
+            this.PhoneCode = phoneCode;
+        }
         /// <summary>
         /// BindPhoneParam.Request 
         /// <para>Required variables:<br/> { phone=(string), phoneCode=(string) }</para>
@@ -4238,15 +4621,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -4280,10 +4654,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -4331,6 +4706,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("refresh")]
         public bool? Refresh { get; set; }
 
+        public ChangeMfaParam()
+        {
+
+        }
         /// <summary>
         /// ChangeMfaParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -4378,6 +4757,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public ConfigEmailTemplateInput Input { get; set; }
 
+        public ConfigEmailTemplateParam(ConfigEmailTemplateInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// ConfigEmailTemplateParam.Request 
         /// <para>Required variables:<br/> { input=(ConfigEmailTemplateInput) }</para>
@@ -4430,6 +4813,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public CreateFunctionInput Input { get; set; }
 
+        public CreateFunctionParam(CreateFunctionInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// CreateFunctionParam.Request 
         /// <para>Required variables:<br/> { input=(CreateFunctionInput) }</para>
@@ -4489,6 +4876,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        public CreateGroupParam(string code, string name)
+        {
+            this.Code = code;
+            this.Name = name;
+        }
         /// <summary>
         /// CreateGroupParam.Request 
         /// <para>Required variables:<br/> { code=(string), name=(string) }</para>
@@ -4548,6 +4940,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        public CreateOrgParam(string name)
+        {
+            this.Name = name;
+        }
         /// <summary>
         /// CreateOrgParam.Request 
         /// <para>Required variables:<br/> { name=(string) }</para>
@@ -4633,6 +5029,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("statements")]
         public IEnumerable<PolicyStatementInput> Statements { get; set; }
 
+        public CreatePolicyParam(string code, IEnumerable<PolicyStatementInput> statements)
+        {
+            this.Code = code;
+            this.Statements = statements;
+        }
         /// <summary>
         /// CreatePolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string), statements=(PolicyStatementInput[]) }</para>
@@ -4698,6 +5099,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("parent")]
         public string Parent { get; set; }
 
+        public CreateRoleParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// CreateRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -4723,11 +5128,9 @@ namespace Authing.ApiClient.Types
             isSystem
             createdAt
             updatedAt
-            users {
-              totalCount
-            }
             parent {
               code
+              arn
               description
               isSystem
               createdAt
@@ -4756,6 +5159,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public CreateSocialConnectionInput Input { get; set; }
 
+        public CreateSocialConnectionParam(CreateSocialConnectionInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// CreateSocialConnectionParam.Request 
         /// <para>Required variables:<br/> { input=(CreateSocialConnectionInput) }</para>
@@ -4808,6 +5215,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public CreateSocialConnectionInstanceInput Input { get; set; }
 
+        public CreateSocialConnectionInstanceParam(CreateSocialConnectionInstanceInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// CreateSocialConnectionInstanceParam.Request 
         /// <para>Required variables:<br/> { input=(CreateSocialConnectionInstanceInput) }</para>
@@ -4862,6 +5273,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("keepPassword")]
         public bool? KeepPassword { get; set; }
 
+        public CreateUserParam(CreateUserInput userInfo)
+        {
+            this.UserInfo = userInfo;
+        }
         /// <summary>
         /// CreateUserParam.Request 
         /// <para>Required variables:<br/> { userInfo=(CreateUserInput) }</para>
@@ -4891,15 +5306,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -4933,10 +5339,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -4984,6 +5391,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("userpoolTypes")]
         public IEnumerable<string> UserpoolTypes { get; set; }
 
+        public CreateUserpoolParam(string name, string domain)
+        {
+            this.Name = name;
+            this.Domain = domain;
+        }
         /// <summary>
         /// CreateUserpoolParam.Request 
         /// <para>Required variables:<br/> { name=(string), domain=(string) }</para>
@@ -5008,6 +5420,7 @@ namespace Authing.ApiClient.Types
             domain
             description
             secret
+            jwtSecret
             userpoolTypes {
               code
               name
@@ -5056,6 +5469,10 @@ namespace Authing.ApiClient.Types
               emailEnabled
               usernameEnabled
             }
+            customSMSProvider {
+              enabled
+              provider
+            }
           }
         }
         ";
@@ -5079,6 +5496,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public DeleteFunctionParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// DeleteFunctionParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -5123,6 +5544,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("codeList")]
         public IEnumerable<string> CodeList { get; set; }
 
+        public DeleteGroupsParam(IEnumerable<string> codeList)
+        {
+            this.CodeList = codeList;
+        }
         /// <summary>
         /// DeleteGroupsParam.Request 
         /// <para>Required variables:<br/> { codeList=(string[]) }</para>
@@ -5173,6 +5598,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("nodeId")]
         public string NodeId { get; set; }
 
+        public DeleteNodeParam(string orgId, string nodeId)
+        {
+            this.OrgId = orgId;
+            this.NodeId = nodeId;
+        }
         /// <summary>
         /// DeleteNodeParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), nodeId=(string) }</para>
@@ -5217,6 +5647,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public DeleteOrgParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// DeleteOrgParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -5261,6 +5695,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("codes")]
         public IEnumerable<string> Codes { get; set; }
 
+        public DeletePoliciesParam(IEnumerable<string> codes)
+        {
+            this.Codes = codes;
+        }
         /// <summary>
         /// DeletePoliciesParam.Request 
         /// <para>Required variables:<br/> { codes=(string[]) }</para>
@@ -5305,6 +5743,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public DeletePolicyParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// DeletePolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -5349,6 +5791,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public DeleteRoleParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// DeleteRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -5393,6 +5839,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("codes")]
         public IEnumerable<string> Codes { get; set; }
 
+        public DeleteRolesParam(IEnumerable<string> codes)
+        {
+            this.Codes = codes;
+        }
         /// <summary>
         /// DeleteRolesParam.Request 
         /// <para>Required variables:<br/> { codes=(string[]) }</para>
@@ -5439,6 +5889,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public DeleteUserParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// DeleteUserParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -5519,6 +5973,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("ids")]
         public IEnumerable<string> Ids { get; set; }
 
+        public DeleteUsersParam(IEnumerable<string> ids)
+        {
+            this.Ids = ids;
+        }
         /// <summary>
         /// DeleteUsersParam.Request 
         /// <para>Required variables:<br/> { ids=(string[]) }</para>
@@ -5564,6 +6022,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
+        public DisableEmailTemplateParam(EmailTemplateType type)
+        {
+            this.Type = type;
+        }
         /// <summary>
         /// DisableEmailTemplateParam.Request 
         /// <para>Required variables:<br/> { type=(EmailTemplateType) }</para>
@@ -5616,6 +6078,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
+        public DisableSocialConnectionInstanceParam(string provider)
+        {
+            this.Provider = provider;
+        }
         /// <summary>
         /// DisableSocialConnectionInstanceParam.Request 
         /// <para>Required variables:<br/> { provider=(string) }</para>
@@ -5665,6 +6131,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
+        public EnableEmailTemplateParam(EmailTemplateType type)
+        {
+            this.Type = type;
+        }
         /// <summary>
         /// EnableEmailTemplateParam.Request 
         /// <para>Required variables:<br/> { type=(EmailTemplateType) }</para>
@@ -5717,6 +6187,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
+        public EnableSocialConnectionInstanceParam(string provider)
+        {
+            this.Provider = provider;
+        }
         /// <summary>
         /// EnableSocialConnectionInstanceParam.Request 
         /// <para>Required variables:<br/> { provider=(string) }</para>
@@ -5765,6 +6239,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public LoginByEmailInput Input { get; set; }
 
+        public LoginByEmailParam(LoginByEmailInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// LoginByEmailParam.Request 
         /// <para>Required variables:<br/> { input=(LoginByEmailInput) }</para>
@@ -5794,15 +6272,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -5836,10 +6305,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -5863,6 +6333,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public LoginByPhoneCodeInput Input { get; set; }
 
+        public LoginByPhoneCodeParam(LoginByPhoneCodeInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// LoginByPhoneCodeParam.Request 
         /// <para>Required variables:<br/> { input=(LoginByPhoneCodeInput) }</para>
@@ -5892,15 +6366,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -5934,10 +6399,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -5961,6 +6427,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public LoginByPhonePasswordInput Input { get; set; }
 
+        public LoginByPhonePasswordParam(LoginByPhonePasswordInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// LoginByPhonePasswordParam.Request 
         /// <para>Required variables:<br/> { input=(LoginByPhonePasswordInput) }</para>
@@ -5990,15 +6460,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -6032,10 +6493,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -6059,6 +6521,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public LoginByUsernameInput Input { get; set; }
 
+        public LoginByUsernameParam(LoginByUsernameInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// LoginByUsernameParam.Request 
         /// <para>Required variables:<br/> { input=(LoginByUsernameInput) }</para>
@@ -6088,15 +6554,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -6130,10 +6587,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -6169,6 +6627,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetParentId")]
         public string TargetParentId { get; set; }
 
+        public MoveNodeParam(string orgId, string nodeId, string targetParentId)
+        {
+            this.OrgId = orgId;
+            this.NodeId = nodeId;
+            this.TargetParentId = targetParentId;
+        }
         /// <summary>
         /// MoveNodeParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), nodeId=(string), targetParentId=(string) }</para>
@@ -6242,6 +6706,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("accessToken")]
         public string AccessToken { get; set; }
 
+        public RefreshAccessTokenParam()
+        {
+
+        }
         /// <summary>
         /// RefreshAccessTokenParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -6287,6 +6755,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public RefreshTokenParam()
+        {
+
+        }
         /// <summary>
         /// RefreshTokenParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -6365,6 +6837,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public RegisterByEmailInput Input { get; set; }
 
+        public RegisterByEmailParam(RegisterByEmailInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// RegisterByEmailParam.Request 
         /// <para>Required variables:<br/> { input=(RegisterByEmailInput) }</para>
@@ -6394,15 +6870,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -6436,10 +6903,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -6463,6 +6931,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public RegisterByPhoneCodeInput Input { get; set; }
 
+        public RegisterByPhoneCodeParam(RegisterByPhoneCodeInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// RegisterByPhoneCodeParam.Request 
         /// <para>Required variables:<br/> { input=(RegisterByPhoneCodeInput) }</para>
@@ -6492,15 +6964,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -6534,10 +6997,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -6561,6 +7025,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public RegisterByUsernameInput Input { get; set; }
 
+        public RegisterByUsernameParam(RegisterByUsernameInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// RegisterByUsernameParam.Request 
         /// <para>Required variables:<br/> { input=(RegisterByUsernameInput) }</para>
@@ -6590,15 +7058,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -6632,10 +7091,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -6702,6 +7162,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("userIds")]
         public IEnumerable<string> UserIds { get; set; }
 
+        public RemoveMemberParam(IEnumerable<string> userIds)
+        {
+            this.UserIds = userIds;
+        }
         /// <summary>
         /// RemoveMemberParam.Request 
         /// <para>Required variables:<br/> { userIds=(string[]) }</para>
@@ -6779,9 +7243,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -6820,6 +7286,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetIdentifiers")]
         public IEnumerable<string> TargetIdentifiers { get; set; }
 
+        public RemovePolicyAssignmentsParam(IEnumerable<string> policies, PolicyAssignmentTargetType targetType)
+        {
+            this.Policies = policies;
+            this.TargetType = targetType;
+        }
         /// <summary>
         /// RemovePolicyAssignmentsParam.Request 
         /// <para>Required variables:<br/> { policies=(string[]), targetType=(PolicyAssignmentTargetType) }</para>
@@ -6852,7 +7323,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("removeUdf")]
-        public IEnumerable<UserDefinedField> Result { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class RemoveUdfParam
@@ -6871,6 +7342,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("key")]
         public string Key { get; set; }
 
+        public RemoveUdfParam(UdfTargetType targetType, string key)
+        {
+            this.TargetType = targetType;
+            this.Key = key;
+        }
         /// <summary>
         /// RemoveUdfParam.Request 
         /// <para>Required variables:<br/> { targetType=(UDFTargetType), key=(string) }</para>
@@ -6890,11 +7366,8 @@ namespace Authing.ApiClient.Types
         public static string RemoveUdfDocument = @"
         mutation removeUdf($targetType: UDFTargetType!, $key: String!) {
           removeUdf(targetType: $targetType, key: $key) {
-            targetType
-            dataType
-            key
-            label
-            options
+            message
+            code
           }
         }
         ";
@@ -6931,6 +7404,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("key")]
         public string Key { get; set; }
 
+        public RemoveUdvParam(UdfTargetType targetType, string targetId, string key)
+        {
+            this.TargetType = targetType;
+            this.TargetId = targetId;
+            this.Key = key;
+        }
         /// <summary>
         /// RemoveUdvParam.Request 
         /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string), key=(string) }</para>
@@ -6982,6 +7461,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public RemoveUserFromGroupParam(IEnumerable<string> userIds)
+        {
+            this.UserIds = userIds;
+        }
         /// <summary>
         /// RemoveUserFromGroupParam.Request 
         /// <para>Required variables:<br/> { userIds=(string[]) }</para>
@@ -7033,6 +7516,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("list")]
         public IEnumerable<string> List { get; set; }
 
+        public RemoveWhitelistParam(WhitelistType type, IEnumerable<string> list)
+        {
+            this.Type = type;
+            this.List = list;
+        }
         /// <summary>
         /// RemoveWhitelistParam.Request 
         /// <para>Required variables:<br/> { type=(WhitelistType), list=(string[]) }</para>
@@ -7096,6 +7584,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("newPassword")]
         public string NewPassword { get; set; }
 
+        public ResetPasswordParam(string code, string newPassword)
+        {
+            this.Code = code;
+            this.NewPassword = newPassword;
+        }
         /// <summary>
         /// ResetPasswordParam.Request 
         /// <para>Required variables:<br/> { code=(string), newPassword=(string) }</para>
@@ -7164,6 +7657,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("nodeCodes")]
         public IEnumerable<string> NodeCodes { get; set; }
 
+        public RevokeRoleParam()
+        {
+
+        }
         /// <summary>
         /// RevokeRoleParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -7215,6 +7712,11 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public EmailScene Scene { get; set; }
 
+        public SendEmailParam(string email, EmailScene scene)
+        {
+            this.Email = email;
+            this.Scene = scene;
+        }
         /// <summary>
         /// SendEmailParam.Request 
         /// <para>Required variables:<br/> { email=(string), scene=(EmailScene) }</para>
@@ -7236,6 +7738,86 @@ namespace Authing.ApiClient.Types
           sendEmail(email: $email, scene: $scene) {
             message
             code
+          }
+        }
+        ";
+    }
+
+
+
+    public class SetUdfResponse
+    {
+
+        [JsonProperty("setUdf")]
+        public UserDefinedField Result { get; set; }
+    }
+
+    public class SetUdfParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public UdfTargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("dataType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public UdfDataType DataType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("label")]
+        public string Label { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("options")]
+        public string Options { get; set; }
+
+        public SetUdfParam(UdfTargetType targetType, string key, UdfDataType dataType, string label)
+        {
+            this.TargetType = targetType;
+            this.Key = key;
+            this.DataType = dataType;
+            this.Label = label;
+        }
+        /// <summary>
+        /// SetUdfParam.Request 
+        /// <para>Required variables:<br/> { targetType=(UDFTargetType), key=(string), dataType=(UDFDataType), label=(string) }</para>
+        /// <para>Optional variables:<br/> { options=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = SetUdfDocument,
+                OperationName = "setUdf",
+                Variables = this
+            };
+        }
+
+
+        public static string SetUdfDocument = @"
+        mutation setUdf($targetType: UDFTargetType!, $key: String!, $dataType: UDFDataType!, $label: String!, $options: String) {
+          setUdf(targetType: $targetType, key: $key, dataType: $dataType, label: $label, options: $options) {
+            targetType
+            dataType
+            key
+            label
+            options
           }
         }
         ";
@@ -7278,6 +7860,13 @@ namespace Authing.ApiClient.Types
         [JsonProperty("value")]
         public string Value { get; set; }
 
+        public SetUdvParam(UdfTargetType targetType, string targetId, string key, string value)
+        {
+            this.TargetType = targetType;
+            this.TargetId = targetId;
+            this.Key = key;
+            this.Value = value;
+        }
         /// <summary>
         /// SetUdvParam.Request 
         /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string), key=(string), value=(string) }</para>
@@ -7344,15 +7933,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -7391,10 +7971,6 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
-            customData
-            roles {
-              totalCount
-            }
           }
         }
         ";
@@ -7439,15 +8015,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -7481,10 +8048,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -7526,6 +8094,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("oldEmailCode")]
         public string OldEmailCode { get; set; }
 
+        public UpdateEmailParam(string email, string emailCode)
+        {
+            this.Email = email;
+            this.EmailCode = emailCode;
+        }
         /// <summary>
         /// UpdateEmailParam.Request 
         /// <para>Required variables:<br/> { email=(string), emailCode=(string) }</para>
@@ -7555,15 +8128,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -7597,10 +8161,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -7624,6 +8189,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public UpdateFunctionInput Input { get; set; }
 
+        public UpdateFunctionParam(UpdateFunctionInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// UpdateFunctionParam.Request 
         /// <para>Required variables:<br/> { input=(UpdateFunctionInput) }</para>
@@ -7689,6 +8258,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("newCode")]
         public string NewCode { get; set; }
 
+        public UpdateGroupParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// UpdateGroupParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -7779,6 +8352,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        public UpdateNodeParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// UpdateNodeParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -7843,6 +8420,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("oldPassword")]
         public string OldPassword { get; set; }
 
+        public UpdatePasswordParam(string newPassword)
+        {
+            this.NewPassword = newPassword;
+        }
         /// <summary>
         /// UpdatePasswordParam.Request 
         /// <para>Required variables:<br/> { newPassword=(string) }</para>
@@ -7872,15 +8453,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -7914,10 +8486,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -7959,6 +8532,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("oldPhoneCode")]
         public string OldPhoneCode { get; set; }
 
+        public UpdatePhoneParam(string phone, string phoneCode)
+        {
+            this.Phone = phone;
+            this.PhoneCode = phoneCode;
+        }
         /// <summary>
         /// UpdatePhoneParam.Request 
         /// <para>Required variables:<br/> { phone=(string), phoneCode=(string) }</para>
@@ -7988,15 +8566,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -8030,10 +8599,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -8064,15 +8634,25 @@ namespace Authing.ApiClient.Types
         public string Description { get; set; }
 
         /// <summary>
-        /// Required
+        /// Optional
         /// </summary>
         [JsonProperty("statements")]
         public IEnumerable<PolicyStatementInput> Statements { get; set; }
 
         /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("newCode")]
+        public string NewCode { get; set; }
+
+        public UpdatePolicyParam(string code)
+        {
+            this.Code = code;
+        }
+        /// <summary>
         /// UpdatePolicyParam.Request 
-        /// <para>Required variables:<br/> { code=(string), statements=(PolicyStatementInput[]) }</para>
-        /// <para>Optional variables:<br/> { description=(string) }</para>
+        /// <para>Required variables:<br/> { code=(string) }</para>
+        /// <para>Optional variables:<br/> { description=(string), statements=(PolicyStatementInput[]), newCode=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -8086,10 +8666,9 @@ namespace Authing.ApiClient.Types
 
 
         public static string UpdatePolicyDocument = @"
-        mutation updatePolicy($code: String!, $description: String, $statements: [PolicyStatementInput!]!) {
-          updatePolicy(code: $code, description: $description, statements: $statements) {
+        mutation updatePolicy($code: String!, $description: String, $statements: [PolicyStatementInput!], $newCode: String) {
+          updatePolicy(code: $code, description: $description, statements: $statements, newCode: $newCode) {
             code
-            assignmentsCount
             isDefault
             description
             statements {
@@ -8099,6 +8678,7 @@ namespace Authing.ApiClient.Types
             }
             createdAt
             updatedAt
+            assignmentsCount
           }
         }
         ";
@@ -8134,6 +8714,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("newCode")]
         public string NewCode { get; set; }
 
+        public UpdateRoleParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// UpdateRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -8154,6 +8738,7 @@ namespace Authing.ApiClient.Types
         mutation updateRole($code: String!, $description: String, $newCode: String) {
           updateRole(code: $code, description: $description, newCode: $newCode) {
             code
+            arn
             description
             isSystem
             createdAt
@@ -8163,6 +8748,7 @@ namespace Authing.ApiClient.Types
             }
             parent {
               code
+              arn
               description
               isSystem
               createdAt
@@ -8197,6 +8783,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public UpdateUserInput Input { get; set; }
 
+        public UpdateUserParam(UpdateUserInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// UpdateUserParam.Request 
         /// <para>Required variables:<br/> { input=(UpdateUserInput) }</para>
@@ -8226,15 +8816,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -8268,10 +8849,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -8295,6 +8877,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("input")]
         public UpdateUserpoolInput Input { get; set; }
 
+        public UpdateUserpoolParam(UpdateUserpoolInput input)
+        {
+            this.Input = input;
+        }
         /// <summary>
         /// UpdateUserpoolParam.Request 
         /// <para>Required variables:<br/> { input=(UpdateUserpoolInput) }</para>
@@ -8319,6 +8905,7 @@ namespace Authing.ApiClient.Types
             domain
             description
             secret
+            jwtSecret
             userpoolTypes {
               code
               name
@@ -8367,6 +8954,10 @@ namespace Authing.ApiClient.Types
               emailEnabled
               usernameEnabled
             }
+            customSMSProvider {
+              enabled
+              provider
+            }
           }
         }
         ";
@@ -8396,6 +8987,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("secret")]
         public string Secret { get; set; }
 
+        public AccessTokenParam(string userPoolId, string secret)
+        {
+            this.UserPoolId = userPoolId;
+            this.Secret = secret;
+        }
         /// <summary>
         /// AccessTokenParam.Request 
         /// <para>Required variables:<br/> { userPoolId=(string), secret=(string) }</para>
@@ -8441,6 +9037,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("token")]
         public string Token { get; set; }
 
+        public CheckLoginStatusParam()
+        {
+
+        }
         /// <summary>
         /// CheckLoginStatusParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -8493,6 +9093,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("password")]
         public string Password { get; set; }
 
+        public CheckPasswordStrengthParam(string password)
+        {
+            this.Password = password;
+        }
         /// <summary>
         /// CheckPasswordStrengthParam.Request 
         /// <para>Required variables:<br/> { password=(string) }</para>
@@ -8543,6 +9147,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("nodeId")]
         public string NodeId { get; set; }
 
+        public ChildrenNodesParam(string orgId, string nodeId)
+        {
+            this.OrgId = orgId;
+            this.NodeId = nodeId;
+        }
         /// <summary>
         /// ChildrenNodesParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), nodeId=(string) }</para>
@@ -8626,6 +9235,112 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class FindUserResponse
+    {
+
+        [JsonProperty("findUser")]
+        public User Result { get; set; }
+    }
+
+    public class FindUserParam
+    {
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        public FindUserParam()
+        {
+
+        }
+        /// <summary>
+        /// FindUserParam.Request 
+        /// <para>Required variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { email=(string), phone=(string), username=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = FindUserDocument,
+                OperationName = "findUser",
+                Variables = this
+            };
+        }
+
+
+        public static string FindUserDocument = @"
+        query findUser($email: String, $phone: String, $username: String) {
+          findUser(email: $email, phone: $phone, username: $username) {
+            id
+            arn
+            userPoolId
+            username
+            email
+            emailVerified
+            phone
+            phoneVerified
+            unionid
+            openid
+            nickname
+            registerSource
+            photo
+            password
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            device
+            browser
+            company
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            city
+            province
+            country
+            createdAt
+            updatedAt
+          }
+        }
+        ";
+    }
+
+
+
     public class FunctionResponse
     {
 
@@ -8642,6 +9357,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public FunctionParam()
+        {
+
+        }
         /// <summary>
         /// FunctionParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -8702,6 +9421,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public FunctionsParam()
+        {
+
+        }
         /// <summary>
         /// FunctionsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -8736,6 +9459,62 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class GetUserGroupsResponse
+    {
+
+        [JsonProperty("user")]
+        public User Result { get; set; }
+    }
+
+    public class GetUserGroupsParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        public GetUserGroupsParam(string id)
+        {
+            this.Id = id;
+        }
+        /// <summary>
+        /// GetUserGroupsParam.Request 
+        /// <para>Required variables:<br/> { id=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = GetUserGroupsDocument,
+                OperationName = "getUserGroups",
+                Variables = this
+            };
+        }
+
+
+        public static string GetUserGroupsDocument = @"
+        query getUserGroups($id: String!) {
+          user(id: $id) {
+            groups {
+              totalCount
+              list {
+                code
+                name
+                description
+                createdAt
+                updatedAt
+              }
+            }
+          }
+        }
+        ";
+    }
+
+
+
     public class GetUserRolesResponse
     {
 
@@ -8752,6 +9531,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public GetUserRolesParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// GetUserRolesParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -8812,6 +9595,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public GroupParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// GroupParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -8836,9 +9623,6 @@ namespace Authing.ApiClient.Types
             description
             createdAt
             updatedAt
-            users {
-              totalCount
-            }
           }
         }
         ";
@@ -8874,6 +9658,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("limit")]
         public int? Limit { get; set; }
 
+        public GroupWithUsersParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// GroupWithUsersParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -8897,6 +9685,7 @@ namespace Authing.ApiClient.Types
               totalCount
               list {
                 id
+                arn
                 userPoolId
                 username
                 email
@@ -8938,9 +9727,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -8985,6 +9776,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public GroupsParam()
+        {
+
+        }
         /// <summary>
         /// GroupsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -9047,6 +9842,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("userId")]
         public string UserId { get; set; }
 
+        public IsActionAllowedParam(string resource, string action, string userId)
+        {
+            this.Resource = resource;
+            this.Action = action;
+            this.UserId = userId;
+        }
         /// <summary>
         /// IsActionAllowedParam.Request 
         /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
@@ -9100,6 +9901,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("userId")]
         public string UserId { get; set; }
 
+        public IsActionDeniedParam(string resource, string action, string userId)
+        {
+            this.Resource = resource;
+            this.Action = action;
+            this.UserId = userId;
+        }
         /// <summary>
         /// IsActionDeniedParam.Request 
         /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
@@ -9141,6 +9948,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("domain")]
         public string Domain { get; set; }
 
+        public IsDomainAvaliableParam(string domain)
+        {
+            this.Domain = domain;
+        }
         /// <summary>
         /// IsDomainAvaliableParam.Request 
         /// <para>Required variables:<br/> { domain=(string) }</para>
@@ -9188,6 +9999,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("orgId")]
         public string OrgId { get; set; }
 
+        public IsRootNodeParam(string nodeId, string orgId)
+        {
+            this.NodeId = nodeId;
+            this.OrgId = orgId;
+        }
         /// <summary>
         /// IsRootNodeParam.Request 
         /// <para>Required variables:<br/> { nodeId=(string), orgId=(string) }</para>
@@ -9241,6 +10057,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("username")]
         public string Username { get; set; }
 
+        public IsUserExistsParam()
+        {
+
+        }
         /// <summary>
         /// IsUserExistsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -9288,6 +10108,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public NodeByCodeParam(string orgId, string code)
+        {
+            this.OrgId = orgId;
+            this.Code = code;
+        }
         /// <summary>
         /// NodeByCodeParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
@@ -9374,6 +10199,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public NodeByCodeWithMembersParam(string orgId, string code)
+        {
+            this.OrgId = orgId;
+            this.Code = code;
+        }
         /// <summary>
         /// NodeByCodeWithMembersParam.Request 
         /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
@@ -9451,9 +10281,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -9479,6 +10311,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public NodeByIdParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// NodeByIdParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -9559,6 +10395,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public NodeByIdWithMembersParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// NodeByIdWithMembersParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -9636,9 +10476,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -9664,6 +10506,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public OrgParam(string id)
+        {
+            this.Id = id;
+        }
         /// <summary>
         /// OrgParam.Request 
         /// <para>Required variables:<br/> { id=(string) }</para>
@@ -9750,6 +10596,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public OrgsParam()
+        {
+
+        }
         /// <summary>
         /// OrgsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -9833,9 +10683,19 @@ namespace Authing.ApiClient.Types
         public int? Limit { get; set; }
 
         /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("excludeDefault")]
+        public bool? ExcludeDefault { get; set; }
+
+        public PoliciesParam()
+        {
+
+        }
+        /// <summary>
         /// PoliciesParam.Request 
         /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
+        /// <para>Optional variables:<br/> { page=(int), limit=(int), excludeDefault=(bool) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -9849,16 +10709,16 @@ namespace Authing.ApiClient.Types
 
 
         public static string PoliciesDocument = @"
-        query policies($page: Int, $limit: Int) {
-          policies(page: $page, limit: $limit) {
+        query policies($page: Int, $limit: Int, $excludeDefault: Boolean) {
+          policies(page: $page, limit: $limit, excludeDefault: $excludeDefault) {
             totalCount
             list {
               code
-              assignmentsCount
               isDefault
               description
               createdAt
               updatedAt
+              assignmentsCount
               statements {
                 resource
                 actions
@@ -9888,6 +10748,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public PolicyParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// PolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -9966,6 +10830,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("limit")]
         public int? Limit { get; set; }
 
+        public PolicyAssignmentsParam()
+        {
+
+        }
         /// <summary>
         /// PolicyAssignmentsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -10026,6 +10894,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public PolicyWithAssignmentsParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// PolicyWithAssignmentsParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -10085,6 +10957,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public EmailTemplateType Type { get; set; }
 
+        public PreviewEmailParam(EmailTemplateType type)
+        {
+            this.Type = type;
+        }
         /// <summary>
         /// PreviewEmailParam.Request 
         /// <para>Required variables:<br/> { type=(EmailTemplateType) }</para>
@@ -10126,6 +11002,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("type")]
         public string Type { get; set; }
 
+        public QiniuUptokenParam()
+        {
+
+        }
         /// <summary>
         /// QiniuUptokenParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -10179,6 +11059,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("userPoolId")]
         public string UserPoolId { get; set; }
 
+        public QueryMfaParam()
+        {
+
+        }
         /// <summary>
         /// QueryMfaParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -10226,6 +11110,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public RoleParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// RoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -10285,6 +11173,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        public RoleWithUsersParam(string code)
+        {
+            this.Code = code;
+        }
         /// <summary>
         /// RoleWithUsersParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
@@ -10308,6 +11200,7 @@ namespace Authing.ApiClient.Types
               totalCount
               list {
                 id
+                arn
                 userPoolId
                 username
                 email
@@ -10349,9 +11242,11 @@ namespace Authing.ApiClient.Types
                 locality
                 region
                 postalCode
+                city
+                province
                 country
+                createdAt
                 updatedAt
-                customData
               }
             }
           }
@@ -10390,6 +11285,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public RolesParam()
+        {
+
+        }
         /// <summary>
         /// RolesParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -10473,6 +11372,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("orgId")]
         public string OrgId { get; set; }
 
+        public RootNodeParam(string orgId)
+        {
+            this.OrgId = orgId;
+        }
         /// <summary>
         /// RootNodeParam.Request 
         /// <para>Required variables:<br/> { orgId=(string) }</para>
@@ -10549,6 +11452,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("limit")]
         public int? Limit { get; set; }
 
+        public SearchUserParam(string query)
+        {
+            this.Query = query;
+        }
         /// <summary>
         /// SearchUserParam.Request 
         /// <para>Required variables:<br/> { query=(string) }</para>
@@ -10613,10 +11520,11 @@ namespace Authing.ApiClient.Types
               locality
               region
               postalCode
+              city
+              province
               country
               createdAt
               updatedAt
-              customData
             }
           }
         }
@@ -10641,6 +11549,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
+        public SocialConnectionParam(string provider)
+        {
+            this.Provider = provider;
+        }
         /// <summary>
         /// SocialConnectionParam.Request 
         /// <para>Required variables:<br/> { provider=(string) }</para>
@@ -10693,6 +11605,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
+        public SocialConnectionInstanceParam(string provider)
+        {
+            this.Provider = provider;
+        }
         /// <summary>
         /// SocialConnectionInstanceParam.Request 
         /// <para>Required variables:<br/> { provider=(string) }</para>
@@ -10859,6 +11775,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public UdfTargetType TargetType { get; set; }
 
+        public UdfParam(UdfTargetType targetType)
+        {
+            this.TargetType = targetType;
+        }
         /// <summary>
         /// UdfParam.Request 
         /// <para>Required variables:<br/> { targetType=(UDFTargetType) }</para>
@@ -10913,6 +11833,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetId")]
         public string TargetId { get; set; }
 
+        public UdvParam(UdfTargetType targetType, string targetId)
+        {
+            this.TargetType = targetType;
+            this.TargetId = targetId;
+        }
         /// <summary>
         /// UdvParam.Request 
         /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string) }</para>
@@ -10958,6 +11883,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        public UserParam()
+        {
+
+        }
         /// <summary>
         /// UserParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -10987,15 +11916,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -11029,10 +11949,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -11056,6 +11977,10 @@ namespace Authing.ApiClient.Types
         [JsonProperty("ids")]
         public IEnumerable<string> Ids { get; set; }
 
+        public UserBatchParam(IEnumerable<string> ids)
+        {
+            this.Ids = ids;
+        }
         /// <summary>
         /// UserBatchParam.Request 
         /// <para>Required variables:<br/> { ids=(string[]) }</para>
@@ -11085,15 +12010,6 @@ namespace Authing.ApiClient.Types
             phoneVerified
             unionid
             openid
-            identities {
-              openid
-              userIdInIdp
-              userId
-              connectionId
-              isSocial
-              provider
-              userPoolId
-            }
             nickname
             registerSource
             photo
@@ -11127,10 +12043,11 @@ namespace Authing.ApiClient.Types
             locality
             region
             postalCode
+            city
+            province
             country
             createdAt
             updatedAt
-            customData
           }
         }
         ";
@@ -11219,6 +12136,10 @@ namespace Authing.ApiClient.Types
               emailEnabled
               usernameEnabled
             }
+            customSMSProvider {
+              enabled
+              provider
+            }
           }
         }
         ";
@@ -11294,6 +12215,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public UserpoolsParam()
+        {
+
+        }
         /// <summary>
         /// UserpoolsParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -11368,6 +12293,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public SortByEnum? SortBy { get; set; }
 
+        public UsersParam()
+        {
+
+        }
         /// <summary>
         /// UsersParam.Request 
         /// <para>Required variables:<br/> {  }</para>
@@ -11432,10 +12361,11 @@ namespace Authing.ApiClient.Types
               locality
               region
               postalCode
+              city
+              province
               country
               createdAt
               updatedAt
-              customData
             }
           }
         }
@@ -11461,6 +12391,10 @@ namespace Authing.ApiClient.Types
         [JsonConverter(typeof(StringEnumConverter))]
         public WhitelistType Type { get; set; }
 
+        public WhitelistParam(WhitelistType type)
+        {
+            this.Type = type;
+        }
         /// <summary>
         /// WhitelistParam.Request 
         /// <para>Required variables:<br/> { type=(WhitelistType) }</para>

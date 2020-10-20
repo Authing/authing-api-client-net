@@ -12,7 +12,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 角色管理
         /// </summary>
-        public RolesManagementClient roles;
+        public RolesManagementClient Roles { get; private set; }
 
         /// <summary>
         /// 角色管理类
@@ -62,9 +62,8 @@ namespace Authing.ApiClient
                 string parentCode = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new CreateRoleParam()
+                var param = new CreateRoleParam(code)
                 {
-                    Code = code,
                     Description = description,
                     Parent = parentCode,
                 };
@@ -83,7 +82,7 @@ namespace Authing.ApiClient
                 string code,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RoleParam() { Code = code };
+                var param = new RoleParam(code);
                 await client.GetAccessToken();
                 var res = await client.Request<RoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -103,9 +102,8 @@ namespace Authing.ApiClient
                 string newCode = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new UpdateRoleParam()
+                var param = new UpdateRoleParam(code)
                 {
-                    Code = code,
                     Description = description,
                     NewCode = newCode,
                 };
@@ -124,10 +122,7 @@ namespace Authing.ApiClient
                 string code,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteRoleParam()
-                {
-                    Code = code,
-                };
+                var param = new DeleteRoleParam(code);
                 await client.GetAccessToken();
                 var res = await client.Request<DeleteRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -143,7 +138,7 @@ namespace Authing.ApiClient
                 IEnumerable<string> codeList,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteRolesParam() { Codes = codeList };
+                var param = new DeleteRolesParam(codeList);
                 await client.GetAccessToken();
                 var res = await client.Request<DeleteRolesResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -159,7 +154,7 @@ namespace Authing.ApiClient
                 string code,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RoleWithUsersParam() { Code = code };
+                var param = new RoleWithUsersParam(code);
                 await client.GetAccessToken();
                 var res = await client.Request<RoleWithUsersResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result.Users;
@@ -246,10 +241,8 @@ namespace Authing.ApiClient
                 IEnumerable<string> policies,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AddPolicyAssignmentsParam()
+                var param = new AddPolicyAssignmentsParam(policies, PolicyAssignmentTargetType.ROLE)
                 {
-                    Policies = policies,
-                    TargetType = PolicyAssignmentTargetType.ROLE,
                     TargetIdentifiers = new string[] { code },
                 };
                 await client.GetAccessToken();
@@ -269,10 +262,8 @@ namespace Authing.ApiClient
                 IEnumerable<string> policies,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RemovePolicyAssignmentsParam()
+                var param = new RemovePolicyAssignmentsParam(policies, PolicyAssignmentTargetType.ROLE)
                 {
-                    Policies = policies,
-                    TargetType = PolicyAssignmentTargetType.ROLE,
                     TargetIdentifiers = new string[] { code },
                 };
                 await client.GetAccessToken();

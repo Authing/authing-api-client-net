@@ -167,10 +167,10 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task UpdatePassword()
         {
-            var username = RandomString();
-            var password = "123456";
-            await client.RegisterByUsername(username, password);
-            await client.UpdatePassword("111111", "123456");
+            var phone = "17611161550";
+            var password = "111111";
+            await client.LoginByPhonePassword(phone, password);
+            await client.UpdatePassword("123456", "111111");
         }
 
         [Test]

@@ -84,7 +84,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <param name="request"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, string accessToken = null)
+        public async Task<TResponse> Request<TResponse>(GraphQLRequest request, CancellationToken cancellationToken = default, string accessToken = null)
         {
             Client.SetAccessToken(accessToken ?? this.AccessToken);
             var result = await Client.SendQueryAsync<TResponse>(request, cancellationToken);
@@ -97,7 +97,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected string Encrypt(string message)
+        public string Encrypt(string message)
         {
             if (message == null)
             {
@@ -113,7 +113,18 @@ GKl64GDcIq3au+aqJQIDAQAB
             return util.Encrypt(message, RSAEncryptionPadding.Pkcs1);
         }
 
-        protected GraphQLHttpClient CreateGqlClient(string endPoint)
+        /// <summary>
+        /// 发送 HTTP 请求
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task<HttpResponseMessage> Send(HttpRequestMessage message, CancellationToken cancellationToken = default)
+        {
+            return CreateHttpClient().SendAsync(message, cancellationToken);
+        }
+
+        private GraphQLHttpClient CreateGqlClient(string endPoint)
         {
             return new GraphQLHttpClient(new GraphQLHttpClientOptions()
             {
@@ -121,7 +132,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             }, CreateHttpClient());
         }
 
-        protected HttpClient CreateHttpClient()
+        private HttpClient CreateHttpClient()
         {
             var client = new HttpClient()
             {
@@ -135,7 +146,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             return client;
         }
 
-        protected static void CheckResult<T>(GraphQLResponse<T> result)
+        private static void CheckResult<T>(GraphQLResponse<T> result)
         {
             if (result.Errors != null && result.Errors.Length > 0)
             {
