@@ -21,9 +21,8 @@ namespace Authing.ApiClient
         /// <summary>
         /// 构造方法
         /// </summary>
-        public ManagementClient(string userPoolId, string secret)
+        public ManagementClient(string userPoolId, string secret): base(userPoolId)
         {
-            UserPoolId = userPoolId;
             this.secret = secret;
 
             Users = new UsersManagementClient(this);

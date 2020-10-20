@@ -10,7 +10,7 @@ namespace AuthingApiClientTest
 {
     public class TestRolesManagementClient
     {
-        private ManagementClient client;
+        private ManagementClient rolesManagementClient;
 
         private string code;
         private Role role;
@@ -23,7 +23,7 @@ namespace AuthingApiClientTest
         [SetUp]
         public void Setup()
         {
-            client = new ManagementClient("59f86b4832eb28071bdd9214", "4b880fff06b080f154ee48c9e689a541")
+            rolesManagementClient = new ManagementClient("59f86b4832eb28071bdd9214", "4b880fff06b080f154ee48c9e689a541")
             {
                 Host = "http://192.168.50.64:3000",
                 PublicKey = @"-----BEGIN PUBLIC KEY-----
@@ -35,20 +35,20 @@ GKl64GDcIq3au+aqJQIDAQAB
             };
 
             code = RandomString();
-            role = client.Roles.Create(code, "test role").Result;
+            role = rolesManagementClient.Roles.Create(code, "test role").Result;
         }
 
         [TearDown]
         public void TearDown()
         {
             if (role == null) return;
-            client.Roles.Delete(code).Wait();
+            rolesManagementClient.Roles.Delete(code).Wait();
         }
 
         [Test]
         public async Task List()
         {
-            var roles = await client.Roles.List();
+            var roles = await rolesManagementClient.Roles.List();
             Assert.AreEqual(roles.List != null, true);
         }
 
@@ -61,7 +61,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Detail()
         {
-            var role = await client.Roles.Detail(code);
+            var role = await rolesManagementClient.Roles.Detail(code);
             Assert.AreEqual(role.Code, code);
         }
 
@@ -69,14 +69,14 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task Update()
         {
             var desc = "update desc";
-            var role = await client.Roles.Update(code, desc);
+            var role = await rolesManagementClient.Roles.Update(code, desc);
             Assert.AreEqual(role.Description, desc);
         }
 
         [Test]
         public async Task Delete()
         {
-            var message = await client.Roles.Delete(code);
+            var message = await rolesManagementClient.Roles.Delete(code);
             role = null;
             Assert.AreEqual(message.Code, 200);
         }
@@ -84,7 +84,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task DeleteMany()
         {
-            var message = await client.Roles.DeleteMany(new string[] { code });
+            var message = await rolesManagementClient.Roles.DeleteMany(new string[] { code });
             role = null;
             Assert.AreEqual(message.SucceedCount, 1);
         }
@@ -92,14 +92,14 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task ListUsers()
         {
-            var users = await client.Roles.ListUsers(code);
+            var users = await rolesManagementClient.Roles.ListUsers(code);
             Assert.AreEqual(users.TotalCount, 0);
         }
 
         [Test]
         public async Task ListPolicies()
         {
-            var policies = await client.Roles.ListPolicies(code);
+            var policies = await rolesManagementClient.Roles.ListPolicies(code);
             Assert.AreEqual(policies.TotalCount, 0);
         }
     }

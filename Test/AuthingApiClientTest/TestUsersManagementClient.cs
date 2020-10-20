@@ -11,7 +11,7 @@ namespace AuthingApiClientTest
 {
     public class TestUsersManagementClient
     {
-        private ManagementClient client;
+        private ManagementClient managementClient;
 
         private string email;
         private string password;
@@ -20,7 +20,7 @@ namespace AuthingApiClientTest
         [SetUp]
         public void Setup()
         {
-            client = new ManagementClient("59f86b4832eb28071bdd9214", "4b880fff06b080f154ee48c9e689a541")
+            managementClient = new ManagementClient("59f86b4832eb28071bdd9214", "4b880fff06b080f154ee48c9e689a541")
             {
                 Host = "http://192.168.50.64:3000",
                 PublicKey = @"-----BEGIN PUBLIC KEY-----
@@ -33,7 +33,7 @@ GKl64GDcIq3au+aqJQIDAQAB
 
             email = RandomString() + "@gmail.com";
             password = "123456";
-            user = client.Users.Create(new CreateUserInput()
+            user = managementClient.Users.Create(new CreateUserInput()
             {
                 Email = email,
                 Password = password,
@@ -44,7 +44,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         public void TearDown()
         {
             if (user == null) return;
-            client.Users.Delete(user.Id).Wait();
+            managementClient.Users.Delete(user.Id).Wait();
         }
 
         private string RandomString()
@@ -55,7 +55,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task List()
         {
-            var users = await client.Users.List();
+            var users = await managementClient.Users.List();
             Assert.AreEqual(users.TotalCount > 0, true);
         }
 
@@ -68,7 +68,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Update()
         {
-            user = await client.Users.Update(user.Id, new UpdateUserInput()
+            user = await managementClient.Users.Update(user.Id, new UpdateUserInput()
             {
                 Nickname = email,
             });
@@ -78,28 +78,28 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task Detail()
         {
-            user = await client.Users.Detail(user.Id);
+            user = await managementClient.Users.Detail(user.Id);
             Assert.AreEqual(user.Email, email);
         }
 
         [Test]
         public async Task Search()
         {
-            var users = await client.Users.Search("gmail");
+            var users = await managementClient.Users.Search("gmail");
             Assert.AreEqual(users.TotalCount > 0, true);
         }
 
         [Test]
         public async Task Batch()
         {
-            var users = await client.Users.Batch(new string[] { user.Id });
+            var users = await managementClient.Users.Batch(new string[] { user.Id });
             Assert.AreEqual(users.Count() == 1, true);
         }
 
         [Test]
         public async Task Delete()
         {
-            var message = await client.Users.Delete(user.Id);
+            var message = await managementClient.Users.Delete(user.Id);
             user = null;
             Assert.AreEqual(message.Code, 200);
         }
@@ -107,7 +107,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task DeleteMany()
         {
-            var message = await client.Users.DeleteMany(new string[] { user.Id });
+            var message = await managementClient.Users.DeleteMany(new string[] { user.Id });
             user = null;
             Assert.AreEqual(message.Code, 200);
         }
@@ -115,28 +115,28 @@ GKl64GDcIq3au+aqJQIDAQAB
         [Test]
         public async Task ListRoles()
         {
-            var roles = await client.Users.ListRoles(user.Id);
+            var roles = await managementClient.Users.ListRoles(user.Id);
             Assert.AreEqual(roles.TotalCount == 0, true);
         }
 
         [Test]
         public async Task RefreshToken()
         {
-            var token = await client.Users.RefreshToken(user.Id);
+            var token = await managementClient.Users.RefreshToken(user.Id);
             Assert.AreEqual(token.Token != null, true);
         }
 
         [Test]
         public async Task ListPolicies()
         {
-            var policies = await client.Users.ListPolicies(user.Id);
+            var policies = await managementClient.Users.ListPolicies(user.Id);
             Assert.AreEqual(policies.TotalCount == 0, true);
         }
 
         [Test]
         public async Task ListUdv()
         {
-            var udvs = await client.Users.ListUdv(user.Id);
+            var udvs = await managementClient.Users.ListUdv(user.Id);
             Assert.AreEqual(udvs.Count() == 0, true);
         }
     }

@@ -219,11 +219,11 @@ namespace Authing.ApiClient
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
             public async Task<CommonMessage> AddRoles(
-                IEnumerable<string> userId,
+                string userId,
                 IEnumerable<string> roles,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AssignRoleParam() { UserIds = userId, RoleCodes = roles };
+                var param = new AssignRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
                 await client.GetAccessToken();
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -237,11 +237,11 @@ namespace Authing.ApiClient
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
             public async Task<CommonMessage> RemoveRoles(
-                IEnumerable<string> userId,
+                string userId,
                 IEnumerable<string> roles,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RevokeRoleParam() { UserIds = userId, RoleCodes = roles };
+                var param = new RevokeRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
                 await client.GetAccessToken();
                 var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;

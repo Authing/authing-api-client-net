@@ -18,7 +18,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// 用户池 ID，必填
         /// </summary>
-        public string UserPoolId { get; protected set; }
+        public string UserPoolId { get; private set; }
 
         /// <summary>
         /// 接口超时时间，默认为 10 秒
@@ -58,6 +58,11 @@ GKl64GDcIq3au+aqJQIDAQAB
 
         private readonly string type = "SDK";
         private readonly string version = "c-sharp:2.2.0";
+
+        protected BaseClient(string userPoolId)
+        {
+            UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
+        }
 
         /// <summary>
         /// 设置 AccessToken 以访问某些接口

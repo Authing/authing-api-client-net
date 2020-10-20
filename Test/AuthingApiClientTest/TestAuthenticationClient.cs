@@ -8,7 +8,7 @@ namespace AuthingApiClientTest
 {
     public class TestAuthenticationClient
     {
-        private AuthenticationClient client;
+        private AuthenticationClient authenticationClient;
 
         private string RandomString()
         {
@@ -18,7 +18,7 @@ namespace AuthingApiClientTest
         [SetUp]
         public void Setup()
         {
-            client = new AuthenticationClient("59f86b4832eb28071bdd9214")
+            authenticationClient = new AuthenticationClient("59f86b4832eb28071bdd9214")
             {
                 Host = "http://192.168.50.64:3000",
                 PublicKey = @"-----BEGIN PUBLIC KEY-----
@@ -31,12 +31,12 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         [Test]
-        public async Task GetCurrentUser()
+        public async Task CurrentUser()
         {
             var phone = "17611161550";
             var password = "123456";
-            await client.LoginByPhonePassword(phone, password);
-            var user = await client.GetCurrentUser();
+            await authenticationClient.LoginByPhonePassword(phone, password);
+            var user = await authenticationClient.CurrentUser();
             Assert.AreEqual(phone, user.Phone);
         }
 
@@ -45,7 +45,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            var user = await client.RegisterByEmail(email, password);
+            var user = await authenticationClient.RegisterByEmail(email, password);
             Assert.AreEqual(email, user.Email);
         }
 
@@ -54,7 +54,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var username = RandomString();
             var password = "123456";
-            var user = await client.RegisterByUsername(username, password);
+            var user = await authenticationClient.RegisterByUsername(username, password);
             Assert.AreEqual(username, user.Username);
         }
 
@@ -64,7 +64,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             var phone = "17611161550";
             var code = "8942";
             var password = "123456";
-            var user = await client.RegisterByPhoneCode(phone, code, password);
+            var user = await authenticationClient.RegisterByPhoneCode(phone, code, password);
             Assert.AreEqual(phone, user.Phone);
         }
 
@@ -72,7 +72,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task SendSmsCode()
         {
             var phone = "17611161550";
-            await client.SendSmsCode(phone);
+            await authenticationClient.SendSmsCode(phone);
+            Console.WriteLine();
         }
 
         [Test]
@@ -80,8 +81,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            var user = await client.LoginByEmail(email, password);
+            await authenticationClient.RegisterByEmail(email, password);
+            var user = await authenticationClient.LoginByEmail(email, password);
             Assert.AreEqual(email, user.Email);
         }
 
@@ -90,8 +91,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var username = RandomString();
             var password = "123456";
-            await client.RegisterByUsername(username, password);
-            var user = await client.LoginByUsername(username, password);
+            await authenticationClient.RegisterByUsername(username, password);
+            var user = await authenticationClient.LoginByUsername(username, password);
             Assert.AreEqual(username, user.Username);
         }
 
@@ -100,7 +101,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var phone = "17611161550";
             var code = "6579";
-            var user = await client.LoginByPhoneCode(phone, code);
+            var user = await authenticationClient.LoginByPhoneCode(phone, code);
             Assert.AreEqual(phone, user.Phone);
         }
 
@@ -109,7 +110,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var phone = "17611161550";
             var password = "123456";
-            var user = await client.LoginByPhonePassword(phone, password);
+            var user = await authenticationClient.LoginByPhonePassword(phone, password);
             Assert.AreEqual(phone, user.Phone);
         }
 
@@ -118,15 +119,15 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var phone = "17611161550";
             var password = "123456";
-            await client.LoginByPhonePassword(phone, password);
-            var status = await client.CheckLoginStatus();
+            await authenticationClient.LoginByPhonePassword(phone, password);
+            var status = await authenticationClient.CheckLoginStatus();
             Assert.AreEqual(status.Code, 200);
         }
 
         [Test]
         public async Task SendEmail()
         {
-            var message = await client.SendEmail("1498881550@qq.com", EmailScene.RESET_PASSWORD);
+            var message = await authenticationClient.SendEmail("1498881550@qq.com", EmailScene.RESET_PASSWORD);
             Assert.AreEqual(message.Code, 200);
         }
 
@@ -136,7 +137,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             var phone = "17611161550";
             var code = "1234";
             var password = "123456";
-            var message = await client.ResetPasswordByPhoneCode(phone, code, password);
+            var message = await authenticationClient.ResetPasswordByPhoneCode(phone, code, password);
             Assert.AreEqual(message.Code, 200);
         }
 
@@ -146,7 +147,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             var email = "1498881550@qq.com";
             var code = "1234";
             var password = "123456";
-            var message = await client.ResetPasswordByEmailCode(email, code, password);
+            var message = await authenticationClient.ResetPasswordByEmailCode(email, code, password);
             Assert.AreEqual(message.Code, 200);
         }
 
@@ -156,8 +157,8 @@ GKl64GDcIq3au+aqJQIDAQAB
             var phone = "17611161550";
             var password = "123456";
             var nickname = RandomString();
-            await client.LoginByPhonePassword(phone, password);
-            var user = await client.UpdateProfile(new UpdateUserInput()
+            await authenticationClient.LoginByPhonePassword(phone, password);
+            var user = await authenticationClient.UpdateProfile(new UpdateUserInput()
             {
                 Nickname = nickname,
             });
@@ -169,8 +170,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var phone = "17611161550";
             var password = "111111";
-            await client.LoginByPhonePassword(phone, password);
-            await client.UpdatePassword("123456", "111111");
+            await authenticationClient.LoginByPhonePassword(phone, password);
+            await authenticationClient.UpdatePassword("123456", "111111");
         }
 
         [Test]
@@ -178,9 +179,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var username = RandomString();
             var password = "123456";
-            await client.RegisterByUsername(username, password);
-            await client.LoginByUsername(username, password);
-            await client.UpdatePhone("17611161550", "1234");
+            await authenticationClient.RegisterByUsername(username, password);
+            await authenticationClient.LoginByUsername(username, password);
+            await authenticationClient.UpdatePhone("17611161550", "1234");
         }
 
         [Test]
@@ -189,9 +190,9 @@ GKl64GDcIq3au+aqJQIDAQAB
             var email = RandomString() + "@gmail.com";
             var newEmail = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            await client.LoginByEmail(email, password);
-            await client.UpdateEmail(newEmail, "1234");
+            await authenticationClient.RegisterByEmail(email, password);
+            await authenticationClient.LoginByEmail(email, password);
+            await authenticationClient.UpdateEmail(newEmail, "1234");
         }
 
         [Test]
@@ -199,9 +200,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            await client.LoginByEmail(email, password);
-            await client.BindPhone("17611161550", "1234");
+            await authenticationClient.RegisterByEmail(email, password);
+            await authenticationClient.LoginByEmail(email, password);
+            await authenticationClient.BindPhone("17611161550", "1234");
         }
 
         [Test]
@@ -209,10 +210,10 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            await client.LoginByEmail(email, password);
-            await client.BindPhone("17611161550", "1234");
-            await client.UnbindPhone();
+            await authenticationClient.RegisterByEmail(email, password);
+            await authenticationClient.LoginByEmail(email, password);
+            await authenticationClient.BindPhone("17611161550", "1234");
+            await authenticationClient.UnbindPhone();
         }
 
         [Test]
@@ -220,9 +221,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            await client.LoginByEmail(email, password);
-            var refreshToken = await client.RefreshToken();
+            await authenticationClient.RegisterByEmail(email, password);
+            await authenticationClient.LoginByEmail(email, password);
+            var refreshToken = await authenticationClient.RefreshToken();
             Assert.AreNotEqual(refreshToken.Token, null);
         }
 
@@ -231,9 +232,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var email = RandomString() + "@gmail.com";
             var password = "123456";
-            await client.RegisterByEmail(email, password);
-            await client.LoginByEmail(email, password);
-            await client.Logout();
+            await authenticationClient.RegisterByEmail(email, password);
+            await authenticationClient.LoginByEmail(email, password);
+            await authenticationClient.Logout();
         }
     }
 }

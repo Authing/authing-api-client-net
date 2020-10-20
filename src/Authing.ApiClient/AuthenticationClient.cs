@@ -19,24 +19,23 @@ namespace Authing.ApiClient
         /// 通过用户池 ID 初始化
         /// </summary>
         /// <param name="userPoolId">用户池 ID，可以在控制台获取</param>
-        public AuthenticationClient(string userPoolId)
+        public AuthenticationClient(string userPoolId) : base(userPoolId)
         {
-            UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
         }
 
-        private User CurrentUser
+        private User User
         {
             get
             {
-                return currentUser;
+                return user;
             }
             set
             {
-                currentUser = value;
+                user = value;
                 AccessToken = value?.Token ?? AccessToken;
             }
         }
-        private User currentUser;
+        private User user;
 
         /// <summary>
         /// 获取当前用户
@@ -44,13 +43,13 @@ namespace Authing.ApiClient
         /// <param name="accessToken">用户 access token</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<User> GetCurrentUser(
+        public async Task<User> CurrentUser(
             string accessToken = null,
             CancellationToken cancellationToken = default)
         {
             var param = new UserParam();
             var res = await Request<UserResponse>(param.CreateRequest(), cancellationToken, accessToken);
-            currentUser = res.Result;
+            user = res.Result;
             return res.Result;
         }
 
@@ -82,7 +81,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<RegisterByEmailResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -114,7 +113,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<RegisterByUsernameResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -149,7 +148,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<RegisterByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -217,7 +216,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -246,7 +245,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -272,7 +271,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -301,7 +300,7 @@ namespace Authing.ApiClient
             );
 
             var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -393,7 +392,7 @@ namespace Authing.ApiClient
         {
             var param = new UpdateUserParam(updates);
             var res = await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -415,7 +414,7 @@ namespace Authing.ApiClient
                 OldPassword = Encrypt(oldPassword),
             };
             var res = await Request<UpdatePasswordResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -442,7 +441,7 @@ namespace Authing.ApiClient
                 OldPhoneCode = oldPhoneCode,
             };
             var res = await Request<UpdatePhoneResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -469,7 +468,7 @@ namespace Authing.ApiClient
                 OldEmailCode = oldEmailCode,
             };
             var res = await Request<UpdateEmailResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -488,7 +487,7 @@ namespace Authing.ApiClient
             await CheckLoggedIn();
             var param = new BindPhoneParam(phone, phoneCode);
             var res = await Request<BindPhoneResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -502,7 +501,7 @@ namespace Authing.ApiClient
             await CheckLoggedIn();
             var param = new UnbindPhoneParam();
             var res = await Request<UnbindPhoneResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = res.Result;
+            User = res.Result;
             return res.Result;
         }
 
@@ -530,7 +529,7 @@ namespace Authing.ApiClient
         public async Task<IEnumerable<UserDefinedData>> ListUdv(CancellationToken cancellationToken = default)
         {
             await CheckLoggedIn();
-            var param = new UdvParam(UdfTargetType.USER, CurrentUser.Id);
+            var param = new UdvParam(UdfTargetType.USER, User.Id);
             var res = await Request<UdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
@@ -542,13 +541,13 @@ namespace Authing.ApiClient
         /// <param name="value"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<UserDefinedData>> AddUdv(
+        public async Task<IEnumerable<UserDefinedData>> SetUdv(
             string key,
             object value,
             CancellationToken cancellationToken = default)
         {
             await CheckLoggedIn();
-            var param = new SetUdvParam(UdfTargetType.USER, CurrentUser.Id, key, JsonConvert.SerializeObject(value));
+            var param = new SetUdvParam(UdfTargetType.USER, User.Id, key, JsonConvert.SerializeObject(value));
             var res = await Request<SetUdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
@@ -564,7 +563,7 @@ namespace Authing.ApiClient
             CancellationToken cancellationToken = default)
         {
             await CheckLoggedIn();
-            var param = new RemoveUdvParam(UdfTargetType.USER, CurrentUser.Id, key);
+            var param = new RemoveUdvParam(UdfTargetType.USER, User.Id, key);
             var res = await Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
@@ -584,15 +583,15 @@ namespace Authing.ApiClient
                 }
              )
             {
-                Id = CurrentUser.Id,
+                Id = User.Id,
             };
             await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
-            CurrentUser = null;
+            User = null;
         }
 
         private async Task CheckLoggedIn()
         {
-            var user = await GetCurrentUser();
+            var user = await CurrentUser();
             if (user == null)
             {
                 throw new AuthingException("请先登录");
