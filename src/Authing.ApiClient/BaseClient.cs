@@ -7,6 +7,7 @@ using Authing.ApiClient.GraphQL;
 using System.Text;
 using XC.RSAUtil;
 using System.Security.Cryptography;
+using System.Net.Http.Headers;
 
 namespace Authing.ApiClient
 {
@@ -126,7 +127,9 @@ GKl64GDcIq3au+aqJQIDAQAB
         /// <returns></returns>
         public Task<HttpResponseMessage> Send(HttpRequestMessage message, CancellationToken cancellationToken = default)
         {
-            return CreateHttpClient().SendAsync(message, cancellationToken);
+            var httpClient = CreateHttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+            return httpClient.SendAsync(message, cancellationToken);
         }
 
         private GraphQLHttpClient CreateGqlClient(string endPoint)
@@ -139,16 +142,16 @@ GKl64GDcIq3au+aqJQIDAQAB
 
         private HttpClient CreateHttpClient()
         {
-            var client = new HttpClient()
+            var httpClient = new HttpClient()
             {
                 Timeout = Timeout
             };
 
-            client.DefaultRequestHeaders.Add("x-authing-userpool-id", UserPoolId);
-            client.DefaultRequestHeaders.Add("x-authing-request-from", type);
-            client.DefaultRequestHeaders.Add("x-authing-sdk-version", version);
+            httpClient.DefaultRequestHeaders.Add("x-authing-userpool-id", UserPoolId);
+            httpClient.DefaultRequestHeaders.Add("x-authing-request-from", type);
+            httpClient.DefaultRequestHeaders.Add("x-authing-sdk-version", version);
 
-            return client;
+            return httpClient;
         }
 
         private static void CheckResult<T>(GraphQLResponse<T> result)

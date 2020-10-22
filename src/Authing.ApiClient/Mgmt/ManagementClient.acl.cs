@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient
+namespace Authing.ApiClient.Mgmt
 {
     public partial class ManagementClient
     {

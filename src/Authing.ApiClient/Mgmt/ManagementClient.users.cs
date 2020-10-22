@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient
+namespace Authing.ApiClient.Mgmt
 {
     public partial class ManagementClient
     {
@@ -271,7 +271,7 @@ namespace Authing.ApiClient
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<PaginatedPolicyAssignment> ListPolicies(
+            public async Task<PaginatedPolicyAssignments> ListPolicies(
                 string userId,
                 int page = 1,
                 int limit = 10,
@@ -341,6 +341,7 @@ namespace Authing.ApiClient
                 CancellationToken cancellationToken = default)
             {
                 var param = new UdvParam(UdfTargetType.USER, userId);
+                await client.GetAccessToken();
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -360,6 +361,7 @@ namespace Authing.ApiClient
                 CancellationToken cancellationToken = default)
             {
                 var param = new SetUdvParam(UdfTargetType.USER, userId, key, JsonConvert.SerializeObject(value));
+                await client.GetAccessToken();
                 var res = await client.Request<SetUdvResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -377,7 +379,64 @@ namespace Authing.ApiClient
                 CancellationToken cancellationToken = default)
             {
                 var param = new RemoveUdvParam(UdfTargetType.USER, userId, key);
+                await client.GetAccessToken();
                 var res = await client.Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 获取用户分组列表
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedGroups> ListGroups(string userId, CancellationToken cancellationToken = default)
+            {
+                var param = new GetUserGroupsParam(userId);
+                await client.GetAccessToken();
+                var res = await client.Request<GetUserGroupsResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result.Groups;
+            }
+
+            /// <summary>
+            /// 加入分组
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="group">分组 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> AddGroup(
+                string userId,
+                string group,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new AddUserToGroupParam(new string[] { userId })
+                {
+                    Code = group
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<AddUserToGroupResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 退出分组
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="group">分组 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> RemoveGroup(
+                string userId,
+                string group,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RemoveUserFromGroupParam(new string[] { userId })
+                {
+                    Code = group
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<RemoveUserFromGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
         }

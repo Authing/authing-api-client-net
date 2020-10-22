@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient
+namespace Authing.ApiClient.Mgmt
 {
     public partial class ManagementClient
     {
@@ -134,7 +134,7 @@ namespace Authing.ApiClient
             /// <param name="codeList">角色 code 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<BatchOperationResult> DeleteMany(
+            public async Task<CommonMessage> DeleteMany(
                 IEnumerable<string> codeList,
                 CancellationToken cancellationToken = default)
             {
@@ -211,7 +211,7 @@ namespace Authing.ApiClient
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<PaginatedPolicyAssignment> ListPolicies(
+            public async Task<PaginatedPolicyAssignments> ListPolicies(
                 string code,
                 int page = 1,
                 int limit = 10,

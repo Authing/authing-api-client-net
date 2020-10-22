@@ -120,7 +120,7 @@ namespace Authing.ApiClient.Types
         public PaginatedPolicies Policies { get; set; }
 
         [JsonProperty("policyAssignments")]
-        public PaginatedPolicyAssignment PolicyAssignments { get; set; }
+        public PaginatedPolicyAssignments PolicyAssignments { get; set; }
 
         /// <summary>
         /// 通过 **code** 查询角色详情
@@ -1113,8 +1113,8 @@ namespace Authing.ApiClient.Types
     }
     #endregion
 
-    #region PaginatedPolicyAssignment
-    public class PaginatedPolicyAssignment
+    #region PaginatedPolicyAssignments
+    public class PaginatedPolicyAssignments
     {
         #region members
         [JsonProperty("totalCount")]
@@ -1801,7 +1801,7 @@ namespace Authing.ApiClient.Types
         /// 批量删除角色
         /// </summary>
         [JsonProperty("deleteRoles")]
-        public BatchOperationResult DeleteRoles { get; set; }
+        public CommonMessage DeleteRoles { get; set; }
 
         /// <summary>
         /// 给用户授权角色
@@ -2419,6 +2419,9 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2479,6 +2482,9 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2533,6 +2539,9 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2593,6 +2602,9 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("autoRegister")]
         public bool? AutoRegister { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2701,6 +2713,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2919,6 +2934,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -2979,6 +2997,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("generateToken")]
         public bool? GenerateToken { get; set; }
+
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
         #endregion
 
 
@@ -3012,34 +3033,6 @@ namespace Authing.ApiClient.Types
             }
             return d;
         }
-        #endregion
-    }
-    #endregion
-
-    #region BatchOperationResult
-    /// <summary>
-    /// 批量删除返回结果
-    /// </summary>
-    public class BatchOperationResult
-    {
-        #region members
-        /// <summary>
-        /// 删除成功的个数
-        /// </summary>
-        [JsonProperty("succeedCount")]
-        public int SucceedCount { get; set; }
-
-        /// <summary>
-        /// 删除失败的个数
-        /// </summary>
-        [JsonProperty("failedCount")]
-        public int FailedCount { get; set; }
-
-        [JsonProperty("message")]
-        public string Message { get; set; }
-
-        [JsonProperty("errors")]
-        public IEnumerable<string> Errors { get; set; }
         #endregion
     }
     #endregion
@@ -3618,6 +3611,8 @@ namespace Authing.ApiClient.Types
         public bool? VerifyOldPhone { get; set; }
         #endregion
 
+
+
         public ChangePhoneStrategyInput()
         {
 
@@ -3938,6 +3933,34 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("iat")]
         public int? Iat { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region BatchOperationResult
+    /// <summary>
+    /// 批量删除返回结果
+    /// </summary>
+    public class BatchOperationResult
+    {
+        #region members
+        /// <summary>
+        /// 删除成功的个数
+        /// </summary>
+        [JsonProperty("succeedCount")]
+        public int SucceedCount { get; set; }
+
+        /// <summary>
+        /// 删除失败的个数
+        /// </summary>
+        [JsonProperty("failedCount")]
+        public int FailedCount { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("errors")]
+        public IEnumerable<string> Errors { get; set; }
         #endregion
     }
     #endregion
@@ -5692,16 +5715,16 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// Required
         /// </summary>
-        [JsonProperty("codes")]
-        public IEnumerable<string> Codes { get; set; }
+        [JsonProperty("codeList")]
+        public IEnumerable<string> CodeList { get; set; }
 
-        public DeletePoliciesParam(IEnumerable<string> codes)
+        public DeletePoliciesParam(IEnumerable<string> codeList)
         {
-            this.Codes = codes;
+            this.CodeList = codeList;
         }
         /// <summary>
         /// DeletePoliciesParam.Request 
-        /// <para>Required variables:<br/> { codes=(string[]) }</para>
+        /// <para>Required variables:<br/> { codeList=(string[]) }</para>
         /// <para>Optional variables:<br/> {  }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
@@ -5716,8 +5739,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeletePoliciesDocument = @"
-        mutation deletePolicies($codes: [String!]!) {
-          deletePolicies(codes: $codes) {
+        mutation deletePolicies($codeList: [String!]!) {
+          deletePolicies(codeList: $codeList) {
             message
             code
           }
@@ -5827,7 +5850,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("deleteRoles")]
-        public BatchOperationResult Result { get; set; }
+        public CommonMessage Result { get; set; }
     }
 
     public class DeleteRolesParam
@@ -5836,16 +5859,16 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// Required
         /// </summary>
-        [JsonProperty("codes")]
-        public IEnumerable<string> Codes { get; set; }
+        [JsonProperty("codeList")]
+        public IEnumerable<string> CodeList { get; set; }
 
-        public DeleteRolesParam(IEnumerable<string> codes)
+        public DeleteRolesParam(IEnumerable<string> codeList)
         {
-            this.Codes = codes;
+            this.CodeList = codeList;
         }
         /// <summary>
         /// DeleteRolesParam.Request 
-        /// <para>Required variables:<br/> { codes=(string[]) }</para>
+        /// <para>Required variables:<br/> { codeList=(string[]) }</para>
         /// <para>Optional variables:<br/> {  }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
@@ -5860,12 +5883,10 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeleteRolesDocument = @"
-        mutation deleteRoles($codes: [String!]!) {
-          deleteRoles(codes: $codes) {
-            succeedCount
-            failedCount
+        mutation deleteRoles($codeList: [String!]!) {
+          deleteRoles(codeList: $codeList) {
             message
-            errors
+            code
           }
         }
         ";
@@ -10793,7 +10814,7 @@ namespace Authing.ApiClient.Types
     {
 
         [JsonProperty("policyAssignments")]
-        public PaginatedPolicyAssignment Result { get; set; }
+        public PaginatedPolicyAssignments Result { get; set; }
     }
 
     public class PolicyAssignmentsParam

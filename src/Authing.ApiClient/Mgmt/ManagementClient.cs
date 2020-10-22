@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient
+namespace Authing.ApiClient.Mgmt
 {
     /// <summary>
     /// Authing 管理类
@@ -28,6 +28,11 @@ namespace Authing.ApiClient
             Users = new UsersManagementClient(this);
             Roles = new RolesManagementClient(this);
             Acl = new AclManagementClient(this);
+            Groups = new GroupsManagementClient(this);
+            Udf = new UdfManagementClient(this);
+            Whitelist = new WhitelistManagementClient(this);
+            Userpool = new UserpoolManagementClient(this);
+            Policies = new PoliciesManagementClient(this);
         }
 
         private async Task<AccessTokenRes> GetClientWhenSdkInit(CancellationToken cancellationToken = default)

@@ -1,13 +1,15 @@
 ﻿using Authing.ApiClient.Mgmt;
+using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthingApiClientTest
 {
-    public class TestAclManagementClient
+    public class TestUdfManagementClient
     {
         private ManagementClient client;
 
@@ -27,16 +29,24 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         [Test]
-        public async Task Allow()
+        public async Task Set()
         {
-            await client.Acl.Allow("resource id", "role id");
+            var udf = await client.Udf.Set(UdfTargetType.USER, "key", UdfDataType.STRING, "label");
+            Assert.AreEqual(udf.Key, "key");
         }
 
         [Test]
-        public async Task IsAllowed()
+        public async Task Remove()
         {
-            var isAllowed = await client.Acl.IsAllowed("user id", "action id", "resource id");
-            Assert.AreEqual(isAllowed, true);
+            var udf = await client.Udf.Remove(UdfTargetType.USER, "key");
+            Assert.AreEqual(udf.Code, 200);
+        }
+
+        [Test]
+        public async Task List()
+        {
+            var udf = await client.Udf.List(UdfTargetType.USER);
+            Assert.AreEqual(udf.Count() > 0, true);
         }
     }
 }

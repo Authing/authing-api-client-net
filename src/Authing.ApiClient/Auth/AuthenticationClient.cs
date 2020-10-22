@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Authing.ApiClient
+namespace Authing.ApiClient.Auth
 {
     /// <summary>
     /// Authing 认证客户端类

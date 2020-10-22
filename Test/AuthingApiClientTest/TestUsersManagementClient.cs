@@ -1,4 +1,4 @@
-﻿using Authing.ApiClient;
+﻿using Authing.ApiClient.Mgmt;
 using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;

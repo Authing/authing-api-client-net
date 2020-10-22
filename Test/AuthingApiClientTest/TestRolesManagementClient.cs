@@ -1,4 +1,4 @@
-﻿using Authing.ApiClient;
+﻿using Authing.ApiClient.Mgmt;
 using Authing.ApiClient.Types;
 using NUnit.Framework;
 using System;
@@ -86,7 +86,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var message = await rolesManagementClient.Roles.DeleteMany(new string[] { code });
             role = null;
-            Assert.AreEqual(message.SucceedCount, 1);
+            Assert.AreEqual(message.Code, 1);
         }
 
         [Test]
