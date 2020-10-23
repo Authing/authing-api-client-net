@@ -34,7 +34,7 @@ namespace Authing.ApiClient
         /// <summary>
         /// GraphQL Endpoint
         /// </summary>
-        private string Endpoint { get { return Host + "/v2/graphql"; } }
+        private string Endpoint { get { return Host + "/graphql/v2"; } }
 
         /// <summary>
         /// 加密密码使用的公钥
@@ -58,7 +58,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         private readonly string type = "SDK";
-        private readonly string version = "c-sharp:2.2.0";
+        private readonly string version = "c-sharp:3.0.1";
 
         protected BaseClient(string userPoolId)
         {

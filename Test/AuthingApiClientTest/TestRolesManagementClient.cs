@@ -86,7 +86,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         {
             var message = await rolesManagementClient.Roles.DeleteMany(new string[] { code });
             role = null;
-            Assert.AreEqual(message.Code, 1);
+            Assert.AreEqual(message.Code, 200);
         }
 
         [Test]

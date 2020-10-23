@@ -44,14 +44,15 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task Create()
         {
             var code = RandomString();
-            var list = await client.Groups.Create(code, "name");
-            Assert.AreEqual(list.Code, 200);
+            var group = await client.Groups.Create(code, "name");
+            Assert.AreEqual(group.Code, code);
         }
 
         [Test]
         public async Task Update()
         {
             var code = RandomString();
+            await client.Groups.Create(code, "name");
             var group = await client.Groups.Update(code, description: "asd");
             Assert.AreEqual(group.Code, code);
         }
@@ -60,6 +61,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task Detail()
         {
             var code = RandomString();
+            await client.Groups.Create(code, "name");
             var group = await client.Groups.Detail(code);
             Assert.AreEqual(group.Code, code);
         }
@@ -68,6 +70,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task Delete()
         {
             var code = RandomString();
+            await client.Groups.Create(code, "name");
             var message = await client.Groups.Delete(code);
             Assert.AreEqual(message.Code, 200);
         }
@@ -76,6 +79,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         public async Task DeleteMany()
         {
             var code = RandomString();
+            await client.Groups.Create(code, "name");
             var message = await client.Groups.DeleteMany(new string[] { code });
             Assert.AreEqual(message.Code, 200);
         }
