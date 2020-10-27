@@ -175,3 +175,7 @@ await authenticationClient.UpdateProfile(new UpdateUserInput() {
 - 添加当前用户自定义字段值: `SetUdv`
 - 获取当前用户的自定义字段值： `ListUdv`
 - 删除当前用户自定义字段值: `RemoveUdv`
+
+完整的接口文档请见：
+- [https://docs.authing.co/sdk/sdk-for-csharp/authentication/](https://docs.authing.co/sdk/sdk-for-csharp/authentication/)
+- [https://docs.authing.co/sdk/sdk-for-csharp/management/](https://docs.authing.co/sdk/sdk-for-csharp/management/)
