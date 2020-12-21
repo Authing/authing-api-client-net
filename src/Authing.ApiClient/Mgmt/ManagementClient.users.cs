@@ -54,6 +54,31 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
+            /// 通过手机号、游戏、用户名查找用户
+            /// </summary>
+            /// <param name="username">用户名</param>
+            /// <param name="phone">手机号</param>
+            /// <param name="email">邮箱</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<User> Find(
+                string username = null,
+                string phone = null,
+                string email = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new FindUserParam()
+                {
+                    Username = username,
+                    Phone = phone,
+                    Email = email
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
             /// 创建用户
             /// </summary>
             /// <param name="userInfo">用户信息</param>
