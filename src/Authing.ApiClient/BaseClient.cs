@@ -58,7 +58,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         private readonly string type = "SDK";
-        private readonly string version = "c-sharp:3.0.1";
+        private readonly string version = "c-sharp:3.1.0";
 
         protected BaseClient(string userPoolId)
         {
