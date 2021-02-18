@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
     <RootNamespace>Authing.ApiClient</RootNamespace>
     <PackageIcon>AuthingIcon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Authing/authing-api-client-net</RepositoryUrl>

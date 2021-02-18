@@ -23,6 +23,14 @@ namespace Authing.ApiClient.Auth
         {
         }
 
+        /// <summary>
+        /// 通过用户池 ID 或者 AppId 初始化
+        /// </summary>
+        /// <param name="init">配置参数</param>
+        public AuthenticationClient(Action<InitAuthenticationClientOptions> init) : base(init)
+        {
+        }
+
         private User User
         {
             get

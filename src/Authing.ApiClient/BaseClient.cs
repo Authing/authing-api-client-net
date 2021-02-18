@@ -11,15 +11,33 @@ using System.Net.Http.Headers;
 
 namespace Authing.ApiClient
 {
+
+    public class InitAuthenticationClientOptions
+    {
+        public string AppId { get; set; }
+        public string UserPoolId { get; set; }
+    }
+
     /// <summary>
     /// 客户端基类
     /// </summary>
     public abstract class BaseClient
     {
         /// <summary>
-        /// 用户池 ID，必填
+        /// 用户池 ID，注意用户池 ID 与 AppID，必填其一
         /// </summary>
         public string UserPoolId { get; private set; }
+
+        /// <summary>
+        /// AppID，注意用户池 ID 与 AppID，必填其一
+        /// </summary>
+        public string AppId { get; private set; }
+
+        /// <summary>
+        /// 配置对象
+        /// </summary>
+        /// <returns></returns>
+        public InitAuthenticationClientOptions initAuthenticationClientOptions = new();
 
         /// <summary>
         /// 接口超时时间，默认为 10 秒
@@ -63,6 +81,23 @@ GKl64GDcIq3au+aqJQIDAQAB
         protected BaseClient(string userPoolId)
         {
             UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
+        }
+
+        protected BaseClient(Action<InitAuthenticationClientOptions> init)
+        {
+            if (init == null)
+            {
+                throw new ArgumentNullException(nameof(init));
+            }
+            init(initAuthenticationClientOptions);
+            UserPoolId = initAuthenticationClientOptions.UserPoolId;
+            AppId = initAuthenticationClientOptions.AppId;
+            if (UserPoolId == string.Empty && AppId == string.Empty)
+            {
+                throw new Exception("参数错误");
+            }
+            // UserPoolId ?? AppId ?? Console.WriteLine("oko");
+            // UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
         }
 
         /// <summary>
@@ -148,6 +183,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             };
 
             httpClient.DefaultRequestHeaders.Add("x-authing-userpool-id", UserPoolId);
+            httpClient.DefaultRequestHeaders.Add("x-authing-app-id", AppId);
             httpClient.DefaultRequestHeaders.Add("x-authing-request-from", type);
             httpClient.DefaultRequestHeaders.Add("x-authing-sdk-version", version);
 
