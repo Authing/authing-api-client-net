@@ -4,11 +4,12 @@ Authing C# SDK 由两部分组成：`ManagementClient` 和 `AuthenticationClient
 
 你应该将初始化过后的 `ManagementClient` 实例设置为一个全局变量（只初始化一次），而 `AuthenticationClient` 应该每次请求初始化一个。
 
-- [安装](#安装)
-- [使用 ManagementClient](#使用-managementclient)
-  - [可用的 Management 模块](#可用的-management-模块)
-- [使用 AuthenticationClient](#使用-authenticationclient)
-  - [可用的 Authentication 方法](#可用的-authentication-方法)
+- [Authing - C](#authing---c)
+  - [安装](#安装)
+  - [使用 ManagementClient](#使用-managementclient)
+    - [可用的 Management 模块](#可用的-management-模块)
+  - [使用 AuthenticationClient](#使用-authenticationclient)
+    - [可用的 Authentication 方法](#可用的-authentication-方法)
 
 ## 安装
 
@@ -114,12 +115,25 @@ using Authing.ApiClient;
 var authenticationClient = new AuthenticationClient("AUTHING_USERPOOL_ID");
 ```
 
+或者通过委托设置配置
+
+```csharp
+using Authing.ApiClient;
+
+
+var authenticationClient = new AuthenticationClient(opt =>
+            {
+                opt.AppId = "AUTHING_APP_ID";
+                opt.UserPoolId = "AUTHING_USERPOOL_ID";
+            });
+```
+
 接下来可以进行注册登录等操作：
 
 ```csharp
 var username = GetRandomString(10);
 var password = GetRandomString(10);
-var user = await authenticationClient.loginByUsername(
+var user = await authenticationClient.LoginByUsername(
     username,
     password,
 )
