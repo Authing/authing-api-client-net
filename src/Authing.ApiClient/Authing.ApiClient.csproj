@@ -14,7 +14,9 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 3.0.1
+    <PackageReleaseNotes>Version 3.1.0
+      - 添加 UsersManagementCliAent.Find 方法
+Version 3.0.1
       - 修复 sdk version
 Version 3.0.0
       - 接口全面升级：使用 Authing v2 版接口
@@ -34,7 +36,7 @@ Version 1.1.0
       - 增加十个接口，详见文档。
 Version 1.0.0
       - 提供了注册、登录、更新等 11 个常用的接口。</PackageReleaseNotes>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

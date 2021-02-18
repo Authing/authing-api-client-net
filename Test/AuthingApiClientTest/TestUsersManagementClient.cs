@@ -59,6 +59,16 @@ GKl64GDcIq3au+aqJQIDAQAB
             Assert.AreEqual(users.TotalCount > 0, true);
         }
 
+
+        [Test]
+        public async Task Find()
+        {
+            var user = await managementClient.Users.Find(
+                email: email
+            );
+            Assert.AreEqual(user.Email, email);
+        }
+
         [Test]
         public void Create()
         {
