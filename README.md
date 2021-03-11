@@ -4,24 +4,19 @@ Authing C# SDK 由两部分组成：`ManagementClient` 和 `AuthenticationClient
 
 你应该将初始化过后的 `ManagementClient` 实例设置为一个全局变量（只初始化一次），而 `AuthenticationClient` 应该每次请求初始化一个。
 
-- [Authing - C](#authing---c)
-  - [安装](#安装)
-  - [使用 ManagementClient](#使用-managementclient)
-    - [可用的 Management 模块](#可用的-management-模块)
-  - [使用 AuthenticationClient](#使用-authenticationclient)
-    - [可用的 Authentication 方法](#可用的-authentication-方法)
-
 ## 安装
+
+通过 Nuget 安装：
 
 ```
 Install-Package Authing.ApiClient
 ```
 
-## 使用 ManagementClient
+## 使用管理模块
 
 初始化 `ManagementClient` 需要 `userPoolId`（用户池 ID） 和 `secret`（用户池密钥）:
 
-> 你可以在此[了解如何获取 UserPoolId 和 Secret](https://docs.authing.cn/others/faq.html) .
+> 你可以在此[了解如何获取 UserPoolId 和 Secret](https://docs.authing.cn/v2/guides/faqs/get-userpool-id-and-secret.html) .
 
 ```csharp
 using Authing.ApiClient;
@@ -32,99 +27,22 @@ var managementClient = new ManagementClient("AUTHING_USERPOOL_ID", "AUTHING_USER
 现在 `ManagementClient()` 实例就可以使用了。例如可以获取用户池中的用户列表：
 
 ```csharp
+var managementClient = new ManagementClient("AUTHING_USERPOOL_ID", "AUTHING_USERPOOL_SECRET");
 var data = await managementClient.Users.List();
 ```
 
-返回的数据如下：
+## 使用认证模块
 
-```json
-{
-  "totalCount": 1,
-  "list": [
-    {
-      "id": "5f7ddfe62ba819802422362e",
-      "arn": "arn:cn:authing:5f7a993eb9b49dcd5c021e40:user:5f7ddfe62ba819802422362e",
-      "userPoolId": "5f7a993eb9b49dcd5c021e40",
-      "username": "nhxcpzmklk",
-      "email": null,
-      "emailVerified": false,
-      "phone": null,
-      "phoneVerified": false,
-      "unionid": null,
-      "openid": null,
-      "nickname": null,
-      "registerSource": [
-        "import:manual"
-      ],
-      "photo": "https://usercontents.authing.cn/authing-avatar.png",
-      "password": "a56f21e5659428f9b353be4ed667fc05",
-      "oauth": null,
-      "token": null,
-      "tokenExpiredAt": null,
-      "loginsCount": 0,
-      "lastLogin": null,
-      "lastIP": null,
-      "signedUp": "2020-10-07T23:33:58+08:00",
-      "blocked": false,
-      "isDeleted": false,
-      "device": null,
-      "browser": null,
-      "company": null,
-      "name": null,
-      "givenName": null,
-      "familyName": null,
-      "middleName": null,
-      "profile": null,
-      "preferredUsername": null,
-      "website": null,
-      "gender": "U",
-      "birthdate": null,
-      "zoneinfo": null,
-      "locale": null,
-      "address": null,
-      "formatted": null,
-      "streetAddress": null,
-      "locality": null,
-      "region": null,
-      "postalCode": null,
-      "country": null,
-      "createdAt": "2020-10-07T23:33:58+08:00",
-      "updatedAt": "2020-10-07T23:33:58+08:00",
-    }
-  ]
-}
-```
+初始化 `ManagementClient` 需要 `AppId` （应用 ID）：
 
-
-### 可用的 Management 模块
-
-- Users `ManagementClient().users`
-- Roles `ManagementClient().roles`
-- Access Control: `ManagementClient().acl`
-
-## 使用 AuthenticationClient
-
-初始化 `ManagementClient` 需要 `userPoolId`（用户池 ID）：
-
-> 你可以在此[了解如何获取 UserPoolId](https://docs.authing.cn/others/faq.html) .
-
+> 你可以在控制台的 **应用** 中查看自己的应用列表。
 
 ```csharp
 using Authing.ApiClient;
-
-var authenticationClient = new AuthenticationClient("AUTHING_USERPOOL_ID");
-```
-
-或者通过委托设置配置
-
-```csharp
-using Authing.ApiClient;
-
 
 var authenticationClient = new AuthenticationClient(opt =>
             {
                 opt.AppId = "AUTHING_APP_ID";
-                opt.UserPoolId = "AUTHING_USERPOOL_ID";
             });
 ```
 
@@ -152,8 +70,11 @@ await authenticationClient.UpdateProfile(new UpdateUserInput() {
 ```csharp
 using Authing.ApiClient;
 
-var authenticationClient = new AuthenticationClient("AUTHING_USERPOOL_ID");
-authenticationClient.AccessToken = "access token";
+var authenticationClient = new AuthenticationClient(opt =>
+            {
+                opt.AppId = "AUTHING_APP_ID";
+            });
+authenticationClient.AccessToken = "USER_TOKEN";
 ```
 
 再次执行 `UpdateProfile` 方法，发现也成功了:
@@ -164,7 +85,13 @@ await authenticationClient.UpdateProfile(new UpdateUserInput() {
 })
 ```
 
-### 可用的 Authentication 方法
+## 私有化部署
+
+**私有化部署**场景需要指定你私有化的 Authing 服务的 GraphQL 端点（**不带协议头和 Path**），如果你不清楚可以联系 Authing IDaaS 服务管理员。
+
+## 接口索引
+
+可用的 Authentication 方法
 
 - 获取当前用户的用户资料: `CurrentUser`
 - 使用邮箱注册: `RegisterByEmail`
@@ -190,6 +117,28 @@ await authenticationClient.UpdateProfile(new UpdateUserInput() {
 - 获取当前用户的自定义字段值： `ListUdv`
 - 删除当前用户自定义字段值: `RemoveUdv`
 
-完整的接口文档请见：
-- [https://docs.authing.co/sdk/sdk-for-csharp/authentication/](https://docs.authing.co/sdk/sdk-for-csharp/authentication/)
-- [https://docs.authing.co/sdk/sdk-for-csharp/management/](https://docs.authing.co/sdk/sdk-for-csharp/management/)
+详情请见：
+
+[用户认证模块](https://docs.authing.cn/v2/reference/sdk-for-csharp/authentication/)
+
+管理模块包含以下子模块：
+
+[管理用户](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/UsersManagementClient.html)
+
+[管理角色](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/RolesManagementClient.html)
+
+[管理策略](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/PoliciesManagementClient.html)
+
+[管理权限、访问控制](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/AclManagementClient.html)
+
+[管理分组](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/GroupsManagementClient.html)
+
+[管理用户自定义字段](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/UdfManagementClient.html)
+
+[管理用户池配置](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/UserpoolManagementClient.html)
+
+[管理注册白名单](https://docs.authing.cn/v2/reference/sdk-for-csharp/management/WhitelistManagementClient.html)
+
+## 获取帮助
+
+Join us on Gitter: [#authing-chat](https://gitter.im/authing-chat/community)
