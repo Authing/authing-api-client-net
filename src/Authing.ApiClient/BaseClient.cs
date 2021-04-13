@@ -100,6 +100,18 @@ GKl64GDcIq3au+aqJQIDAQAB
             // UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
         }
 
+        public string Token
+        {
+            get
+            {
+                return AccessToken;
+            }
+            set
+            {
+                AccessToken = value;
+            }
+        }
+
         /// <summary>
         /// 设置 AccessToken 以访问某些接口
         /// </summary>
