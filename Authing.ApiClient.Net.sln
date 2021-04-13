@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authing.ApiClient", "src\Authing.ApiClient\Authing.ApiClient.csproj", "{16F59BA3-E511-47C0-B905-A6BE881BC024}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthingApiClientTest", "test\AuthingApiClientTest\AuthingApiClientTest.csproj", "{67ABC5FE-C078-4AA1-94AF-2449DDDB33EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67ABC5FE-C078-4AA1-94AF-2449DDDB33EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67ABC5FE-C078-4AA1-94AF-2449DDDB33EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67ABC5FE-C078-4AA1-94AF-2449DDDB33EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67ABC5FE-C078-4AA1-94AF-2449DDDB33EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
