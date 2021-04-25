@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,6 +11,15 @@ namespace Authing.ApiClient.Types
     public class Query
     {
         #region members
+        [JsonProperty("isActionAllowed")]
+        public bool IsActionAllowed { get; set; }
+
+        [JsonProperty("isActionDenied")]
+        public bool IsActionDenied { get; set; }
+
+        [JsonProperty("authorizedTargets")]
+        public PaginatedAuthorizedTargets AuthorizedTargets { get; set; }
+
         [JsonProperty("qiniuUptoken")]
         public string QiniuUptoken { get; set; }
 
@@ -104,14 +113,11 @@ namespace Authing.ApiClient.Types
         [JsonProperty("isRootNode")]
         public bool? IsRootNode { get; set; }
 
+        [JsonProperty("searchNodes")]
+        public IEnumerable<Node> SearchNodes { get; set; }
+
         [JsonProperty("checkPasswordStrength")]
         public CheckPasswordStrengthResult CheckPasswordStrength { get; set; }
-
-        [JsonProperty("isActionAllowed")]
-        public bool IsActionAllowed { get; set; }
-
-        [JsonProperty("isActionDenied")]
-        public bool IsActionDenied { get; set; }
 
         [JsonProperty("policy")]
         public Policy Policy { get; set; }
@@ -121,6 +127,12 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("policyAssignments")]
         public PaginatedPolicyAssignments PolicyAssignments { get; set; }
+
+        /// <summary>
+        /// 获取一个对象被授权的资源列表
+        /// </summary>
+        [JsonProperty("authorizedResources")]
+        public PaginatedAuthorizedResources AuthorizedResources { get; set; }
 
         /// <summary>
         /// 通过 **code** 查询角色详情
@@ -146,6 +158,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("udf")]
         public IEnumerable<UserDefinedField> Udf { get; set; }
 
+        /// <summary>
+        /// 批量查询多个对象的自定义数据
+        /// </summary>
+        [JsonProperty("udfValueBatch")]
+        public IEnumerable<UserDefinedDataMap> UdfValueBatch { get; set; }
+
         [JsonProperty("user")]
         public User User { get; set; }
 
@@ -154,6 +172,12 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("users")]
         public PaginatedUsers Users { get; set; }
+
+        /// <summary>
+        /// 已归档的用户列表
+        /// </summary>
+        [JsonProperty("archivedUsers")]
+        public PaginatedUsers ArchivedUsers { get; set; }
 
         [JsonProperty("searchUser")]
         public PaginatedUsers SearchUser { get; set; }
@@ -193,6 +217,119 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("whitelist")]
         public IEnumerable<WhiteList> Whitelist { get; set; }
+        #endregion
+    }
+    #endregion
+    public enum ResourceType
+    {
+        [JsonProperty("DATA")]
+        DATA,
+        [JsonProperty("API")]
+        API,
+        [JsonProperty("MENU")]
+        MENU,
+        [JsonProperty("UI")]
+        UI,
+        [JsonProperty("BUTTON")]
+        BUTTON
+    }
+
+    public enum PolicyAssignmentTargetType
+    {
+        [JsonProperty("USER")]
+        USER,
+        [JsonProperty("ROLE")]
+        ROLE,
+        [JsonProperty("GROUP")]
+        GROUP,
+        [JsonProperty("ORG")]
+        ORG,
+        [JsonProperty("AK_SK")]
+        AK_SK
+    }
+
+
+    #region AuthorizedTargetsActionsInput
+    public class AuthorizedTargetsActionsInput
+    {
+        #region members
+        [JsonProperty("op")]
+        [JsonRequired]
+        public Operator Op { get; set; }
+
+        [JsonProperty("list")]
+        [JsonRequired]
+        public IEnumerable<string> List { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="op">op</param>
+        /// <param name="list">list</param>
+        /// </summary>
+
+        public AuthorizedTargetsActionsInput(Operator op, IEnumerable<string> list)
+        {
+            this.Op = op;
+            this.List = list;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+    public enum Operator
+    {
+        [JsonProperty("AND")]
+        AND,
+        [JsonProperty("OR")]
+        OR
+    }
+
+
+    #region PaginatedAuthorizedTargets
+    public class PaginatedAuthorizedTargets
+    {
+        #region members
+        [JsonProperty("list")]
+        public IEnumerable<ResourcePermissionAssignment> List { get; set; }
+
+        [JsonProperty("totalCount")]
+        public int? TotalCount { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region ResourcePermissionAssignment
+    public class ResourcePermissionAssignment
+    {
+        #region members
+        [JsonProperty("targetType")]
+        public PolicyAssignmentTargetType? TargetType { get; set; }
+
+        [JsonProperty("targetIdentifier")]
+        public string TargetIdentifier { get; set; }
+
+        [JsonProperty("actions")]
+        public IEnumerable<string> Actions { get; set; }
         #endregion
     }
     #endregion
@@ -499,6 +636,12 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("users")]
         public PaginatedUsers Users { get; set; }
+
+        /// <summary>
+        /// 被授权访问的所有资源
+        /// </summary>
+        [JsonProperty("authorizedResources")]
+        public PaginatedAuthorizedResources AuthorizedResources { get; set; }
         #endregion
     }
     #endregion
@@ -528,6 +671,12 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("arn")]
         public string Arn { get; set; }
+
+        /// <summary>
+        /// 用户在组织机构中的状态
+        /// </summary>
+        [JsonProperty("status")]
+        public UserStatus? Status { get; set; }
 
         /// <summary>
         /// 用户池 ID
@@ -730,14 +879,62 @@ namespace Authing.ApiClient.Types
         [JsonProperty("updatedAt")]
         public string UpdatedAt { get; set; }
 
+        /// <summary>
+        /// 用户所在的角色列表
+        /// </summary>
         [JsonProperty("roles")]
         public PaginatedRoles Roles { get; set; }
 
+        /// <summary>
+        /// 用户所在的分组列表
+        /// </summary>
         [JsonProperty("groups")]
         public PaginatedGroups Groups { get; set; }
+
+        /// <summary>
+        /// 用户所在的部门列表
+        /// </summary>
+        [JsonProperty("departments")]
+        public PaginatedDepartments Departments { get; set; }
+
+        /// <summary>
+        /// 被授权访问的所有资源
+        /// </summary>
+        [JsonProperty("authorizedResources")]
+        public PaginatedAuthorizedResources AuthorizedResources { get; set; }
+
+        /// <summary>
+        /// 用户外部 ID
+        /// </summary>
+        [JsonProperty("externalId")]
+        public string ExternalId { get; set; }
         #endregion
     }
     #endregion
+    public enum UserStatus
+    {
+        /// <summary>
+        /// 已停用
+        /// </summary>
+        [JsonProperty("Suspended")]
+        Suspended,
+        /// <summary>
+        /// 已离职
+        /// </summary>
+        [JsonProperty("Resigned")]
+        Resigned,
+        /// <summary>
+        /// 已激活（正常状态）
+        /// </summary>
+        [JsonProperty("Activated")]
+        Activated,
+        /// <summary>
+        /// 已归档
+        /// </summary>
+        [JsonProperty("Archived")]
+        Archived
+    }
+
 
     #region Identity
     public class Identity
@@ -763,6 +960,12 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("userPoolId")]
         public string UserPoolId { get; set; }
+
+        [JsonProperty("refreshToken")]
+        public string RefreshToken { get; set; }
+
+        [JsonProperty("accessToken")]
+        public string AccessToken { get; set; }
         #endregion
     }
     #endregion
@@ -784,6 +987,12 @@ namespace Authing.ApiClient.Types
     public class Role
     {
         #region members
+        /// <summary>
+        /// 权限组 code
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         /// <summary>
         /// 唯一标志 code
         /// </summary>
@@ -827,10 +1036,45 @@ namespace Authing.ApiClient.Types
         public PaginatedUsers Users { get; set; }
 
         /// <summary>
+        /// 被授权访问的所有资源
+        /// </summary>
+        [JsonProperty("authorizedResources")]
+        public PaginatedAuthorizedResources AuthorizedResources { get; set; }
+
+        /// <summary>
         /// 父角色
         /// </summary>
         [JsonProperty("parent")]
         public Role Parent { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region PaginatedAuthorizedResources
+    public class PaginatedAuthorizedResources
+    {
+        #region members
+        [JsonProperty("totalCount")]
+        public int TotalCount { get; set; }
+
+        [JsonProperty("list")]
+        public IEnumerable<AuthorizedResource> List { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region AuthorizedResource
+    public class AuthorizedResource
+    {
+        #region members
+        [JsonProperty("code")]
+        public string Code { get; set; }
+
+        [JsonProperty("type")]
+        public ResourceType? Type { get; set; }
+
+        [JsonProperty("actions")]
+        public IEnumerable<string> Actions { get; set; }
         #endregion
     }
     #endregion
@@ -848,39 +1092,37 @@ namespace Authing.ApiClient.Types
     }
     #endregion
 
-    #region Mfa
-    public class Mfa
+    #region PaginatedDepartments
+    public class PaginatedDepartments
     {
         #region members
-        /// <summary>
-        /// MFA ID
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
+        [JsonProperty("list")]
+        public IEnumerable<UserDepartment> List { get; set; }
+
+        [JsonProperty("totalCount")]
+        public int TotalCount { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region UserDepartment
+    public class UserDepartment
+    {
+        #region members
+        [JsonProperty("department")]
+        public Node Department { get; set; }
 
         /// <summary>
-        /// 用户 ID
+        /// 是否为主部门
         /// </summary>
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
+        [JsonProperty("isMainDepartment")]
+        public bool IsMainDepartment { get; set; }
 
         /// <summary>
-        /// 用户池 ID
+        /// 加入该部门的时间
         /// </summary>
-        [JsonProperty("userPoolId")]
-        public string UserPoolId { get; set; }
-
-        /// <summary>
-        /// 是否开启 MFA
-        /// </summary>
-        [JsonProperty("enable")]
-        public bool Enable { get; set; }
-
-        /// <summary>
-        /// 密钥
-        /// </summary>
-        [JsonProperty("secret")]
-        public string Secret { get; set; }
+        [JsonProperty("joinedAt")]
+        public string JoinedAt { get; set; }
         #endregion
     }
     #endregion
@@ -891,6 +1133,12 @@ namespace Authing.ApiClient.Types
         #region members
         [JsonProperty("id")]
         public string Id { get; set; }
+
+        /// <summary>
+        /// 组织机构 ID
+        /// </summary>
+        [JsonProperty("orgId")]
+        public string OrgId { get; set; }
 
         /// <summary>
         /// 节点名称
@@ -935,13 +1183,19 @@ namespace Authing.ApiClient.Types
         public bool? Root { get; set; }
 
         /// <summary>
-        /// 距离父节点的深度（如果是查询整棵树，返回的 **depth** 为距离根节点的深度，如果是查询某个节点的子节点，返回的 **depath** 指的是距离该节点的深度。）
+        /// 距离父节点的深度（如果是查询整棵树，返回的 **depth** 为距离根节点的深度，如果是查询某个节点的子节点，返回的 **depth** 指的是距离该节点的深度。）
         /// </summary>
         [JsonProperty("depth")]
         public int? Depth { get; set; }
 
         [JsonProperty("path")]
         public IEnumerable<string> Path { get; set; }
+
+        [JsonProperty("codePath")]
+        public IEnumerable<string> CodePath { get; set; }
+
+        [JsonProperty("namePath")]
+        public IEnumerable<string> NamePath { get; set; }
 
         [JsonProperty("createdAt")]
         public string CreatedAt { get; set; }
@@ -960,6 +1214,49 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("users")]
         public PaginatedUsers Users { get; set; }
+
+        /// <summary>
+        /// 被授权访问的所有资源
+        /// </summary>
+        [JsonProperty("authorizedResources")]
+        public PaginatedAuthorizedResources AuthorizedResources { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region Mfa
+    public class Mfa
+    {
+        #region members
+        /// <summary>
+        /// MFA ID
+        /// </summary>
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 用户 ID
+        /// </summary>
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// 用户池 ID
+        /// </summary>
+        [JsonProperty("userPoolId")]
+        public string UserPoolId { get; set; }
+
+        /// <summary>
+        /// 是否开启 MFA
+        /// </summary>
+        [JsonProperty("enable")]
+        public bool Enable { get; set; }
+
+        /// <summary>
+        /// 密钥
+        /// </summary>
+        [JsonProperty("secret")]
+        public string Secret { get; set; }
         #endregion
     }
     #endregion
@@ -1019,6 +1316,12 @@ namespace Authing.ApiClient.Types
     public class Policy
     {
         #region members
+        /// <summary>
+        /// 权限组 code
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         [JsonProperty("code")]
         public string Code { get; set; }
 
@@ -1064,6 +1367,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("effect")]
         public PolicyEffect? Effect { get; set; }
+
+        [JsonProperty("condition")]
+        public IEnumerable<PolicyStatementCondition> Condition { get; set; }
         #endregion
     }
     #endregion
@@ -1075,6 +1381,22 @@ namespace Authing.ApiClient.Types
         DENY
     }
 
+
+    #region PolicyStatementCondition
+    public class PolicyStatementCondition
+    {
+        #region members
+        [JsonProperty("param")]
+        public string Param { get; set; }
+
+        [JsonProperty("operator")]
+        public string Operator { get; set; }
+
+        [JsonProperty("value")]
+        public any Value { get; set; }
+        #endregion
+    }
+    #endregion
 
     #region PolicyAssignment
     public class PolicyAssignment
@@ -1091,14 +1413,6 @@ namespace Authing.ApiClient.Types
         #endregion
     }
     #endregion
-    public enum PolicyAssignmentTargetType
-    {
-        [JsonProperty("USER")]
-        USER,
-        [JsonProperty("ROLE")]
-        ROLE
-    }
-
 
     #region PaginatedPolicies
     public class PaginatedPolicies
@@ -1156,6 +1470,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("value")]
         public string Value { get; set; }
+
+        [JsonProperty("label")]
+        public string Label { get; set; }
         #endregion
     }
     #endregion
@@ -1192,6 +1509,143 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("options")]
         public string Options { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region UserDefinedDataMap
+    public class UserDefinedDataMap
+    {
+        #region members
+        [JsonProperty("targetId")]
+        public string TargetId { get; set; }
+
+        [JsonProperty("data")]
+        public IEnumerable<UserDefinedData> Data { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region SearchUserDepartmentOpt
+    public class SearchUserDepartmentOpt
+    {
+        #region members
+        [JsonProperty("departmentId")]
+        public string DepartmentId { get; set; }
+
+        [JsonProperty("includeChildrenDepartments")]
+        public bool? IncludeChildrenDepartments { get; set; }
+        #endregion
+
+
+
+        public SearchUserDepartmentOpt()
+        {
+
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region SearchUserGroupOpt
+    public class SearchUserGroupOpt
+    {
+        #region members
+        [JsonProperty("code")]
+        public string Code { get; set; }
+        #endregion
+
+
+
+        public SearchUserGroupOpt()
+        {
+
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region SearchUserRoleOpt
+    public class SearchUserRoleOpt
+    {
+        #region members
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        [JsonProperty("code")]
+        [JsonRequired]
+        public string Code { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="code">code</param>
+        /// </summary>
+
+        public SearchUserRoleOpt(string code)
+        {
+            this.Code = code;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
         #endregion
     }
     #endregion
@@ -1259,6 +1713,9 @@ namespace Authing.ApiClient.Types
         [JsonProperty("jwtSecret")]
         public string JwtSecret { get; set; }
 
+        [JsonProperty("ownerId")]
+        public string OwnerId { get; set; }
+
         [JsonProperty("userpoolTypes")]
         public IEnumerable<UserPoolType> UserpoolTypes { get; set; }
 
@@ -1288,6 +1745,12 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("registerDisabled")]
         public bool RegisterDisabled { get; set; }
+
+        /// <summary>
+        /// 是否开启用户池下应用间单点登录
+        /// </summary>
+        [JsonProperty("appSsoEnabled")]
+        public bool AppSsoEnabled { get; set; }
 
         /// <summary>
         /// 用户池禁止注册后，是否还显示微信小程序扫码登录。当 **showWXMPQRCode** 为 **true** 时，
@@ -1361,6 +1824,30 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("customSMSProvider")]
         public CustomSMSProvider CustomSmsProvider { get; set; }
+
+        /// <summary>
+        /// 用户池套餐类型
+        /// </summary>
+        [JsonProperty("packageType")]
+        public int? PackageType { get; set; }
+
+        /// <summary>
+        /// 是否使用自定义数据库 CUSTOM_USER_STORE 模式
+        /// </summary>
+        [JsonProperty("useCustomUserStore")]
+        public bool? UseCustomUserStore { get; set; }
+
+        /// <summary>
+        /// 是否要求邮箱必须验证才能登录（如果是通过邮箱登录的话）
+        /// </summary>
+        [JsonProperty("loginRequireEmailVerified")]
+        public bool? LoginRequireEmailVerified { get; set; }
+
+        /// <summary>
+        /// 短信验证码长度
+        /// </summary>
+        [JsonProperty("verifyCodeLength")]
+        public int? VerifyCodeLength { get; set; }
         #endregion
     }
     #endregion
@@ -1506,30 +1993,8 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
-        [JsonProperty("config253")]
-        public SMSConfig253 Config253 { get; set; }
-        #endregion
-    }
-    #endregion
-
-    #region SMSConfig253
-    public class SMSConfig253
-    {
-        #region members
-        [JsonProperty("sendSmsApi")]
-        public string SendSmsApi { get; set; }
-
-        [JsonProperty("appId")]
-        public string AppId { get; set; }
-
-        [JsonProperty("key")]
-        public string Key { get; set; }
-
-        [JsonProperty("template")]
-        public string Template { get; set; }
-
-        [JsonProperty("ttl")]
-        public int Ttl { get; set; }
+        [JsonProperty("config")]
+        public string Config { get; set; }
         #endregion
     }
     #endregion
@@ -1594,10 +2059,16 @@ namespace Authing.ApiClient.Types
     {
         #region members
         /// <summary>
-        /// 创建社会化登录服务商
+        /// 允许操作某个资源
         /// </summary>
-        [JsonProperty("createSocialConnection")]
-        public SocialConnection CreateSocialConnection { get; set; }
+        [JsonProperty("allow")]
+        public CommonMessage Allow { get; set; }
+
+        /// <summary>
+        /// 将一个（类）资源授权给用户、角色、分组、组织机构，且可以分别指定不同的操作权限。
+        /// </summary>
+        [JsonProperty("authorizeResource")]
+        public CommonMessage AuthorizeResource { get; set; }
 
         /// <summary>
         /// 配置社会化登录
@@ -1616,6 +2087,12 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("disableSocialConnectionInstance")]
         public SocialConnectionInstance DisableSocialConnectionInstance { get; set; }
+
+        /// <summary>
+        /// 设置用户在某个组织机构内所在的主部门
+        /// </summary>
+        [JsonProperty("setMainDepartment")]
+        public CommonMessage SetMainDepartment { get; set; }
 
         /// <summary>
         /// 配置自定义邮件模版
@@ -1717,6 +2194,12 @@ namespace Authing.ApiClient.Types
         public Org AddNode { get; set; }
 
         /// <summary>
+        /// 添加子节点
+        /// </summary>
+        [JsonProperty("addNodeV2")]
+        public Node AddNodeV2 { get; set; }
+
+        /// <summary>
         /// 修改节点
         /// </summary>
         [JsonProperty("updateNode")]
@@ -1761,14 +2244,20 @@ namespace Authing.ApiClient.Types
         [JsonProperty("addPolicyAssignments")]
         public CommonMessage AddPolicyAssignments { get; set; }
 
-        [JsonProperty("removePolicyAssignments")]
-        public CommonMessage RemovePolicyAssignments { get; set; }
+        /// <summary>
+        /// 开启授权
+        /// </summary>
+        [JsonProperty("enablePolicyAssignment")]
+        public CommonMessage EnablePolicyAssignment { get; set; }
 
         /// <summary>
-        /// 允许操作某个资源
+        /// 开启授权
         /// </summary>
-        [JsonProperty("allow")]
-        public CommonMessage Allow { get; set; }
+        [JsonProperty("disbalePolicyAssignment")]
+        public CommonMessage DisbalePolicyAssignment { get; set; }
+
+        [JsonProperty("removePolicyAssignments")]
+        public CommonMessage RemovePolicyAssignments { get; set; }
 
         [JsonProperty("registerByUsername")]
         public User RegisterByUsername { get; set; }
@@ -1815,6 +2304,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("revokeRole")]
         public CommonMessage RevokeRole { get; set; }
 
+        /// <summary>
+        /// 使用子账号登录
+        /// </summary>
+        [JsonProperty("loginBySubAccount")]
+        public User LoginBySubAccount { get; set; }
+
         [JsonProperty("setUdf")]
         public UserDefinedField SetUdf { get; set; }
 
@@ -1824,8 +2319,14 @@ namespace Authing.ApiClient.Types
         [JsonProperty("setUdv")]
         public IEnumerable<UserDefinedData> SetUdv { get; set; }
 
+        [JsonProperty("setUdfValueBatch")]
+        public CommonMessage SetUdfValueBatch { get; set; }
+
         [JsonProperty("removeUdv")]
         public IEnumerable<UserDefinedData> RemoveUdv { get; set; }
+
+        [JsonProperty("setUdvBatch")]
+        public IEnumerable<UserDefinedData> SetUdvBatch { get; set; }
 
         [JsonProperty("refreshToken")]
         public RefreshToken RefreshToken { get; set; }
@@ -1853,6 +2354,12 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("bindPhone")]
         public User BindPhone { get; set; }
+
+        /// <summary>
+        /// 绑定邮箱
+        /// </summary>
+        [JsonProperty("bindEmail")]
+        public User BindEmail { get; set; }
 
         /// <summary>
         /// 解绑定手机号，调用此接口需要当前用户已绑定手机号并且绑定了其他登录方式
@@ -1917,91 +2424,52 @@ namespace Authing.ApiClient.Types
     }
     #endregion
 
-    #region CreateSocialConnectionInput
-    public class CreateSocialConnectionInput
+    #region CommonMessage
+    public class CommonMessage
     {
         #region members
-        [JsonProperty("provider")]
-        [JsonRequired]
-        public string Provider { get; set; }
-
-        [JsonProperty("name")]
-        [JsonRequired]
-        public string Name { get; set; }
-
-        [JsonProperty("logo")]
-        [JsonRequired]
-        public string Logo { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("fields")]
-        public IEnumerable<SocialConnectionFieldInput> Fields { get; set; }
-        #endregion
-
+        /// <summary>
+        /// 可读的接口响应说明，请以业务状态码 code 作为判断业务是否成功的标志
+        /// </summary>
+        [JsonProperty("message")]
+        public string Message { get; set; }
 
         /// <summary>
-        /// <param name="provider">provider</param>
-        /// <param name="name">name</param>
-        /// <param name="logo">logo</param>
+        /// 业务状态码（与 HTTP 响应码不同），但且仅当为 200 的时候表示操作成功表示，详细说明请见：
+        /// [Authing 错误代码列表](https://docs.authing.co/advanced/error-code.html)
         /// </summary>
-
-        public CreateSocialConnectionInput(string provider, string name, string logo)
-        {
-            this.Provider = provider;
-            this.Name = name;
-            this.Logo = logo;
-        }
-
-        #region methods
-        public dynamic GetInputObject()
-        {
-            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
-
-            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            foreach (var propertyInfo in properties)
-            {
-                var value = propertyInfo.GetValue(this);
-                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
-
-                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
-                if (requiredProp || value != defaultValue)
-                {
-                    d[propertyInfo.Name] = value;
-                }
-            }
-            return d;
-        }
+        [JsonProperty("code")]
+        public int? Code { get; set; }
         #endregion
     }
     #endregion
 
-    #region SocialConnectionFieldInput
-    public class SocialConnectionFieldInput
+    #region AuthorizeResourceOpt
+    public class AuthorizeResourceOpt
     {
         #region members
-        [JsonProperty("key")]
-        public string Key { get; set; }
+        [JsonProperty("targetType")]
+        [JsonRequired]
+        public PolicyAssignmentTargetType TargetType { get; set; }
 
-        [JsonProperty("label")]
-        public string Label { get; set; }
+        [JsonProperty("targetIdentifier")]
+        [JsonRequired]
+        public string TargetIdentifier { get; set; }
 
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
-        [JsonProperty("placeholder")]
-        public string Placeholder { get; set; }
-
-        [JsonProperty("children")]
-        public IEnumerable<SocialConnectionFieldInput> Children { get; set; }
+        [JsonProperty("actions")]
+        public IEnumerable<string> Actions { get; set; }
         #endregion
 
 
+        /// <summary>
+        /// <param name="targetType">targetType</param>
+        /// <param name="targetIdentifier">targetIdentifier</param>
+        /// </summary>
 
-        public SocialConnectionFieldInput()
+        public AuthorizeResourceOpt(PolicyAssignmentTargetType targetType, string targetIdentifier)
         {
-
+            this.TargetType = targetType;
+            this.TargetIdentifier = targetIdentifier;
         }
 
         #region methods
@@ -2237,29 +2705,14 @@ namespace Authing.ApiClient.Types
         /// 发送修改邮箱邮件，邮件中包含验证码
         /// </summary>
         [JsonProperty("CHANGE_EMAIL")]
-        CHANGE_EMAIL
+        CHANGE_EMAIL,
+        /// <summary>
+        /// 发送 MFA 验证邮件
+        /// </summary>
+        [JsonProperty("MFA_VERIFY")]
+        MFA_VERIFY
     }
 
-
-    #region CommonMessage
-    public class CommonMessage
-    {
-        #region members
-        /// <summary>
-        /// 可读的接口响应说明，请以业务状态码 code 作为判断业务是否成功的标志
-        /// </summary>
-        [JsonProperty("message")]
-        public string Message { get; set; }
-
-        /// <summary>
-        /// 业务状态码（与 HTTP 响应码不同），但且仅当为 200 的时候表示操作成功表示，详细说明请见：
-        /// [Authing 错误代码列表](https://docs.authing.co/advanced/error-code.html)
-        /// </summary>
-        [JsonProperty("code")]
-        public int? Code { get; set; }
-        #endregion
-    }
-    #endregion
 
     #region CreateFunctionInput
     public class CreateFunctionInput
@@ -2422,6 +2875,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -2485,6 +2950,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -2542,6 +3019,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -2605,6 +3094,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -2656,6 +3157,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("effect")]
         public PolicyEffect? Effect { get; set; }
+
+        [JsonProperty("condition")]
+        public IEnumerable<PolicyStatementConditionInput> Condition { get; set; }
         #endregion
 
 
@@ -2668,6 +3172,60 @@ namespace Authing.ApiClient.Types
         {
             this.Resource = resource;
             this.Actions = actions;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region PolicyStatementConditionInput
+    public class PolicyStatementConditionInput
+    {
+        #region members
+        [JsonProperty("param")]
+        [JsonRequired]
+        public string Param { get; set; }
+
+        [JsonProperty("operator")]
+        [JsonRequired]
+        public string Operator { get; set; }
+
+        [JsonProperty("value")]
+        [JsonRequired]
+        public any Value { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="param">param</param>
+        /// <param name="operator">operator</param>
+        /// <param name="value">value</param>
+        /// </summary>
+
+        public PolicyStatementConditionInput(string param, string operator, any value)
+        {
+            this.Param = param;
+            this.Operator = operator;
+            this.Value = value;
         }
 
         #region methods
@@ -2716,6 +3274,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -2762,6 +3332,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("oauth")]
         public string Oauth { get; set; }
+
+        [JsonProperty("username")]
+        public string Username { get; set; }
 
         [JsonProperty("nickname")]
         public string Nickname { get; set; }
@@ -2937,6 +3510,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -3000,6 +3585,18 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("clientIp")]
         public string ClientIp { get; set; }
+
+        /// <summary>
+        /// 设置用户自定义字段，要求符合 Array<{ key: string; value: string }> 格式
+        /// </summary>
+        [JsonProperty("params")]
+        public string Params { get; set; }
+
+        /// <summary>
+        /// 请求上下文信息，将会传递到 pipeline 中
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
         #endregion
 
 
@@ -3012,6 +3609,105 @@ namespace Authing.ApiClient.Types
         {
             this.Phone = phone;
             this.Code = code;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region SetUdfValueBatchInput
+    public class SetUdfValueBatchInput
+    {
+        #region members
+        [JsonProperty("targetId")]
+        [JsonRequired]
+        public string TargetId { get; set; }
+
+        [JsonProperty("key")]
+        [JsonRequired]
+        public string Key { get; set; }
+
+        [JsonProperty("value")]
+        [JsonRequired]
+        public string Value { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="targetId">targetId</param>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        /// </summary>
+
+        public SetUdfValueBatchInput(string targetId, string key, string value)
+        {
+            this.TargetId = targetId;
+            this.Key = key;
+            this.Value = value;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region UserDefinedDataInput
+    public class UserDefinedDataInput
+    {
+        #region members
+        [JsonProperty("key")]
+        [JsonRequired]
+        public string Key { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="key">key</param>
+        /// </summary>
+
+        public UserDefinedDataInput(string key)
+        {
+            this.Key = key;
         }
 
         #region methods
@@ -3206,6 +3902,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("country")]
         public string Country { get; set; }
+
+        [JsonProperty("externalId")]
+        public string ExternalId { get; set; }
         #endregion
 
 
@@ -3391,6 +4090,9 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("country")]
         public string Country { get; set; }
+
+        [JsonProperty("externalId")]
+        public string ExternalId { get; set; }
         #endregion
 
 
@@ -3451,6 +4153,9 @@ namespace Authing.ApiClient.Types
         [JsonProperty("registerDisabled")]
         public bool? RegisterDisabled { get; set; }
 
+        [JsonProperty("appSsoEnabled")]
+        public bool? AppSsoEnabled { get; set; }
+
         [JsonProperty("allowedOrigins")]
         public string AllowedOrigins { get; set; }
 
@@ -3483,6 +4188,15 @@ namespace Authing.ApiClient.Types
         /// </summary>
         [JsonProperty("customSMSProvider")]
         public CustomSmsProviderInput CustomSmsProvider { get; set; }
+
+        /// <summary>
+        /// 是否要求邮箱必须验证才能登录（如果是通过邮箱登录的话）
+        /// </summary>
+        [JsonProperty("loginRequireEmailVerified")]
+        public bool? LoginRequireEmailVerified { get; set; }
+
+        [JsonProperty("verifyCodeLength")]
+        public int? VerifyCodeLength { get; set; }
         #endregion
 
 
@@ -3821,8 +4535,8 @@ namespace Authing.ApiClient.Types
         [JsonProperty("provider")]
         public string Provider { get; set; }
 
-        [JsonProperty("config253")]
-        public SmsConfig253Input Config253 { get; set; }
+        [JsonProperty("config")]
+        public string Config { get; set; }
         #endregion
 
 
@@ -3830,72 +4544,6 @@ namespace Authing.ApiClient.Types
         public CustomSmsProviderInput()
         {
 
-        }
-
-        #region methods
-        public dynamic GetInputObject()
-        {
-            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
-
-            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            foreach (var propertyInfo in properties)
-            {
-                var value = propertyInfo.GetValue(this);
-                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
-
-                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
-                if (requiredProp || value != defaultValue)
-                {
-                    d[propertyInfo.Name] = value;
-                }
-            }
-            return d;
-        }
-        #endregion
-    }
-    #endregion
-
-    #region SmsConfig253Input
-    public class SmsConfig253Input
-    {
-        #region members
-        [JsonProperty("appId")]
-        [JsonRequired]
-        public string AppId { get; set; }
-
-        [JsonProperty("key")]
-        [JsonRequired]
-        public string Key { get; set; }
-
-        [JsonProperty("template")]
-        [JsonRequired]
-        public string Template { get; set; }
-
-        [JsonProperty("ttl")]
-        [JsonRequired]
-        public int Ttl { get; set; }
-
-        [JsonProperty("sendSmsApi")]
-        [JsonRequired]
-        public string SendSmsApi { get; set; }
-        #endregion
-
-
-        /// <summary>
-        /// <param name="appId">appId</param>
-        /// <param name="key">key</param>
-        /// <param name="template">template</param>
-        /// <param name="ttl">ttl</param>
-        /// <param name="sendSmsApi">sendSmsApi</param>
-        /// </summary>
-
-        public SmsConfig253Input(string appId, string key, string template, int ttl, string sendSmsApi)
-        {
-            this.AppId = appId;
-            this.Key = key;
-            this.Template = template;
-            this.Ttl = ttl;
-            this.SendSmsApi = sendSmsApi;
         }
 
         #region methods
@@ -3974,6 +4622,116 @@ namespace Authing.ApiClient.Types
 
         [JsonProperty("value")]
         public string Value { get; set; }
+        #endregion
+    }
+    #endregion
+
+    #region SocialConnectionFieldInput
+    public class SocialConnectionFieldInput
+    {
+        #region members
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        [JsonProperty("label")]
+        public string Label { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
+
+        [JsonProperty("placeholder")]
+        public string Placeholder { get; set; }
+
+        [JsonProperty("children")]
+        public IEnumerable<SocialConnectionFieldInput> Children { get; set; }
+        #endregion
+
+
+
+        public SocialConnectionFieldInput()
+        {
+
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
+        #endregion
+    }
+    #endregion
+
+    #region CreateSocialConnectionInput
+    public class CreateSocialConnectionInput
+    {
+        #region members
+        [JsonProperty("provider")]
+        [JsonRequired]
+        public string Provider { get; set; }
+
+        [JsonProperty("name")]
+        [JsonRequired]
+        public string Name { get; set; }
+
+        [JsonProperty("logo")]
+        [JsonRequired]
+        public string Logo { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("fields")]
+        public IEnumerable<SocialConnectionFieldInput> Fields { get; set; }
+        #endregion
+
+
+        /// <summary>
+        /// <param name="provider">provider</param>
+        /// <param name="name">name</param>
+        /// <param name="logo">logo</param>
+        /// </summary>
+
+        public CreateSocialConnectionInput(string provider, string name, string logo)
+        {
+            this.Provider = provider;
+            this.Name = name;
+            this.Logo = logo;
+        }
+
+        #region methods
+        public dynamic GetInputObject()
+        {
+            IDictionary<string, object> d = new System.Dynamic.ExpandoObject();
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            foreach (var propertyInfo in properties)
+            {
+                var value = propertyInfo.GetValue(this);
+                var defaultValue = propertyInfo.PropertyType.IsValueType ? Activator.CreateInstance(propertyInfo.PropertyType) : null;
+
+                var requiredProp = propertyInfo.GetCustomAttributes(typeof(JsonRequiredAttribute), false).Length > 0;
+                if (requiredProp || value != defaultValue)
+                {
+                    d[propertyInfo.Name] = value;
+                }
+            }
+            return d;
+        }
         #endregion
     }
     #endregion
@@ -4072,6 +4830,7 @@ namespace Authing.ApiClient.Types
         mutation addMember($page: Int, $limit: Int, $sortBy: SortByEnum, $includeChildrenNodes: Boolean, $nodeId: String, $orgId: String, $nodeCode: String, $userIds: [String!]!, $isLeader: Boolean) {
           addMember(nodeId: $nodeId, orgId: $orgId, nodeCode: $nodeCode, userIds: $userIds, isLeader: $isLeader) {
             id
+            orgId
             name
             nameI18n
             description
@@ -4091,6 +4850,7 @@ namespace Authing.ApiClient.Types
                 arn
                 userPoolId
                 username
+                status
                 email
                 emailVerified
                 phone
@@ -4135,6 +4895,7 @@ namespace Authing.ApiClient.Types
                 country
                 createdAt
                 updatedAt
+                externalId
               }
             }
           }
@@ -4229,6 +4990,7 @@ namespace Authing.ApiClient.Types
             id
             rootNode {
               id
+              orgId
               name
               nameI18n
               description
@@ -4244,6 +5006,7 @@ namespace Authing.ApiClient.Types
             }
             nodes {
               id
+              orgId
               name
               nameI18n
               description
@@ -4257,6 +5020,109 @@ namespace Authing.ApiClient.Types
               updatedAt
               children
             }
+          }
+        }
+        ";
+    }
+
+
+
+    public class AddNodeV2Response
+    {
+
+        [JsonProperty("addNodeV2")]
+        public Node Result { get; set; }
+    }
+
+    public class AddNodeV2Param
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("orgId")]
+        public string OrgId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("parentNodeId")]
+        public string ParentNodeId { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("nameI18n")]
+        public string NameI18n { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("descriptionI18n")]
+        public string DescriptionI18n { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("order")]
+        public int? Order { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("code")]
+        public string Code { get; set; }
+
+        public AddNodeV2Param(string orgId, string name)
+        {
+            this.OrgId = orgId;
+            this.Name = name;
+        }
+        /// <summary>
+        /// AddNodeV2Param.Request 
+        /// <para>Required variables:<br/> { orgId=(string), name=(string) }</para>
+        /// <para>Optional variables:<br/> { parentNodeId=(string), nameI18n=(string), description=(string), descriptionI18n=(string), order=(int), code=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = AddNodeV2Document,
+                OperationName = "addNodeV2",
+                Variables = this
+            };
+        }
+
+
+        public static string AddNodeV2Document = @"
+        mutation addNodeV2($orgId: String!, $parentNodeId: String, $name: String!, $nameI18n: String, $description: String, $descriptionI18n: String, $order: Int, $code: String) {
+          addNodeV2(orgId: $orgId, parentNodeId: $parentNodeId, name: $name, nameI18n: $nameI18n, description: $description, descriptionI18n: $descriptionI18n, order: $order, code: $code) {
+            id
+            orgId
+            name
+            nameI18n
+            description
+            descriptionI18n
+            order
+            code
+            root
+            depth
+            path
+            createdAt
+            updatedAt
+            children
           }
         }
         ";
@@ -4293,6 +5159,18 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetIdentifiers")]
         public IEnumerable<string> TargetIdentifiers { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("inheritByChildren")]
+        public bool? InheritByChildren { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public AddPolicyAssignmentsParam(IEnumerable<string> policies, PolicyAssignmentTargetType targetType)
         {
             this.Policies = policies;
@@ -4301,7 +5179,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// AddPolicyAssignmentsParam.Request 
         /// <para>Required variables:<br/> { policies=(string[]), targetType=(PolicyAssignmentTargetType) }</para>
-        /// <para>Optional variables:<br/> { targetIdentifiers=(string[]) }</para>
+        /// <para>Optional variables:<br/> { targetIdentifiers=(string[]), inheritByChildren=(bool), namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -4315,8 +5193,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string AddPolicyAssignmentsDocument = @"
-        mutation addPolicyAssignments($policies: [String!]!, $targetType: PolicyAssignmentTargetType!, $targetIdentifiers: [String!]) {
-          addPolicyAssignments(policies: $policies, targetType: $targetType, targetIdentifiers: $targetIdentifiers) {
+        mutation addPolicyAssignments($policies: [String!]!, $targetType: PolicyAssignmentTargetType!, $targetIdentifiers: [String!], $inheritByChildren: Boolean, $namespace: String) {
+          addPolicyAssignments(policies: $policies, targetType: $targetType, targetIdentifiers: $targetIdentifiers, inheritByChildren: $inheritByChildren, namespace: $namespace) {
             message
             code
           }
@@ -4483,6 +5361,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("roleCodes")]
         public IEnumerable<string> RoleCodes { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public AllowParam(string resource, string action)
         {
             this.Resource = resource;
@@ -4491,7 +5375,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// AllowParam.Request 
         /// <para>Required variables:<br/> { resource=(string), action=(string) }</para>
-        /// <para>Optional variables:<br/> { userId=(string), userIds=(string[]), roleCode=(string), roleCodes=(string[]) }</para>
+        /// <para>Optional variables:<br/> { userId=(string), userIds=(string[]), roleCode=(string), roleCodes=(string[]), namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -4505,8 +5389,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string AllowDocument = @"
-        mutation allow($resource: String!, $action: String!, $userId: String, $userIds: [String!], $roleCode: String, $roleCodes: [String!]) {
-          allow(resource: $resource, action: $action, userId: $userId, userIds: $userIds, roleCode: $roleCode, roleCodes: $roleCodes) {
+        mutation allow($resource: String!, $action: String!, $userId: String, $userIds: [String!], $roleCode: String, $roleCodes: [String!], $namespace: String) {
+          allow(resource: $resource, action: $action, userId: $userId, userIds: $userIds, roleCode: $roleCode, roleCodes: $roleCodes, namespace: $namespace) {
             message
             code
           }
@@ -4525,6 +5409,12 @@ namespace Authing.ApiClient.Types
 
     public class AssignRoleParam
     {
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
 
         /// <summary>
         /// Optional
@@ -4563,7 +5453,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// AssignRoleParam.Request 
         /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { roleCode=(string), roleCodes=(string[]), userIds=(string[]), groupCodes=(string[]), nodeCodes=(string[]) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), roleCode=(string), roleCodes=(string[]), userIds=(string[]), groupCodes=(string[]), nodeCodes=(string[]) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -4577,10 +5467,179 @@ namespace Authing.ApiClient.Types
 
 
         public static string AssignRoleDocument = @"
-        mutation assignRole($roleCode: String, $roleCodes: [String], $userIds: [String!], $groupCodes: [String!], $nodeCodes: [String!]) {
-          assignRole(roleCode: $roleCode, roleCodes: $roleCodes, userIds: $userIds, groupCodes: $groupCodes, nodeCodes: $nodeCodes) {
+        mutation assignRole($namespace: String, $roleCode: String, $roleCodes: [String], $userIds: [String!], $groupCodes: [String!], $nodeCodes: [String!]) {
+          assignRole(namespace: $namespace, roleCode: $roleCode, roleCodes: $roleCodes, userIds: $userIds, groupCodes: $groupCodes, nodeCodes: $nodeCodes) {
             message
             code
+          }
+        }
+        ";
+    }
+
+
+
+    public class AuthorizeResourceResponse
+    {
+
+        [JsonProperty("authorizeResource")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class AuthorizeResourceParam
+    {
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("resource")]
+        public string Resource { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("resourceType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ResourceType? ResourceType { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("opts")]
+        public IEnumerable<AuthorizeResourceOpt> Opts { get; set; }
+
+        public AuthorizeResourceParam()
+        {
+
+        }
+        /// <summary>
+        /// AuthorizeResourceParam.Request 
+        /// <para>Required variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), resource=(string), resourceType=(ResourceType), opts=(AuthorizeResourceOpt[]) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = AuthorizeResourceDocument,
+                OperationName = "authorizeResource",
+                Variables = this
+            };
+        }
+
+
+        public static string AuthorizeResourceDocument = @"
+        mutation authorizeResource($namespace: String, $resource: String, $resourceType: ResourceType, $opts: [AuthorizeResourceOpt]) {
+          authorizeResource(namespace: $namespace, resource: $resource, resourceType: $resourceType, opts: $opts) {
+            code
+            message
+          }
+        }
+        ";
+    }
+
+
+
+    public class BindEmailResponse
+    {
+
+        [JsonProperty("bindEmail")]
+        public User Result { get; set; }
+    }
+
+    public class BindEmailParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("emailCode")]
+        public string EmailCode { get; set; }
+
+        public BindEmailParam(string email, string emailCode)
+        {
+            this.Email = email;
+            this.EmailCode = emailCode;
+        }
+        /// <summary>
+        /// BindEmailParam.Request 
+        /// <para>Required variables:<br/> { email=(string), emailCode=(string) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = BindEmailDocument,
+                OperationName = "bindEmail",
+                Variables = this
+            };
+        }
+
+
+        public static string BindEmailDocument = @"
+        mutation bindEmail($email: String!, $emailCode: String!) {
+          bindEmail(email: $email, emailCode: $emailCode) {
+            id
+            arn
+            userPoolId
+            status
+            username
+            email
+            emailVerified
+            phone
+            phoneVerified
+            unionid
+            openid
+            nickname
+            registerSource
+            photo
+            password
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            device
+            browser
+            company
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            city
+            province
+            country
+            createdAt
+            updatedAt
           }
         }
         ";
@@ -4637,6 +5696,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -4989,6 +6049,7 @@ namespace Authing.ApiClient.Types
             id
             rootNode {
               id
+              orgId
               name
               nameI18n
               description
@@ -5004,6 +6065,7 @@ namespace Authing.ApiClient.Types
             }
             nodes {
               id
+              orgId
               name
               nameI18n
               description
@@ -5035,6 +6097,12 @@ namespace Authing.ApiClient.Types
     {
 
         /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        /// <summary>
         /// Required
         /// </summary>
         [JsonProperty("code")]
@@ -5060,7 +6128,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// CreatePolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string), statements=(PolicyStatementInput[]) }</para>
-        /// <para>Optional variables:<br/> { description=(string) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), description=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5074,19 +6142,25 @@ namespace Authing.ApiClient.Types
 
 
         public static string CreatePolicyDocument = @"
-        mutation createPolicy($code: String!, $description: String, $statements: [PolicyStatementInput!]!) {
-          createPolicy(code: $code, description: $description, statements: $statements) {
+        mutation createPolicy($namespace: String, $code: String!, $description: String, $statements: [PolicyStatementInput!]!) {
+          createPolicy(namespace: $namespace, code: $code, description: $description, statements: $statements) {
+            namespace
             code
-            assignmentsCount
             isDefault
             description
             statements {
               resource
               actions
               effect
+              condition {
+                param
+                operator
+                value
+              }
             }
             createdAt
             updatedAt
+            assignmentsCount
           }
         }
         ";
@@ -5103,6 +6177,12 @@ namespace Authing.ApiClient.Types
 
     public class CreateRoleParam
     {
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
 
         /// <summary>
         /// Required
@@ -5129,7 +6209,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// CreateRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> { description=(string), parent=(string) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), description=(string), parent=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5143,77 +6223,21 @@ namespace Authing.ApiClient.Types
 
 
         public static string CreateRoleDocument = @"
-        mutation createRole($code: String!, $description: String, $parent: String) {
-          createRole(code: $code, description: $description, parent: $parent) {
+        mutation createRole($namespace: String, $code: String!, $description: String, $parent: String) {
+          createRole(namespace: $namespace, code: $code, description: $description, parent: $parent) {
+            namespace
             code
             arn
             description
-            isSystem
             createdAt
             updatedAt
             parent {
+              namespace
               code
               arn
               description
-              isSystem
               createdAt
               updatedAt
-            }
-          }
-        }
-        ";
-    }
-
-
-
-    public class CreateSocialConnectionResponse
-    {
-
-        [JsonProperty("createSocialConnection")]
-        public SocialConnection Result { get; set; }
-    }
-
-    public class CreateSocialConnectionParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("input")]
-        public CreateSocialConnectionInput Input { get; set; }
-
-        public CreateSocialConnectionParam(CreateSocialConnectionInput input)
-        {
-            this.Input = input;
-        }
-        /// <summary>
-        /// CreateSocialConnectionParam.Request 
-        /// <para>Required variables:<br/> { input=(CreateSocialConnectionInput) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = CreateSocialConnectionDocument,
-                OperationName = "createSocialConnection",
-                Variables = this
-            };
-        }
-
-
-        public static string CreateSocialConnectionDocument = @"
-        mutation createSocialConnection($input: CreateSocialConnectionInput!) {
-          createSocialConnection(input: $input) {
-            provider
-            name
-            logo
-            description
-            fields {
-              key
-              label
-              type
-              placeholder
             }
           }
         }
@@ -5322,6 +6346,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -5367,6 +6392,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -5457,6 +6483,7 @@ namespace Authing.ApiClient.Types
             emailVerifiedDefault
             sendWelcomeEmail
             registerDisabled
+            appSsoEnabled
             showWxQRCodeWhenRegisterDisabled
             allowedOrigins
             tokenExpiresAfter
@@ -5496,6 +6523,7 @@ namespace Authing.ApiClient.Types
               enabled
               provider
             }
+            packageType
           }
         }
         ";
@@ -5718,6 +6746,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("codeList")]
         public IEnumerable<string> CodeList { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public DeletePoliciesParam(IEnumerable<string> codeList)
         {
             this.CodeList = codeList;
@@ -5725,7 +6759,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// DeletePoliciesParam.Request 
         /// <para>Required variables:<br/> { codeList=(string[]) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5739,8 +6773,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeletePoliciesDocument = @"
-        mutation deletePolicies($codeList: [String!]!) {
-          deletePolicies(codeList: $codeList) {
+        mutation deletePolicies($codeList: [String!]!, $namespace: String) {
+          deletePolicies(codeList: $codeList, namespace: $namespace) {
             message
             code
           }
@@ -5766,6 +6800,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public DeletePolicyParam(string code)
         {
             this.Code = code;
@@ -5773,7 +6813,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// DeletePolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5787,8 +6827,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeletePolicyDocument = @"
-        mutation deletePolicy($code: String!) {
-          deletePolicy(code: $code) {
+        mutation deletePolicy($code: String!, $namespace: String) {
+          deletePolicy(code: $code, namespace: $namespace) {
             message
             code
           }
@@ -5814,6 +6854,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public DeleteRoleParam(string code)
         {
             this.Code = code;
@@ -5821,7 +6867,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// DeleteRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5835,8 +6881,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeleteRoleDocument = @"
-        mutation deleteRole($code: String!) {
-          deleteRole(code: $code) {
+        mutation deleteRole($code: String!, $namespace: String) {
+          deleteRole(code: $code, namespace: $namespace) {
             message
             code
           }
@@ -5862,6 +6908,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("codeList")]
         public IEnumerable<string> CodeList { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public DeleteRolesParam(IEnumerable<string> codeList)
         {
             this.CodeList = codeList;
@@ -5869,7 +6921,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// DeleteRolesParam.Request 
         /// <para>Required variables:<br/> { codeList=(string[]) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -5883,8 +6935,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string DeleteRolesDocument = @"
-        mutation deleteRoles($codeList: [String!]!) {
-          deleteRoles(codeList: $codeList) {
+        mutation deleteRoles($codeList: [String!]!, $namespace: String) {
+          deleteRoles(codeList: $codeList, namespace: $namespace) {
             message
             code
           }
@@ -6135,6 +7187,75 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class DisbalePolicyAssignmentResponse
+    {
+
+        [JsonProperty("disbalePolicyAssignment")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class DisbalePolicyAssignmentParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("policy")]
+        public string Policy { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PolicyAssignmentTargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetIdentifier")]
+        public string TargetIdentifier { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        public DisbalePolicyAssignmentParam(string policy, PolicyAssignmentTargetType targetType, string targetIdentifier)
+        {
+            this.Policy = policy;
+            this.TargetType = targetType;
+            this.TargetIdentifier = targetIdentifier;
+        }
+        /// <summary>
+        /// DisbalePolicyAssignmentParam.Request 
+        /// <para>Required variables:<br/> { policy=(string), targetType=(PolicyAssignmentTargetType), targetIdentifier=(string) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = DisbalePolicyAssignmentDocument,
+                OperationName = "disbalePolicyAssignment",
+                Variables = this
+            };
+        }
+
+
+        public static string DisbalePolicyAssignmentDocument = @"
+        mutation disbalePolicyAssignment($policy: String!, $targetType: PolicyAssignmentTargetType!, $targetIdentifier: String!, $namespace: String) {
+          disbalePolicyAssignment(policy: $policy, targetType: $targetType, targetIdentifier: $targetIdentifier, namespace: $namespace) {
+            message
+            code
+          }
+        }
+        ";
+    }
+
+
+
     public class EnableEmailTemplateResponse
     {
 
@@ -6185,6 +7306,75 @@ namespace Authing.ApiClient.Types
             expiresIn
             enabled
             isSystem
+          }
+        }
+        ";
+    }
+
+
+
+    public class EnablePolicyAssignmentResponse
+    {
+
+        [JsonProperty("enablePolicyAssignment")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class EnablePolicyAssignmentParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("policy")]
+        public string Policy { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PolicyAssignmentTargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetIdentifier")]
+        public string TargetIdentifier { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        public EnablePolicyAssignmentParam(string policy, PolicyAssignmentTargetType targetType, string targetIdentifier)
+        {
+            this.Policy = policy;
+            this.TargetType = targetType;
+            this.TargetIdentifier = targetIdentifier;
+        }
+        /// <summary>
+        /// EnablePolicyAssignmentParam.Request 
+        /// <para>Required variables:<br/> { policy=(string), targetType=(PolicyAssignmentTargetType), targetIdentifier=(string) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = EnablePolicyAssignmentDocument,
+                OperationName = "enablePolicyAssignment",
+                Variables = this
+            };
+        }
+
+
+        public static string EnablePolicyAssignmentDocument = @"
+        mutation enablePolicyAssignment($policy: String!, $targetType: PolicyAssignmentTargetType!, $targetIdentifier: String!, $namespace: String) {
+          enablePolicyAssignment(policy: $policy, targetType: $targetType, targetIdentifier: $targetIdentifier, namespace: $namespace) {
+            message
+            code
           }
         }
         ";
@@ -6285,6 +7475,7 @@ namespace Authing.ApiClient.Types
           loginByEmail(input: $input) {
             id
             arn
+            status
             userPoolId
             username
             email
@@ -6331,6 +7522,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -6380,6 +7572,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -6425,6 +7618,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -6474,6 +7668,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -6519,6 +7714,122 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
+          }
+        }
+        ";
+    }
+
+
+
+    public class LoginBySubAccountResponse
+    {
+
+        [JsonProperty("loginBySubAccount")]
+        public User Result { get; set; }
+    }
+
+    public class LoginBySubAccountParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("account")]
+        public string Account { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("captchaCode")]
+        public string CaptchaCode { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("clientIp")]
+        public string ClientIp { get; set; }
+
+        public LoginBySubAccountParam(string account, string password)
+        {
+            this.Account = account;
+            this.Password = password;
+        }
+        /// <summary>
+        /// LoginBySubAccountParam.Request 
+        /// <para>Required variables:<br/> { account=(string), password=(string) }</para>
+        /// <para>Optional variables:<br/> { captchaCode=(string), clientIp=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = LoginBySubAccountDocument,
+                OperationName = "loginBySubAccount",
+                Variables = this
+            };
+        }
+
+
+        public static string LoginBySubAccountDocument = @"
+        mutation loginBySubAccount($account: String!, $password: String!, $captchaCode: String, $clientIp: String) {
+          loginBySubAccount(account: $account, password: $password, captchaCode: $captchaCode, clientIp: $clientIp) {
+            id
+            arn
+            status
+            userPoolId
+            username
+            email
+            emailVerified
+            phone
+            phoneVerified
+            unionid
+            openid
+            nickname
+            registerSource
+            photo
+            password
+            oauth
+            token
+            tokenExpiredAt
+            loginsCount
+            lastLogin
+            lastIP
+            signedUp
+            blocked
+            isDeleted
+            device
+            browser
+            company
+            name
+            givenName
+            familyName
+            middleName
+            profile
+            preferredUsername
+            website
+            gender
+            birthdate
+            zoneinfo
+            locale
+            address
+            formatted
+            streetAddress
+            locality
+            region
+            postalCode
+            city
+            province
+            country
+            createdAt
+            updatedAt
+            externalId
           }
         }
         ";
@@ -6568,6 +7879,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -6613,6 +7925,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -6676,6 +7989,7 @@ namespace Authing.ApiClient.Types
             id
             rootNode {
               id
+              orgId
               name
               nameI18n
               description
@@ -6691,6 +8005,7 @@ namespace Authing.ApiClient.Types
             }
             nodes {
               id
+              orgId
               name
               nameI18n
               description
@@ -6884,6 +8199,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -6929,6 +8245,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -6978,6 +8295,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -7023,6 +8341,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -7072,6 +8391,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -7117,6 +8437,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -7224,6 +8545,7 @@ namespace Authing.ApiClient.Types
                 id
                 arn
                 userPoolId
+                status
                 username
                 email
                 emailVerified
@@ -7307,6 +8629,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("targetIdentifiers")]
         public IEnumerable<string> TargetIdentifiers { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public RemovePolicyAssignmentsParam(IEnumerable<string> policies, PolicyAssignmentTargetType targetType)
         {
             this.Policies = policies;
@@ -7315,7 +8643,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// RemovePolicyAssignmentsParam.Request 
         /// <para>Required variables:<br/> { policies=(string[]), targetType=(PolicyAssignmentTargetType) }</para>
-        /// <para>Optional variables:<br/> { targetIdentifiers=(string[]) }</para>
+        /// <para>Optional variables:<br/> { targetIdentifiers=(string[]), namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -7329,8 +8657,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string RemovePolicyAssignmentsDocument = @"
-        mutation removePolicyAssignments($policies: [String!]!, $targetType: PolicyAssignmentTargetType!, $targetIdentifiers: [String!]) {
-          removePolicyAssignments(policies: $policies, targetType: $targetType, targetIdentifiers: $targetIdentifiers) {
+        mutation removePolicyAssignments($policies: [String!]!, $targetType: PolicyAssignmentTargetType!, $targetIdentifiers: [String!], $namespace: String) {
+          removePolicyAssignments(policies: $policies, targetType: $targetType, targetIdentifiers: $targetIdentifiers, namespace: $namespace) {
             message
             code
           }
@@ -7453,6 +8781,7 @@ namespace Authing.ApiClient.Types
             key
             dataType
             value
+            label
           }
         }
         ";
@@ -7651,6 +8980,12 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// Optional
         /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
         [JsonProperty("roleCode")]
         public string RoleCode { get; set; }
 
@@ -7685,7 +9020,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// RevokeRoleParam.Request 
         /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { roleCode=(string), roleCodes=(string[]), userIds=(string[]), groupCodes=(string[]), nodeCodes=(string[]) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), roleCode=(string), roleCodes=(string[]), userIds=(string[]), groupCodes=(string[]), nodeCodes=(string[]) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -7699,8 +9034,8 @@ namespace Authing.ApiClient.Types
 
 
         public static string RevokeRoleDocument = @"
-        mutation revokeRole($roleCode: String, $roleCodes: [String], $userIds: [String!], $groupCodes: [String!], $nodeCodes: [String!]) {
-          revokeRole(roleCode: $roleCode, roleCodes: $roleCodes, userIds: $userIds, groupCodes: $groupCodes, nodeCodes: $nodeCodes) {
+        mutation revokeRole($namespace: String, $roleCode: String, $roleCodes: [String], $userIds: [String!], $groupCodes: [String!], $nodeCodes: [String!]) {
+          revokeRole(namespace: $namespace, roleCode: $roleCode, roleCodes: $roleCodes, userIds: $userIds, groupCodes: $groupCodes, nodeCodes: $nodeCodes) {
             message
             code
           }
@@ -7757,6 +9092,60 @@ namespace Authing.ApiClient.Types
         public static string SendEmailDocument = @"
         mutation sendEmail($email: String!, $scene: EmailScene!) {
           sendEmail(email: $email, scene: $scene) {
+            message
+            code
+          }
+        }
+        ";
+    }
+
+
+
+    public class SetMainDepartmentResponse
+    {
+
+        [JsonProperty("setMainDepartment")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class SetMainDepartmentParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("departmentId")]
+        public string DepartmentId { get; set; }
+
+        public SetMainDepartmentParam(string userId)
+        {
+            this.UserId = userId;
+        }
+        /// <summary>
+        /// SetMainDepartmentParam.Request 
+        /// <para>Required variables:<br/> { userId=(string) }</para>
+        /// <para>Optional variables:<br/> { departmentId=(string) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = SetMainDepartmentDocument,
+                OperationName = "setMainDepartment",
+                Variables = this
+            };
+        }
+
+
+        public static string SetMainDepartmentDocument = @"
+        mutation setMainDepartment($userId: String!, $departmentId: String) {
+          setMainDepartment(userId: $userId, departmentId: $departmentId) {
             message
             code
           }
@@ -7846,6 +9235,62 @@ namespace Authing.ApiClient.Types
 
 
 
+    public class SetUdfValueBatchResponse
+    {
+
+        [JsonProperty("setUdfValueBatch")]
+        public CommonMessage Result { get; set; }
+    }
+
+    public class SetUdfValueBatchParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public UdfTargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("input")]
+        public IEnumerable<SetUdfValueBatchInput> Input { get; set; }
+
+        public SetUdfValueBatchParam(UdfTargetType targetType, IEnumerable<SetUdfValueBatchInput> input)
+        {
+            this.TargetType = targetType;
+            this.Input = input;
+        }
+        /// <summary>
+        /// SetUdfValueBatchParam.Request 
+        /// <para>Required variables:<br/> { targetType=(UDFTargetType), input=(SetUdfValueBatchInput[]) }</para>
+        /// <para>Optional variables:<br/> {  }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = SetUdfValueBatchDocument,
+                OperationName = "setUdfValueBatch",
+                Variables = this
+            };
+        }
+
+
+        public static string SetUdfValueBatchDocument = @"
+        mutation setUdfValueBatch($targetType: UDFTargetType!, $input: [SetUdfValueBatchInput!]!) {
+          setUdfValueBatch(targetType: $targetType, input: $input) {
+            code
+            message
+          }
+        }
+        ";
+    }
+
+
+
     public class SetUdvResponse
     {
 
@@ -7910,6 +9355,71 @@ namespace Authing.ApiClient.Types
             key
             dataType
             value
+            label
+          }
+        }
+        ";
+    }
+
+
+
+    public class SetUdvBatchResponse
+    {
+
+        [JsonProperty("setUdvBatch")]
+        public IEnumerable<UserDefinedData> Result { get; set; }
+    }
+
+    public class SetUdvBatchParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public UdfTargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("targetId")]
+        public string TargetId { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("udvList")]
+        public IEnumerable<UserDefinedDataInput> UdvList { get; set; }
+
+        public SetUdvBatchParam(UdfTargetType targetType, string targetId)
+        {
+            this.TargetType = targetType;
+            this.TargetId = targetId;
+        }
+        /// <summary>
+        /// SetUdvBatchParam.Request 
+        /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string) }</para>
+        /// <para>Optional variables:<br/> { udvList=(UserDefinedDataInput[]) }</para>
+        /// </summary>
+        public GraphQLRequest CreateRequest()
+        {
+            return new GraphQLRequest
+            {
+                Query = SetUdvBatchDocument,
+                OperationName = "setUdvBatch",
+                Variables = this
+            };
+        }
+
+
+        public static string SetUdvBatchDocument = @"
+        mutation setUdvBatch($targetType: UDFTargetType!, $targetId: String!, $udvList: [UserDefinedDataInput!]) {
+          setUdvBatch(targetType: $targetType, targetId: $targetId, udvList: $udvList) {
+            key
+            dataType
+            value
+            label
           }
         }
         ";
@@ -7947,6 +9457,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8029,6 +9540,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8142,6 +9654,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8397,6 +9910,7 @@ namespace Authing.ApiClient.Types
         mutation updateNode($page: Int, $limit: Int, $sortBy: SortByEnum, $includeChildrenNodes: Boolean, $id: String!, $name: String, $code: String, $description: String) {
           updateNode(id: $id, name: $name, code: $code, description: $description) {
             id
+            orgId
             name
             nameI18n
             description
@@ -8467,6 +9981,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8580,6 +10095,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8643,6 +10159,12 @@ namespace Authing.ApiClient.Types
     {
 
         /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        /// <summary>
         /// Required
         /// </summary>
         [JsonProperty("code")]
@@ -8673,7 +10195,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// UpdatePolicyParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> { description=(string), statements=(PolicyStatementInput[]), newCode=(string) }</para>
+        /// <para>Optional variables:<br/> { namespace=(string), description=(string), statements=(PolicyStatementInput[]), newCode=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -8687,19 +10209,23 @@ namespace Authing.ApiClient.Types
 
 
         public static string UpdatePolicyDocument = @"
-        mutation updatePolicy($code: String!, $description: String, $statements: [PolicyStatementInput!], $newCode: String) {
-          updatePolicy(code: $code, description: $description, statements: $statements, newCode: $newCode) {
+        mutation updatePolicy($namespace: String, $code: String!, $description: String, $statements: [PolicyStatementInput!], $newCode: String) {
+          updatePolicy(namespace: $namespace, code: $code, description: $description, statements: $statements, newCode: $newCode) {
+            namespace
             code
-            isDefault
             description
             statements {
               resource
               actions
               effect
+              condition {
+                param
+                operator
+                value
+              }
             }
             createdAt
             updatedAt
-            assignmentsCount
           }
         }
         ";
@@ -8735,6 +10261,12 @@ namespace Authing.ApiClient.Types
         [JsonProperty("newCode")]
         public string NewCode { get; set; }
 
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
         public UpdateRoleParam(string code)
         {
             this.Code = code;
@@ -8742,7 +10274,7 @@ namespace Authing.ApiClient.Types
         /// <summary>
         /// UpdateRoleParam.Request 
         /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> { description=(string), newCode=(string) }</para>
+        /// <para>Optional variables:<br/> { description=(string), newCode=(string), namespace=(string) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
@@ -8756,22 +10288,19 @@ namespace Authing.ApiClient.Types
 
 
         public static string UpdateRoleDocument = @"
-        mutation updateRole($code: String!, $description: String, $newCode: String) {
-          updateRole(code: $code, description: $description, newCode: $newCode) {
+        mutation updateRole($code: String!, $description: String, $newCode: String, $namespace: String) {
+          updateRole(code: $code, description: $description, newCode: $newCode, namespace: $namespace) {
+            namespace
             code
             arn
             description
-            isSystem
             createdAt
             updatedAt
-            users {
-              totalCount
-            }
             parent {
+              namespace
               code
               arn
               description
-              isSystem
               createdAt
               updatedAt
             }
@@ -8830,6 +10359,7 @@ namespace Authing.ApiClient.Types
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -8875,6 +10405,7 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
@@ -8940,6 +10471,7 @@ namespace Authing.ApiClient.Types
             emailVerifiedDefault
             sendWelcomeEmail
             registerDisabled
+            appSsoEnabled
             showWxQRCodeWhenRegisterDisabled
             allowedOrigins
             tokenExpiresAfter
@@ -8978,7 +10510,12 @@ namespace Authing.ApiClient.Types
             customSMSProvider {
               enabled
               provider
+              config
             }
+            packageType
+            useCustomUserStore
+            loginRequireEmailVerified
+            verifyCodeLength
           }
         }
         ";
@@ -9042,43 +10579,232 @@ namespace Authing.ApiClient.Types
 
 
 
-    public class CheckLoginStatusResponse
+    public class ArchivedUsersResponse
     {
 
-        [JsonProperty("checkLoginStatus")]
-        public JWTTokenStatus Result { get; set; }
+        [JsonProperty("archivedUsers")]
+        public PaginatedUsers Result { get; set; }
     }
 
-    public class CheckLoginStatusParam
+    public class ArchivedUsersParam
     {
 
         /// <summary>
         /// Optional
         /// </summary>
-        [JsonProperty("token")]
-        public string Token { get; set; }
+        [JsonProperty("page")]
+        public int? Page { get; set; }
 
-        public CheckLoginStatusParam()
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("limit")]
+        public int? Limit { get; set; }
+
+        public ArchivedUsersParam()
         {
 
         }
         /// <summary>
-        /// CheckLoginStatusParam.Request 
+        /// ArchivedUsersParam.Request 
         /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { token=(string) }</para>
+        /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
         /// </summary>
         public GraphQLRequest CreateRequest()
         {
             return new GraphQLRequest
             {
-                Query = CheckLoginStatusDocument,
-                OperationName = "checkLoginStatus",
+                Query = ArchivedUsersDocument,
+                OperationName = "archivedUsers",
                 Variables = this
             };
         }
 
 
-        public static string CheckLoginStatusDocument = @"
+        public static string ArchivedUsersDocument = @"
+        query archivedUsers($page: Int, $limit: Int) {
+          archivedUsers(page: $page, limit: $limit) {
+            totalCount
+            list {
+              id
+              arn
+              status
+              userPoolId
+              username
+              email
+              emailVerified
+              phone
+              phoneVerified
+              unionid
+              openid
+              nickname
+              registerSource
+              photo
+              password
+              oauth
+              token
+              tokenExpiredAt
+              loginsCount
+              lastLogin
+              lastIP
+              signedUp
+              blocked
+              isDeleted
+              device
+              browser
+              company
+              name
+              givenName
+              familyName
+              middleName
+              profile
+              preferredUsername
+              website
+              gender
+              birthdate
+              zoneinfo
+              locale
+              address
+              formatted
+              streetAddress
+              locality
+              region
+              postalCode
+              city
+              province
+              country
+              createdAt
+              updatedAt
+              externalId
+            }
+          }
+        }
+        ";
+    }
+
+
+
+    public class AuthorizedTargetsResponse
+    {
+
+        [JsonProperty("authorizedTargets")]
+        public PaginatedAuthorizedTargets Result { get; set; }
+    }
+
+    public class AuthorizedTargetsParam
+    {
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("namespace")]
+        public string Namespace { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("resourceType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ResourceType ResourceType { get; set; }
+
+        /// <summary>
+        /// Required
+        /// </summary>
+        [JsonProperty("resource")]
+        public string Resource { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("targetType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PolicyAssignmentTargetType? TargetType { get; set; }
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        [JsonProperty("actions")]
+        public AuthorizedTargetsActionsInput Actions { get; set; }
+
+        public AuthorizedTargetsParam(string namespace, ResourceType resourceType, string resource)
+        {
+
+        }
+        // public AuthorizedTargetsParam(string namespace, ResourceType resourceType, string resource)
+        // {
+// this.Namespace = namespace;
+// this.ResourceType = resourceType;
+// this.Resource = resource;
+// }
+    /// <summary>
+    /// AuthorizedTargetsParam.Request 
+    /// <para>Required variables:<br/> { namespace=(string), resourceType=(ResourceType), resource=(string) }</para>
+    /// <para>Optional variables:<br/> { targetType=(PolicyAssignmentTargetType), actions=(AuthorizedTargetsActionsInput) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = AuthorizedTargetsDocument,
+            OperationName = "authorizedTargets",
+            Variables = this
+        };
+    }
+
+
+    public static string AuthorizedTargetsDocument = @"
+        query authorizedTargets($namespace: String!, $resourceType: ResourceType!, $resource: String!, $targetType: PolicyAssignmentTargetType, $actions: AuthorizedTargetsActionsInput) {
+          authorizedTargets(namespace: $namespace, resource: $resource, resourceType: $resourceType, targetType: $targetType, actions: $actions) {
+            totalCount
+            list {
+              targetType
+              targetIdentifier
+              actions
+            }
+          }
+        }
+        ";
+}
+
+
+
+public class CheckLoginStatusResponse
+{
+
+    [JsonProperty("checkLoginStatus")]
+    public JWTTokenStatus Result { get; set; }
+}
+
+public class CheckLoginStatusParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("token")]
+    public string Token { get; set; }
+
+    public CheckLoginStatusParam()
+    {
+
+    }
+    /// <summary>
+    /// CheckLoginStatusParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { token=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = CheckLoginStatusDocument,
+            OperationName = "checkLoginStatus",
+            Variables = this
+        };
+    }
+
+
+    public static string CheckLoginStatusDocument = @"
         query checkLoginStatus($token: String) {
           checkLoginStatus(token: $token) {
             code
@@ -9094,47 +10820,47 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class CheckPasswordStrengthResponse
+{
+
+    [JsonProperty("checkPasswordStrength")]
+    public CheckPasswordStrengthResult Result { get; set; }
+}
+
+public class CheckPasswordStrengthParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("password")]
+    public string Password { get; set; }
+
+    public CheckPasswordStrengthParam(string password)
+    {
+        this.Password = password;
+    }
+    /// <summary>
+    /// CheckPasswordStrengthParam.Request 
+    /// <para>Required variables:<br/> { password=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = CheckPasswordStrengthDocument,
+            OperationName = "checkPasswordStrength",
+            Variables = this
+        };
     }
 
 
-
-    public class CheckPasswordStrengthResponse
-    {
-
-        [JsonProperty("checkPasswordStrength")]
-        public CheckPasswordStrengthResult Result { get; set; }
-    }
-
-    public class CheckPasswordStrengthParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("password")]
-        public string Password { get; set; }
-
-        public CheckPasswordStrengthParam(string password)
-        {
-            this.Password = password;
-        }
-        /// <summary>
-        /// CheckPasswordStrengthParam.Request 
-        /// <para>Required variables:<br/> { password=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = CheckPasswordStrengthDocument,
-                OperationName = "checkPasswordStrength",
-                Variables = this
-            };
-        }
-
-
-        public static string CheckPasswordStrengthDocument = @"
+    public static string CheckPasswordStrengthDocument = @"
         query checkPasswordStrength($password: String!) {
           checkPasswordStrength(password: $password) {
             valid
@@ -9142,57 +10868,58 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class ChildrenNodesResponse
+{
+
+    [JsonProperty("childrenNodes")]
+    public IEnumerable<Node> Result { get; set; }
+}
+
+public class ChildrenNodesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("nodeId")]
+    public string NodeId { get; set; }
+
+    public ChildrenNodesParam(string orgId, string nodeId)
+    {
+        this.OrgId = orgId;
+        this.NodeId = nodeId;
+    }
+    /// <summary>
+    /// ChildrenNodesParam.Request 
+    /// <para>Required variables:<br/> { orgId=(string), nodeId=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = ChildrenNodesDocument,
+            OperationName = "childrenNodes",
+            Variables = this
+        };
     }
 
 
-
-    public class ChildrenNodesResponse
-    {
-
-        [JsonProperty("childrenNodes")]
-        public IEnumerable<Node> Result { get; set; }
-    }
-
-    public class ChildrenNodesParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("orgId")]
-        public string OrgId { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("nodeId")]
-        public string NodeId { get; set; }
-
-        public ChildrenNodesParam(string orgId, string nodeId)
-        {
-            this.OrgId = orgId;
-            this.NodeId = nodeId;
-        }
-        /// <summary>
-        /// ChildrenNodesParam.Request 
-        /// <para>Required variables:<br/> { orgId=(string), nodeId=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = ChildrenNodesDocument,
-                OperationName = "childrenNodes",
-                Variables = this
-            };
-        }
-
-
-        public static string ChildrenNodesDocument = @"
+    public static string ChildrenNodesDocument = @"
         query childrenNodes($orgId: String!, $nodeId: String!) {
           childrenNodes(orgId: $orgId, nodeId: $nodeId) {
             id
+            orgId
             name
             nameI18n
             description
@@ -9208,35 +10935,35 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
-    }
+}
 
 
 
-    public class EmailTemplatesResponse
+public class EmailTemplatesResponse
+{
+
+    [JsonProperty("emailTemplates")]
+    public IEnumerable<EmailTemplate> Result { get; set; }
+}
+
+public class EmailTemplatesParam
+{
+
+
+    /// <summary>
+    /// EmailTemplatesParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("emailTemplates")]
-        public IEnumerable<EmailTemplate> Result { get; set; }
-    }
-
-    public class EmailTemplatesParam
-    {
-
-
-        /// <summary>
-        /// EmailTemplatesParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = EmailTemplatesDocument,
-                OperationName = "emailTemplates"
-            };
-        }
+            Query = EmailTemplatesDocument,
+            OperationName = "emailTemplates"
+        };
+    }
 
 
-        public static string EmailTemplatesDocument = @"
+    public static string EmailTemplatesDocument = @"
         query emailTemplates {
           emailTemplates {
             type
@@ -9252,64 +10979,71 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class FindUserResponse
+{
+
+    [JsonProperty("findUser")]
+    public User Result { get; set; }
+}
+
+public class FindUserParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("email")]
+    public string Email { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("phone")]
+    public string Phone { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("username")]
+    public string Username { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("externalId")]
+    public string ExternalId { get; set; }
+
+    public FindUserParam()
+    {
+
+    }
+    /// <summary>
+    /// FindUserParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { email=(string), phone=(string), username=(string), externalId=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = FindUserDocument,
+            OperationName = "findUser",
+            Variables = this
+        };
     }
 
 
-
-    public class FindUserResponse
-    {
-
-        [JsonProperty("findUser")]
-        public User Result { get; set; }
-    }
-
-    public class FindUserParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("email")]
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("phone")]
-        public string Phone { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("username")]
-        public string Username { get; set; }
-
-        public FindUserParam()
-        {
-
-        }
-        /// <summary>
-        /// FindUserParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { email=(string), phone=(string), username=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = FindUserDocument,
-                OperationName = "findUser",
-                Variables = this
-            };
-        }
-
-
-        public static string FindUserDocument = @"
-        query findUser($email: String, $phone: String, $username: String) {
-          findUser(email: $email, phone: $phone, username: $username) {
+    public static string FindUserDocument = @"
+        query findUser($email: String, $phone: String, $username: String, $externalId: String) {
+          findUser(email: $email, phone: $phone, username: $username, externalId: $externalId) {
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -9355,50 +11089,51 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
+}
+
+
+
+public class FunctionResponse
+{
+
+    [JsonProperty("function")]
+    public Function Result { get; set; }
+}
+
+public class FunctionParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public FunctionParam()
+    {
+
+    }
+    /// <summary>
+    /// FunctionParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { id=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = FunctionDocument,
+            OperationName = "function",
+            Variables = this
+        };
     }
 
 
-
-    public class FunctionResponse
-    {
-
-        [JsonProperty("function")]
-        public Function Result { get; set; }
-    }
-
-    public class FunctionParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public FunctionParam()
-        {
-
-        }
-        /// <summary>
-        /// FunctionParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { id=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = FunctionDocument,
-                OperationName = "function",
-                Variables = this
-            };
-        }
-
-
-        public static string FunctionDocument = @"
+    public static string FunctionDocument = @"
         query function($id: String) {
           function(id: $id) {
             id
@@ -9409,60 +11144,60 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class FunctionsResponse
+{
+
+    [JsonProperty("functions")]
+    public PaginatedFunctions Result { get; set; }
+}
+
+public class FunctionsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public FunctionsParam()
+    {
+
+    }
+    /// <summary>
+    /// FunctionsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = FunctionsDocument,
+            OperationName = "functions",
+            Variables = this
+        };
     }
 
 
-
-    public class FunctionsResponse
-    {
-
-        [JsonProperty("functions")]
-        public PaginatedFunctions Result { get; set; }
-    }
-
-    public class FunctionsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public FunctionsParam()
-        {
-
-        }
-        /// <summary>
-        /// FunctionsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = FunctionsDocument,
-                OperationName = "functions",
-                Variables = this
-            };
-        }
-
-
-        public static string FunctionsDocument = @"
+    public static string FunctionsDocument = @"
         query functions($page: Int, $limit: Int, $sortBy: SortByEnum) {
           functions(page: $page, limit: $limit, sortBy: $sortBy) {
             list {
@@ -9476,47 +11211,124 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class GetUserDepartmentsResponse
+{
+
+    [JsonProperty("user")]
+    public User Result { get; set; }
+}
+
+public class GetUserDepartmentsParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    public GetUserDepartmentsParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// GetUserDepartmentsParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> { orgId=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GetUserDepartmentsDocument,
+            OperationName = "getUserDepartments",
+            Variables = this
+        };
     }
 
 
+    public static string GetUserDepartmentsDocument = @"
+        query getUserDepartments($id: String!, $orgId: String) {
+          user(id: $id) {
+            departments(orgId: $orgId) {
+              totalCount
+              list {
+                department {
+                  id
+                  orgId
+                  name
+                  nameI18n
+                  description
+                  descriptionI18n
+                  order
+                  code
+                  root
+                  depth
+                  path
+                  codePath
+                  namePath
+                  createdAt
+                  updatedAt
+                  children
+                }
+                isMainDepartment
+                joinedAt
+              }
+            }
+          }
+        }
+        ";
+}
 
-    public class GetUserGroupsResponse
+
+
+public class GetUserGroupsResponse
+{
+
+    [JsonProperty("user")]
+    public User Result { get; set; }
+}
+
+public class GetUserGroupsParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public GetUserGroupsParam(string id)
     {
-
-        [JsonProperty("user")]
-        public User Result { get; set; }
+        this.Id = id;
+    }
+    /// <summary>
+    /// GetUserGroupsParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GetUserGroupsDocument,
+            OperationName = "getUserGroups",
+            Variables = this
+        };
     }
 
-    public class GetUserGroupsParam
-    {
 
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public GetUserGroupsParam(string id)
-        {
-            this.Id = id;
-        }
-        /// <summary>
-        /// GetUserGroupsParam.Request 
-        /// <para>Required variables:<br/> { id=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = GetUserGroupsDocument,
-                OperationName = "getUserGroups",
-                Variables = this
-            };
-        }
-
-
-        public static string GetUserGroupsDocument = @"
+    public static string GetUserGroupsDocument = @"
         query getUserGroups($id: String!) {
           user(id: $id) {
             groups {
@@ -9532,62 +11344,69 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class GetUserRolesResponse
+{
+
+    [JsonProperty("user")]
+    public User Result { get; set; }
+}
+
+public class GetUserRolesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    public GetUserRolesParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// GetUserRolesParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GetUserRolesDocument,
+            OperationName = "getUserRoles",
+            Variables = this
+        };
     }
 
 
-
-    public class GetUserRolesResponse
-    {
-
-        [JsonProperty("user")]
-        public User Result { get; set; }
-    }
-
-    public class GetUserRolesParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public GetUserRolesParam(string id)
-        {
-            this.Id = id;
-        }
-        /// <summary>
-        /// GetUserRolesParam.Request 
-        /// <para>Required variables:<br/> { id=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = GetUserRolesDocument,
-                OperationName = "getUserRoles",
-                Variables = this
-            };
-        }
-
-
-        public static string GetUserRolesDocument = @"
-        query getUserRoles($id: String!) {
+    public static string GetUserRolesDocument = @"
+        query getUserRoles($id: String!, $namespace: String) {
           user(id: $id) {
-            roles {
+            roles(namespace: $namespace) {
               totalCount
               list {
                 code
+                namespace
                 arn
                 description
-                isSystem
                 createdAt
                 updatedAt
                 parent {
                   code
+                  namespace
+                  arn
                   description
-                  isSystem
                   createdAt
                   updatedAt
                 }
@@ -9596,47 +11415,47 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class GroupResponse
+{
+
+    [JsonProperty("group")]
+    public Group Result { get; set; }
+}
+
+public class GroupParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    public GroupParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// GroupParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GroupDocument,
+            OperationName = "group",
+            Variables = this
+        };
     }
 
 
-
-    public class GroupResponse
-    {
-
-        [JsonProperty("group")]
-        public Group Result { get; set; }
-    }
-
-    public class GroupParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public GroupParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// GroupParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = GroupDocument,
-                OperationName = "group",
-                Variables = this
-            };
-        }
-
-
-        public static string GroupDocument = @"
+    public static string GroupDocument = @"
         query group($code: String!) {
           group(code: $code) {
             code
@@ -9647,59 +11466,59 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class GroupWithUsersResponse
+{
+
+    [JsonProperty("group")]
+    public Group Result { get; set; }
+}
+
+public class GroupWithUsersParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    public GroupWithUsersParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// GroupWithUsersParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GroupWithUsersDocument,
+            OperationName = "groupWithUsers",
+            Variables = this
+        };
     }
 
 
-
-    public class GroupWithUsersResponse
-    {
-
-        [JsonProperty("group")]
-        public Group Result { get; set; }
-    }
-
-    public class GroupWithUsersParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        public GroupWithUsersParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// GroupWithUsersParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = GroupWithUsersDocument,
-                OperationName = "groupWithUsers",
-                Variables = this
-            };
-        }
-
-
-        public static string GroupWithUsersDocument = @"
+    public static string GroupWithUsersDocument = @"
         query groupWithUsers($code: String!, $page: Int, $limit: Int) {
           group(code: $code) {
             users(page: $page, limit: $limit) {
@@ -9753,71 +11572,72 @@ namespace Authing.ApiClient.Types
                 country
                 createdAt
                 updatedAt
+                externalId
               }
             }
           }
         }
         ";
+}
+
+
+
+public class GroupsResponse
+{
+
+    [JsonProperty("groups")]
+    public PaginatedGroups Result { get; set; }
+}
+
+public class GroupsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public GroupsParam()
+    {
+
+    }
+    /// <summary>
+    /// GroupsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { userId=(string), page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = GroupsDocument,
+            OperationName = "groups",
+            Variables = this
+        };
     }
 
 
-
-    public class GroupsResponse
-    {
-
-        [JsonProperty("groups")]
-        public PaginatedGroups Result { get; set; }
-    }
-
-    public class GroupsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public GroupsParam()
-        {
-
-        }
-        /// <summary>
-        /// GroupsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { userId=(string), page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = GroupsDocument,
-                OperationName = "groups",
-                Variables = this
-            };
-        }
-
-
-        public static string GroupsDocument = @"
+    public static string GroupsDocument = @"
         query groups($userId: String, $page: Int, $limit: Int, $sortBy: SortByEnum) {
           groups(userId: $userId, page: $page, limit: $limit, sortBy: $sortBy) {
             totalCount
@@ -9831,329 +11651,750 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class IsActionAllowedResponse
+{
+
+    [JsonProperty("isActionAllowed")]
+    public bool Result { get; set; }
+}
+
+public class IsActionAllowedParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("resource")]
+    public string Resource { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("action")]
+    public string Action { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    public IsActionAllowedParam(string resource, string action, string userId)
+    {
+        this.Resource = resource;
+        this.Action = action;
+        this.UserId = userId;
+    }
+    /// <summary>
+    /// IsActionAllowedParam.Request 
+    /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = IsActionAllowedDocument,
+            OperationName = "isActionAllowed",
+            Variables = this
+        };
     }
 
 
-
-    public class IsActionAllowedResponse
-    {
-
-        [JsonProperty("isActionAllowed")]
-        public bool Result { get; set; }
-    }
-
-    public class IsActionAllowedParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("resource")]
-        public string Resource { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("action")]
-        public string Action { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        public IsActionAllowedParam(string resource, string action, string userId)
-        {
-            this.Resource = resource;
-            this.Action = action;
-            this.UserId = userId;
-        }
-        /// <summary>
-        /// IsActionAllowedParam.Request 
-        /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = IsActionAllowedDocument,
-                OperationName = "isActionAllowed",
-                Variables = this
-            };
-        }
-
-
-        public static string IsActionAllowedDocument = @"
-        query isActionAllowed($resource: String!, $action: String!, $userId: String!) {
-          isActionAllowed(resource: $resource, action: $action, userId: $userId)
+    public static string IsActionAllowedDocument = @"
+        query isActionAllowed($resource: String!, $action: String!, $userId: String!, $namespace: String) {
+          isActionAllowed(resource: $resource, action: $action, userId: $userId, namespace: $namespace)
         }
         ";
+}
+
+
+
+public class IsActionDeniedResponse
+{
+
+    [JsonProperty("isActionDenied")]
+    public bool Result { get; set; }
+}
+
+public class IsActionDeniedParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("resource")]
+    public string Resource { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("action")]
+    public string Action { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
+
+    public IsActionDeniedParam(string resource, string action, string userId)
+    {
+        this.Resource = resource;
+        this.Action = action;
+        this.UserId = userId;
+    }
+    /// <summary>
+    /// IsActionDeniedParam.Request 
+    /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = IsActionDeniedDocument,
+            OperationName = "isActionDenied",
+            Variables = this
+        };
     }
 
 
-
-    public class IsActionDeniedResponse
-    {
-
-        [JsonProperty("isActionDenied")]
-        public bool Result { get; set; }
-    }
-
-    public class IsActionDeniedParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("resource")]
-        public string Resource { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("action")]
-        public string Action { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        public IsActionDeniedParam(string resource, string action, string userId)
-        {
-            this.Resource = resource;
-            this.Action = action;
-            this.UserId = userId;
-        }
-        /// <summary>
-        /// IsActionDeniedParam.Request 
-        /// <para>Required variables:<br/> { resource=(string), action=(string), userId=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = IsActionDeniedDocument,
-                OperationName = "isActionDenied",
-                Variables = this
-            };
-        }
-
-
-        public static string IsActionDeniedDocument = @"
+    public static string IsActionDeniedDocument = @"
         query isActionDenied($resource: String!, $action: String!, $userId: String!) {
           isActionDenied(resource: $resource, action: $action, userId: $userId)
         }
         ";
+}
+
+
+
+public class IsDomainAvaliableResponse
+{
+
+    [JsonProperty("isDomainAvaliable")]
+    public bool? Result { get; set; }
+}
+
+public class IsDomainAvaliableParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("domain")]
+    public string Domain { get; set; }
+
+    public IsDomainAvaliableParam(string domain)
+    {
+        this.Domain = domain;
+    }
+    /// <summary>
+    /// IsDomainAvaliableParam.Request 
+    /// <para>Required variables:<br/> { domain=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = IsDomainAvaliableDocument,
+            OperationName = "isDomainAvaliable",
+            Variables = this
+        };
     }
 
 
-
-    public class IsDomainAvaliableResponse
-    {
-
-        [JsonProperty("isDomainAvaliable")]
-        public bool? Result { get; set; }
-    }
-
-    public class IsDomainAvaliableParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("domain")]
-        public string Domain { get; set; }
-
-        public IsDomainAvaliableParam(string domain)
-        {
-            this.Domain = domain;
-        }
-        /// <summary>
-        /// IsDomainAvaliableParam.Request 
-        /// <para>Required variables:<br/> { domain=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = IsDomainAvaliableDocument,
-                OperationName = "isDomainAvaliable",
-                Variables = this
-            };
-        }
-
-
-        public static string IsDomainAvaliableDocument = @"
+    public static string IsDomainAvaliableDocument = @"
         query isDomainAvaliable($domain: String!) {
           isDomainAvaliable(domain: $domain)
         }
         ";
+}
+
+
+
+public class IsRootNodeResponse
+{
+
+    [JsonProperty("isRootNode")]
+    public bool? Result { get; set; }
+}
+
+public class IsRootNodeParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("nodeId")]
+    public string NodeId { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    public IsRootNodeParam(string nodeId, string orgId)
+    {
+        this.NodeId = nodeId;
+        this.OrgId = orgId;
+    }
+    /// <summary>
+    /// IsRootNodeParam.Request 
+    /// <para>Required variables:<br/> { nodeId=(string), orgId=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = IsRootNodeDocument,
+            OperationName = "isRootNode",
+            Variables = this
+        };
     }
 
 
-
-    public class IsRootNodeResponse
-    {
-
-        [JsonProperty("isRootNode")]
-        public bool? Result { get; set; }
-    }
-
-    public class IsRootNodeParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("nodeId")]
-        public string NodeId { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("orgId")]
-        public string OrgId { get; set; }
-
-        public IsRootNodeParam(string nodeId, string orgId)
-        {
-            this.NodeId = nodeId;
-            this.OrgId = orgId;
-        }
-        /// <summary>
-        /// IsRootNodeParam.Request 
-        /// <para>Required variables:<br/> { nodeId=(string), orgId=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = IsRootNodeDocument,
-                OperationName = "isRootNode",
-                Variables = this
-            };
-        }
-
-
-        public static string IsRootNodeDocument = @"
+    public static string IsRootNodeDocument = @"
         query isRootNode($nodeId: String!, $orgId: String!) {
           isRootNode(nodeId: $nodeId, orgId: $orgId)
         }
         ";
+}
+
+
+
+public class IsUserExistsResponse
+{
+
+    [JsonProperty("isUserExists")]
+    public bool? Result { get; set; }
+}
+
+public class IsUserExistsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("email")]
+    public string Email { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("phone")]
+    public string Phone { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("username")]
+    public string Username { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("externalId")]
+    public string ExternalId { get; set; }
+
+    public IsUserExistsParam()
+    {
+
+    }
+    /// <summary>
+    /// IsUserExistsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { email=(string), phone=(string), username=(string), externalId=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = IsUserExistsDocument,
+            OperationName = "isUserExists",
+            Variables = this
+        };
     }
 
 
-
-    public class IsUserExistsResponse
-    {
-
-        [JsonProperty("isUserExists")]
-        public bool? Result { get; set; }
-    }
-
-    public class IsUserExistsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("email")]
-        public string Email { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("phone")]
-        public string Phone { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("username")]
-        public string Username { get; set; }
-
-        public IsUserExistsParam()
-        {
-
-        }
-        /// <summary>
-        /// IsUserExistsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { email=(string), phone=(string), username=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = IsUserExistsDocument,
-                OperationName = "isUserExists",
-                Variables = this
-            };
-        }
-
-
-        public static string IsUserExistsDocument = @"
-        query isUserExists($email: String, $phone: String, $username: String) {
-          isUserExists(email: $email, phone: $phone, username: $username)
+    public static string IsUserExistsDocument = @"
+        query isUserExists($email: String, $phone: String, $username: String, $externalId: String) {
+          isUserExists(email: $email, phone: $phone, username: $username, externalId: $externalId)
         }
         ";
+}
+
+
+
+public class AuthorizedResourcesResponse
+{
+
+    [JsonProperty("authorizedResources")]
+    public PaginatedAuthorizedResources Result { get; set; }
+}
+
+public class AuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("targetType")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public PolicyAssignmentTargetType? TargetType { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("targetIdentifier")]
+    public string TargetIdentifier { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public AuthorizedResourcesParam()
+    {
+
+    }
+    /// <summary>
+    /// AuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { targetType=(PolicyAssignmentTargetType), targetIdentifier=(string), namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = AuthorizedResourcesDocument,
+            OperationName = "authorizedResources",
+            Variables = this
+        };
     }
 
 
+    public static string AuthorizedResourcesDocument = @"
+        query authorizedResources($targetType: PolicyAssignmentTargetType, $targetIdentifier: String, $namespace: String, $resourceType: String) {
+          authorizedResources(targetType: $targetType, targetIdentifier: $targetIdentifier, namespace: $namespace, resourceType: $resourceType) {
+            totalCount
+            list {
+              code
+              type
+              actions
+            }
+          }
+        }
+        ";
+}
 
-    public class NodeByCodeResponse
+
+
+public class ListGroupAuthorizedResourcesResponse
+{
+
+    [JsonProperty("group")]
+    public Group Result { get; set; }
+}
+
+public class ListGroupAuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public ListGroupAuthorizedResourcesParam(string code)
     {
-
-        [JsonProperty("nodeByCode")]
-        public Node Result { get; set; }
+        this.Code = code;
+    }
+    /// <summary>
+    /// ListGroupAuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = ListGroupAuthorizedResourcesDocument,
+            OperationName = "listGroupAuthorizedResources",
+            Variables = this
+        };
     }
 
-    public class NodeByCodeParam
+
+    public static string ListGroupAuthorizedResourcesDocument = @"
+        query listGroupAuthorizedResources($code: String!, $namespace: String, $resourceType: String) {
+          group(code: $code) {
+            authorizedResources(namespace: $namespace, resourceType: $resourceType) {
+              totalCount
+              list {
+                code
+                type
+                actions
+              }
+            }
+          }
+        }
+        ";
+}
+
+
+
+public class ListNodeByCodeAuthorizedResourcesResponse
+{
+
+    [JsonProperty("nodeByCode")]
+    public Node Result { get; set; }
+}
+
+public class ListNodeByCodeAuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public ListNodeByCodeAuthorizedResourcesParam(string orgId, string code)
     {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("orgId")]
-        public string OrgId { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public NodeByCodeParam(string orgId, string code)
+        this.OrgId = orgId;
+        this.Code = code;
+    }
+    /// <summary>
+    /// ListNodeByCodeAuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
         {
-            this.OrgId = orgId;
-            this.Code = code;
+            Query = ListNodeByCodeAuthorizedResourcesDocument,
+            OperationName = "listNodeByCodeAuthorizedResources",
+            Variables = this
+        };
+    }
+
+
+    public static string ListNodeByCodeAuthorizedResourcesDocument = @"
+        query listNodeByCodeAuthorizedResources($orgId: String!, $code: String!, $namespace: String, $resourceType: String) {
+          nodeByCode(orgId: $orgId, code: $code) {
+            authorizedResources(namespace: $namespace, resourceType: $resourceType) {
+              totalCount
+              list {
+                code
+                type
+                actions
+              }
+            }
+          }
         }
-        /// <summary>
-        /// NodeByCodeParam.Request 
-        /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        ";
+}
+
+
+
+public class ListNodeByIdAuthorizedResourcesResponse
+{
+
+    [JsonProperty("nodeById")]
+    public Node Result { get; set; }
+}
+
+public class ListNodeByIdAuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public ListNodeByIdAuthorizedResourcesParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// ListNodeByIdAuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = NodeByCodeDocument,
-                OperationName = "nodeByCode",
-                Variables = this
-            };
+            Query = ListNodeByIdAuthorizedResourcesDocument,
+            OperationName = "listNodeByIdAuthorizedResources",
+            Variables = this
+        };
+    }
+
+
+    public static string ListNodeByIdAuthorizedResourcesDocument = @"
+        query listNodeByIdAuthorizedResources($id: String!, $namespace: String, $resourceType: String) {
+          nodeById(id: $id) {
+            authorizedResources(namespace: $namespace, resourceType: $resourceType) {
+              totalCount
+              list {
+                code
+                type
+                actions
+              }
+            }
+          }
         }
+        ";
+}
 
 
-        public static string NodeByCodeDocument = @"
+
+public class ListRoleAuthorizedResourcesResponse
+{
+
+    [JsonProperty("role")]
+    public Role Result { get; set; }
+}
+
+public class ListRoleAuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public ListRoleAuthorizedResourcesParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// ListRoleAuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = ListRoleAuthorizedResourcesDocument,
+            OperationName = "listRoleAuthorizedResources",
+            Variables = this
+        };
+    }
+
+
+    public static string ListRoleAuthorizedResourcesDocument = @"
+        query listRoleAuthorizedResources($code: String!, $namespace: String, $resourceType: String) {
+          role(code: $code, namespace: $namespace) {
+            authorizedResources(resourceType: $resourceType) {
+              totalCount
+              list {
+                code
+                type
+                actions
+              }
+            }
+          }
+        }
+        ";
+}
+
+
+
+public class ListUserAuthorizedResourcesResponse
+{
+
+    [JsonProperty("user")]
+    public User Result { get; set; }
+}
+
+public class ListUserAuthorizedResourcesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("resourceType")]
+    public string ResourceType { get; set; }
+
+    public ListUserAuthorizedResourcesParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// ListUserAuthorizedResourcesParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), resourceType=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = ListUserAuthorizedResourcesDocument,
+            OperationName = "listUserAuthorizedResources",
+            Variables = this
+        };
+    }
+
+
+    public static string ListUserAuthorizedResourcesDocument = @"
+        query listUserAuthorizedResources($id: String!, $namespace: String, $resourceType: String) {
+          user(id: $id) {
+            authorizedResources(namespace: $namespace, resourceType: $resourceType) {
+              totalCount
+              list {
+                code
+                type
+                actions
+              }
+            }
+          }
+        }
+        ";
+}
+
+
+
+public class NodeByCodeResponse
+{
+
+    [JsonProperty("nodeByCode")]
+    public Node Result { get; set; }
+}
+
+public class NodeByCodeParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    public NodeByCodeParam(string orgId, string code)
+    {
+        this.OrgId = orgId;
+        this.Code = code;
+    }
+    /// <summary>
+    /// NodeByCodeParam.Request 
+    /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = NodeByCodeDocument,
+            OperationName = "nodeByCode",
+            Variables = this
+        };
+    }
+
+
+    public static string NodeByCodeDocument = @"
         query nodeByCode($orgId: String!, $code: String!) {
           nodeByCode(orgId: $orgId, code: $code) {
             id
+            orgId
             name
             nameI18n
             description
@@ -10169,82 +12410,83 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class NodeByCodeWithMembersResponse
+{
+
+    [JsonProperty("nodeByCode")]
+    public Node Result { get; set; }
+}
+
+public class NodeByCodeWithMembersParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("includeChildrenNodes")]
+    public bool? IncludeChildrenNodes { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    public NodeByCodeWithMembersParam(string orgId, string code)
+    {
+        this.OrgId = orgId;
+        this.Code = code;
+    }
+    /// <summary>
+    /// NodeByCodeWithMembersParam.Request 
+    /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum), includeChildrenNodes=(bool) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = NodeByCodeWithMembersDocument,
+            OperationName = "nodeByCodeWithMembers",
+            Variables = this
+        };
     }
 
 
-
-    public class NodeByCodeWithMembersResponse
-    {
-
-        [JsonProperty("nodeByCode")]
-        public Node Result { get; set; }
-    }
-
-    public class NodeByCodeWithMembersParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("includeChildrenNodes")]
-        public bool? IncludeChildrenNodes { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("orgId")]
-        public string OrgId { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public NodeByCodeWithMembersParam(string orgId, string code)
-        {
-            this.OrgId = orgId;
-            this.Code = code;
-        }
-        /// <summary>
-        /// NodeByCodeWithMembersParam.Request 
-        /// <para>Required variables:<br/> { orgId=(string), code=(string) }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum), includeChildrenNodes=(bool) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = NodeByCodeWithMembersDocument,
-                OperationName = "nodeByCodeWithMembers",
-                Variables = this
-            };
-        }
-
-
-        public static string NodeByCodeWithMembersDocument = @"
+    public static string NodeByCodeWithMembersDocument = @"
         query nodeByCodeWithMembers($page: Int, $limit: Int, $sortBy: SortByEnum, $includeChildrenNodes: Boolean, $orgId: String!, $code: String!) {
           nodeByCode(orgId: $orgId, code: $code) {
             id
+            orgId
             name
             nameI18n
             description
@@ -10262,6 +12504,7 @@ namespace Authing.ApiClient.Types
                 id
                 arn
                 userPoolId
+                status
                 username
                 email
                 emailVerified
@@ -10307,55 +12550,57 @@ namespace Authing.ApiClient.Types
                 country
                 createdAt
                 updatedAt
+                externalId
               }
             }
           }
         }
         ";
+}
+
+
+
+public class NodeByIdResponse
+{
+
+    [JsonProperty("nodeById")]
+    public Node Result { get; set; }
+}
+
+public class NodeByIdParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public NodeByIdParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// NodeByIdParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = NodeByIdDocument,
+            OperationName = "nodeById",
+            Variables = this
+        };
     }
 
 
-
-    public class NodeByIdResponse
-    {
-
-        [JsonProperty("nodeById")]
-        public Node Result { get; set; }
-    }
-
-    public class NodeByIdParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public NodeByIdParam(string id)
-        {
-            this.Id = id;
-        }
-        /// <summary>
-        /// NodeByIdParam.Request 
-        /// <para>Required variables:<br/> { id=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = NodeByIdDocument,
-                OperationName = "nodeById",
-                Variables = this
-            };
-        }
-
-
-        public static string NodeByIdDocument = @"
+    public static string NodeByIdDocument = @"
         query nodeById($id: String!) {
           nodeById(id: $id) {
             id
+            orgId
             name
             nameI18n
             description
@@ -10371,75 +12616,76 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class NodeByIdWithMembersResponse
+{
+
+    [JsonProperty("nodeById")]
+    public Node Result { get; set; }
+}
+
+public class NodeByIdWithMembersParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("includeChildrenNodes")]
+    public bool? IncludeChildrenNodes { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public NodeByIdWithMembersParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// NodeByIdWithMembersParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum), includeChildrenNodes=(bool) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = NodeByIdWithMembersDocument,
+            OperationName = "nodeByIdWithMembers",
+            Variables = this
+        };
     }
 
 
-
-    public class NodeByIdWithMembersResponse
-    {
-
-        [JsonProperty("nodeById")]
-        public Node Result { get; set; }
-    }
-
-    public class NodeByIdWithMembersParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("includeChildrenNodes")]
-        public bool? IncludeChildrenNodes { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public NodeByIdWithMembersParam(string id)
-        {
-            this.Id = id;
-        }
-        /// <summary>
-        /// NodeByIdWithMembersParam.Request 
-        /// <para>Required variables:<br/> { id=(string) }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum), includeChildrenNodes=(bool) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = NodeByIdWithMembersDocument,
-                OperationName = "nodeByIdWithMembers",
-                Variables = this
-            };
-        }
-
-
-        public static string NodeByIdWithMembersDocument = @"
+    public static string NodeByIdWithMembersDocument = @"
         query nodeByIdWithMembers($page: Int, $limit: Int, $sortBy: SortByEnum, $includeChildrenNodes: Boolean, $id: String!) {
           nodeById(id: $id) {
             id
+            orgId
             name
             nameI18n
             description
@@ -10457,6 +12703,7 @@ namespace Authing.ApiClient.Types
                 id
                 arn
                 userPoolId
+                status
                 username
                 email
                 emailVerified
@@ -10502,57 +12749,59 @@ namespace Authing.ApiClient.Types
                 country
                 createdAt
                 updatedAt
+                externalId
               }
             }
           }
         }
         ";
+}
+
+
+
+public class OrgResponse
+{
+
+    [JsonProperty("org")]
+    public Org Result { get; set; }
+}
+
+public class OrgParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public OrgParam(string id)
+    {
+        this.Id = id;
+    }
+    /// <summary>
+    /// OrgParam.Request 
+    /// <para>Required variables:<br/> { id=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = OrgDocument,
+            OperationName = "org",
+            Variables = this
+        };
     }
 
 
-
-    public class OrgResponse
-    {
-
-        [JsonProperty("org")]
-        public Org Result { get; set; }
-    }
-
-    public class OrgParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public OrgParam(string id)
-        {
-            this.Id = id;
-        }
-        /// <summary>
-        /// OrgParam.Request 
-        /// <para>Required variables:<br/> { id=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = OrgDocument,
-                OperationName = "org",
-                Variables = this
-            };
-        }
-
-
-        public static string OrgDocument = @"
+    public static string OrgDocument = @"
         query org($id: String!) {
           org(id: $id) {
             id
             rootNode {
               id
+              orgId
               name
               nameI18n
               description
@@ -10568,6 +12817,7 @@ namespace Authing.ApiClient.Types
             }
             nodes {
               id
+              orgId
               name
               nameI18n
               description
@@ -10584,60 +12834,60 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class OrgsResponse
+{
+
+    [JsonProperty("orgs")]
+    public PaginatedOrgs Result { get; set; }
+}
+
+public class OrgsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public OrgsParam()
+    {
+
+    }
+    /// <summary>
+    /// OrgsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = OrgsDocument,
+            OperationName = "orgs",
+            Variables = this
+        };
     }
 
 
-
-    public class OrgsResponse
-    {
-
-        [JsonProperty("orgs")]
-        public PaginatedOrgs Result { get; set; }
-    }
-
-    public class OrgsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public OrgsParam()
-        {
-
-        }
-        /// <summary>
-        /// OrgsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = OrgsDocument,
-                OperationName = "orgs",
-                Variables = this
-            };
-        }
-
-
-        public static string OrgsDocument = @"
+    public static string OrgsDocument = @"
         query orgs($page: Int, $limit: Int, $sortBy: SortByEnum) {
           orgs(page: $page, limit: $limit, sortBy: $sortBy) {
             totalCount
@@ -10677,203 +12927,224 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class PoliciesResponse
+{
+
+    [JsonProperty("policies")]
+    public PaginatedPolicies Result { get; set; }
+}
+
+public class PoliciesParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    public PoliciesParam()
+    {
+
+    }
+    /// <summary>
+    /// PoliciesParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = PoliciesDocument,
+            OperationName = "policies",
+            Variables = this
+        };
     }
 
 
-
-    public class PoliciesResponse
-    {
-
-        [JsonProperty("policies")]
-        public PaginatedPolicies Result { get; set; }
-    }
-
-    public class PoliciesParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("excludeDefault")]
-        public bool? ExcludeDefault { get; set; }
-
-        public PoliciesParam()
-        {
-
-        }
-        /// <summary>
-        /// PoliciesParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), excludeDefault=(bool) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = PoliciesDocument,
-                OperationName = "policies",
-                Variables = this
-            };
-        }
-
-
-        public static string PoliciesDocument = @"
-        query policies($page: Int, $limit: Int, $excludeDefault: Boolean) {
-          policies(page: $page, limit: $limit, excludeDefault: $excludeDefault) {
+    public static string PoliciesDocument = @"
+        query policies($page: Int, $limit: Int, $namespace: String) {
+          policies(page: $page, limit: $limit, namespace: $namespace) {
             totalCount
             list {
+              namespace
               code
-              isDefault
               description
               createdAt
               updatedAt
-              assignmentsCount
               statements {
                 resource
                 actions
                 effect
+                condition {
+                  param
+                  operator
+                  value
+                }
               }
             }
           }
         }
         ";
+}
+
+
+
+public class PolicyResponse
+{
+
+    [JsonProperty("policy")]
+    public Policy Result { get; set; }
+}
+
+public class PolicyParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    public PolicyParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// PolicyParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = PolicyDocument,
+            OperationName = "policy",
+            Variables = this
+        };
     }
 
 
-
-    public class PolicyResponse
-    {
-
-        [JsonProperty("policy")]
-        public Policy Result { get; set; }
-    }
-
-    public class PolicyParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public PolicyParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// PolicyParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = PolicyDocument,
-                OperationName = "policy",
-                Variables = this
-            };
-        }
-
-
-        public static string PolicyDocument = @"
-        query policy($code: String!) {
-          policy(code: $code) {
+    public static string PolicyDocument = @"
+        query policy($namespace: String, $code: String!) {
+          policy(code: $code, namespace: $namespace) {
+            namespace
             code
-            assignmentsCount
             isDefault
             description
             statements {
               resource
               actions
               effect
+              condition {
+                param
+                operator
+                value
+              }
             }
             createdAt
             updatedAt
           }
         }
         ";
+}
+
+
+
+public class PolicyAssignmentsResponse
+{
+
+    [JsonProperty("policyAssignments")]
+    public PaginatedPolicyAssignments Result { get; set; }
+}
+
+public class PolicyAssignmentsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("targetType")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public PolicyAssignmentTargetType? TargetType { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("targetIdentifier")]
+    public string TargetIdentifier { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    public PolicyAssignmentsParam()
+    {
+
+    }
+    /// <summary>
+    /// PolicyAssignmentsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), code=(string), targetType=(PolicyAssignmentTargetType), targetIdentifier=(string), page=(int), limit=(int) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = PolicyAssignmentsDocument,
+            OperationName = "policyAssignments",
+            Variables = this
+        };
     }
 
 
-
-    public class PolicyAssignmentsResponse
-    {
-
-        [JsonProperty("policyAssignments")]
-        public PaginatedPolicyAssignments Result { get; set; }
-    }
-
-    public class PolicyAssignmentsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("targetType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PolicyAssignmentTargetType? TargetType { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("targetIdentifier")]
-        public string TargetIdentifier { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        public PolicyAssignmentsParam()
-        {
-
-        }
-        /// <summary>
-        /// PolicyAssignmentsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { code=(string), targetType=(PolicyAssignmentTargetType), targetIdentifier=(string), page=(int), limit=(int) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = PolicyAssignmentsDocument,
-                OperationName = "policyAssignments",
-                Variables = this
-            };
-        }
-
-
-        public static string PolicyAssignmentsDocument = @"
-        query policyAssignments($code: String, $targetType: PolicyAssignmentTargetType, $targetIdentifier: String, $page: Int, $limit: Int) {
-          policyAssignments(code: $code, targetType: $targetType, targetIdentifier: $targetIdentifier, page: $page, limit: $limit) {
+    public static string PolicyAssignmentsDocument = @"
+        query policyAssignments($namespace: String, $code: String, $targetType: PolicyAssignmentTargetType, $targetIdentifier: String, $page: Int, $limit: Int) {
+          policyAssignments(namespace: $namespace, code: $code, targetType: $targetType, targetIdentifier: $targetIdentifier, page: $page, limit: $limit) {
             totalCount
             list {
               code
@@ -10883,59 +13154,59 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class PolicyWithAssignmentsResponse
+{
+
+    [JsonProperty("policy")]
+    public Policy Result { get; set; }
+}
+
+public class PolicyWithAssignmentsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    public PolicyWithAssignmentsParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// PolicyWithAssignmentsParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = PolicyWithAssignmentsDocument,
+            OperationName = "policyWithAssignments",
+            Variables = this
+        };
     }
 
 
-
-    public class PolicyWithAssignmentsResponse
-    {
-
-        [JsonProperty("policy")]
-        public Policy Result { get; set; }
-    }
-
-    public class PolicyWithAssignmentsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public PolicyWithAssignmentsParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// PolicyWithAssignmentsParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = PolicyWithAssignmentsDocument,
-                OperationName = "policyWithAssignments",
-                Variables = this
-            };
-        }
-
-
-        public static string PolicyWithAssignmentsDocument = @"
+    public static string PolicyWithAssignmentsDocument = @"
         query policyWithAssignments($page: Int, $limit: Int, $code: String!) {
           policy(code: $code) {
             code
@@ -10957,150 +13228,150 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class PreviewEmailResponse
+{
+
+    [JsonProperty("previewEmail")]
+    public string Result { get; set; }
+}
+
+public class PreviewEmailParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("type")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public EmailTemplateType Type { get; set; }
+
+    public PreviewEmailParam(EmailTemplateType type)
+    {
+        this.Type = type;
+    }
+    /// <summary>
+    /// PreviewEmailParam.Request 
+    /// <para>Required variables:<br/> { type=(EmailTemplateType) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = PreviewEmailDocument,
+            OperationName = "previewEmail",
+            Variables = this
+        };
     }
 
 
-
-    public class PreviewEmailResponse
-    {
-
-        [JsonProperty("previewEmail")]
-        public string Result { get; set; }
-    }
-
-    public class PreviewEmailParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("type")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public EmailTemplateType Type { get; set; }
-
-        public PreviewEmailParam(EmailTemplateType type)
-        {
-            this.Type = type;
-        }
-        /// <summary>
-        /// PreviewEmailParam.Request 
-        /// <para>Required variables:<br/> { type=(EmailTemplateType) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = PreviewEmailDocument,
-                OperationName = "previewEmail",
-                Variables = this
-            };
-        }
-
-
-        public static string PreviewEmailDocument = @"
+    public static string PreviewEmailDocument = @"
         query previewEmail($type: EmailTemplateType!) {
           previewEmail(type: $type)
         }
         ";
+}
+
+
+
+public class QiniuUptokenResponse
+{
+
+    [JsonProperty("qiniuUptoken")]
+    public string Result { get; set; }
+}
+
+public class QiniuUptokenParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    public QiniuUptokenParam()
+    {
+
+    }
+    /// <summary>
+    /// QiniuUptokenParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { type=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = QiniuUptokenDocument,
+            OperationName = "qiniuUptoken",
+            Variables = this
+        };
     }
 
 
-
-    public class QiniuUptokenResponse
-    {
-
-        [JsonProperty("qiniuUptoken")]
-        public string Result { get; set; }
-    }
-
-    public class QiniuUptokenParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
-        public QiniuUptokenParam()
-        {
-
-        }
-        /// <summary>
-        /// QiniuUptokenParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { type=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = QiniuUptokenDocument,
-                OperationName = "qiniuUptoken",
-                Variables = this
-            };
-        }
-
-
-        public static string QiniuUptokenDocument = @"
+    public static string QiniuUptokenDocument = @"
         query qiniuUptoken($type: String) {
           qiniuUptoken(type: $type)
         }
         ";
+}
+
+
+
+public class QueryMfaResponse
+{
+
+    [JsonProperty("queryMfa")]
+    public Mfa Result { get; set; }
+}
+
+public class QueryMfaParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("userId")]
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("userPoolId")]
+    public string UserPoolId { get; set; }
+
+    public QueryMfaParam()
+    {
+
+    }
+    /// <summary>
+    /// QueryMfaParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { id=(string), userId=(string), userPoolId=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = QueryMfaDocument,
+            OperationName = "queryMfa",
+            Variables = this
+        };
     }
 
 
-
-    public class QueryMfaResponse
-    {
-
-        [JsonProperty("queryMfa")]
-        public Mfa Result { get; set; }
-    }
-
-    public class QueryMfaParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("userPoolId")]
-        public string UserPoolId { get; set; }
-
-        public QueryMfaParam()
-        {
-
-        }
-        /// <summary>
-        /// QueryMfaParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { id=(string), userId=(string), userPoolId=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = QueryMfaDocument,
-                OperationName = "queryMfa",
-                Variables = this
-            };
-        }
-
-
-        public static string QueryMfaDocument = @"
+    public static string QueryMfaDocument = @"
         query queryMfa($id: String, $userId: String, $userPoolId: String) {
           queryMfa(id: $id, userId: $userId, userPoolId: $userPoolId) {
             id
@@ -11111,117 +13382,127 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class RoleResponse
+{
+
+    [JsonProperty("role")]
+    public Role Result { get; set; }
+}
+
+public class RoleParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    public RoleParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// RoleParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = RoleDocument,
+            OperationName = "role",
+            Variables = this
+        };
     }
 
 
-
-    public class RoleResponse
-    {
-
-        [JsonProperty("role")]
-        public Role Result { get; set; }
-    }
-
-    public class RoleParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public RoleParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// RoleParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = RoleDocument,
-                OperationName = "role",
-                Variables = this
-            };
-        }
-
-
-        public static string RoleDocument = @"
-        query role($code: String!) {
-          role(code: $code) {
+    public static string RoleDocument = @"
+        query role($code: String!, $namespace: String) {
+          role(code: $code, namespace: $namespace) {
+            namespace
             code
             arn
             description
-            isSystem
             createdAt
             updatedAt
-            users {
-              totalCount
-            }
             parent {
+              namespace
               code
               arn
               description
-              isSystem
               createdAt
               updatedAt
             }
           }
         }
         ";
+}
+
+
+
+public class RoleWithUsersResponse
+{
+
+    [JsonProperty("role")]
+    public Role Result { get; set; }
+}
+
+public class RoleWithUsersParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    public RoleWithUsersParam(string code)
+    {
+        this.Code = code;
+    }
+    /// <summary>
+    /// RoleWithUsersParam.Request 
+    /// <para>Required variables:<br/> { code=(string) }</para>
+    /// <para>Optional variables:<br/> { namespace=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = RoleWithUsersDocument,
+            OperationName = "roleWithUsers",
+            Variables = this
+        };
     }
 
 
-
-    public class RoleWithUsersResponse
-    {
-
-        [JsonProperty("role")]
-        public Role Result { get; set; }
-    }
-
-    public class RoleWithUsersParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("code")]
-        public string Code { get; set; }
-
-        public RoleWithUsersParam(string code)
-        {
-            this.Code = code;
-        }
-        /// <summary>
-        /// RoleWithUsersParam.Request 
-        /// <para>Required variables:<br/> { code=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = RoleWithUsersDocument,
-                OperationName = "roleWithUsers",
-                Variables = this
-            };
-        }
-
-
-        public static string RoleWithUsersDocument = @"
-        query roleWithUsers($code: String!) {
-          role(code: $code) {
+    public static string RoleWithUsersDocument = @"
+        query roleWithUsers($code: String!, $namespace: String) {
+          role(code: $code, namespace: $namespace) {
             users {
               totalCount
               list {
                 id
                 arn
+                status
                 userPoolId
                 username
                 email
@@ -11268,155 +13549,131 @@ namespace Authing.ApiClient.Types
                 country
                 createdAt
                 updatedAt
+                externalId
               }
             }
           }
         }
         ";
+}
+
+
+
+public class RolesResponse
+{
+
+    [JsonProperty("roles")]
+    public PaginatedRoles Result { get; set; }
+}
+
+public class RolesParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("namespace")]
+    public string Namespace { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public RolesParam()
+    {
+
+    }
+    /// <summary>
+    /// RolesParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { namespace=(string), page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = RolesDocument,
+            OperationName = "roles",
+            Variables = this
+        };
     }
 
 
-
-    public class RolesResponse
-    {
-
-        [JsonProperty("roles")]
-        public PaginatedRoles Result { get; set; }
-    }
-
-    public class RolesParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public RolesParam()
-        {
-
-        }
-        /// <summary>
-        /// RolesParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = RolesDocument,
-                OperationName = "roles",
-                Variables = this
-            };
-        }
-
-
-        public static string RolesDocument = @"
-        query roles($page: Int, $limit: Int, $sortBy: SortByEnum) {
-          roles(page: $page, limit: $limit, sortBy: $sortBy) {
+    public static string RolesDocument = @"
+        query roles($namespace: String, $page: Int, $limit: Int, $sortBy: SortByEnum) {
+          roles(namespace: $namespace, page: $page, limit: $limit, sortBy: $sortBy) {
             totalCount
             list {
+              namespace
               code
               arn
               description
-              isSystem
               createdAt
               updatedAt
-              parent {
-                code
-                description
-                isSystem
-                createdAt
-                updatedAt
-              }
             }
           }
         }
         ";
+}
+
+
+
+public class RootNodeResponse
+{
+
+    [JsonProperty("rootNode")]
+    public Node Result { get; set; }
+}
+
+public class RootNodeParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("orgId")]
+    public string OrgId { get; set; }
+
+    public RootNodeParam(string orgId)
+    {
+        this.OrgId = orgId;
+    }
+    /// <summary>
+    /// RootNodeParam.Request 
+    /// <para>Required variables:<br/> { orgId=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = RootNodeDocument,
+            OperationName = "rootNode",
+            Variables = this
+        };
     }
 
 
-
-    public class RootNodeResponse
-    {
-
-        [JsonProperty("rootNode")]
-        public Node Result { get; set; }
-    }
-
-    public class RootNodeParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("includeChildrenNodes")]
-        public bool? IncludeChildrenNodes { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("orgId")]
-        public string OrgId { get; set; }
-
-        public RootNodeParam(string orgId)
-        {
-            this.OrgId = orgId;
-        }
-        /// <summary>
-        /// RootNodeParam.Request 
-        /// <para>Required variables:<br/> { orgId=(string) }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum), includeChildrenNodes=(bool) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = RootNodeDocument,
-                OperationName = "rootNode",
-                Variables = this
-            };
-        }
-
-
-        public static string RootNodeDocument = @"
-        query rootNode($page: Int, $limit: Int, $sortBy: SortByEnum, $includeChildrenNodes: Boolean, $orgId: String!) {
+    public static string RootNodeDocument = @"
+        query rootNode($orgId: String!) {
           rootNode(orgId: $orgId) {
             id
+            orgId
             name
             nameI18n
             description
@@ -11426,81 +13683,161 @@ namespace Authing.ApiClient.Types
             root
             depth
             path
+            codePath
+            namePath
             createdAt
             updatedAt
             children
-            users(page: $page, limit: $limit, sortBy: $sortBy, includeChildrenNodes: $includeChildrenNodes) {
-              totalCount
-            }
           }
         }
         ";
+}
+
+
+
+public class SearchNodesResponse
+{
+
+    [JsonProperty("searchNodes")]
+    public IEnumerable<Node> Result { get; set; }
+}
+
+public class SearchNodesParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("keyword")]
+    public string Keyword { get; set; }
+
+    public SearchNodesParam(string keyword)
+    {
+        this.Keyword = keyword;
+    }
+    /// <summary>
+    /// SearchNodesParam.Request 
+    /// <para>Required variables:<br/> { keyword=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = SearchNodesDocument,
+            OperationName = "searchNodes",
+            Variables = this
+        };
     }
 
 
+    public static string SearchNodesDocument = @"
+        query searchNodes($keyword: String!) {
+          searchNodes(keyword: $keyword) {
+            id
+            orgId
+            name
+            nameI18n
+            description
+            descriptionI18n
+            order
+            code
+            root
+            depth
+            path
+            codePath
+            namePath
+            createdAt
+            updatedAt
+            children
+          }
+        }
+        ";
+}
 
-    public class SearchUserResponse
+
+
+public class SearchUserResponse
+{
+
+    [JsonProperty("searchUser")]
+    public PaginatedUsers Result { get; set; }
+}
+
+public class SearchUserParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("query")]
+    public string Query { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("fields")]
+    public IEnumerable<string> Fields { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("departmentOpts")]
+    public IEnumerable<SearchUserDepartmentOpt> DepartmentOpts { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("groupOpts")]
+    public IEnumerable<SearchUserGroupOpt> GroupOpts { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("roleOpts")]
+    public IEnumerable<SearchUserRoleOpt> RoleOpts { get; set; }
+
+    public SearchUserParam(string query)
     {
-
-        [JsonProperty("searchUser")]
-        public PaginatedUsers Result { get; set; }
+        this.Query = query;
+    }
+    /// <summary>
+    /// SearchUserParam.Request 
+    /// <para>Required variables:<br/> { query=(string) }</para>
+    /// <para>Optional variables:<br/> { fields=(string[]), page=(int), limit=(int), departmentOpts=(SearchUserDepartmentOpt[]), groupOpts=(SearchUserGroupOpt[]), roleOpts=(SearchUserRoleOpt[]) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = SearchUserDocument,
+            OperationName = "searchUser",
+            Variables = this
+        };
     }
 
-    public class SearchUserParam
-    {
 
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("query")]
-        public string Query { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("fields")]
-        public IEnumerable<string> Fields { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        public SearchUserParam(string query)
-        {
-            this.Query = query;
-        }
-        /// <summary>
-        /// SearchUserParam.Request 
-        /// <para>Required variables:<br/> { query=(string) }</para>
-        /// <para>Optional variables:<br/> { fields=(string[]), page=(int), limit=(int) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = SearchUserDocument,
-                OperationName = "searchUser",
-                Variables = this
-            };
-        }
-
-
-        public static string SearchUserDocument = @"
-        query searchUser($query: String!, $fields: [String], $page: Int, $limit: Int) {
-          searchUser(query: $query, fields: $fields, page: $page, limit: $limit) {
+    public static string SearchUserDocument = @"
+        query searchUser($query: String!, $fields: [String], $page: Int, $limit: Int, $departmentOpts: [SearchUserDepartmentOpt], $groupOpts: [SearchUserGroupOpt], $roleOpts: [SearchUserRoleOpt]) {
+          searchUser(query: $query, fields: $fields, page: $page, limit: $limit, departmentOpts: $departmentOpts, groupOpts: $groupOpts, roleOpts: $roleOpts) {
             totalCount
             list {
               id
               arn
               userPoolId
+              status
               username
               email
               emailVerified
@@ -11546,51 +13883,52 @@ namespace Authing.ApiClient.Types
               country
               createdAt
               updatedAt
+              externalId
             }
           }
         }
         ";
+}
+
+
+
+public class SocialConnectionResponse
+{
+
+    [JsonProperty("socialConnection")]
+    public SocialConnection Result { get; set; }
+}
+
+public class SocialConnectionParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("provider")]
+    public string Provider { get; set; }
+
+    public SocialConnectionParam(string provider)
+    {
+        this.Provider = provider;
+    }
+    /// <summary>
+    /// SocialConnectionParam.Request 
+    /// <para>Required variables:<br/> { provider=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = SocialConnectionDocument,
+            OperationName = "socialConnection",
+            Variables = this
+        };
     }
 
 
-
-    public class SocialConnectionResponse
-    {
-
-        [JsonProperty("socialConnection")]
-        public SocialConnection Result { get; set; }
-    }
-
-    public class SocialConnectionParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("provider")]
-        public string Provider { get; set; }
-
-        public SocialConnectionParam(string provider)
-        {
-            this.Provider = provider;
-        }
-        /// <summary>
-        /// SocialConnectionParam.Request 
-        /// <para>Required variables:<br/> { provider=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = SocialConnectionDocument,
-                OperationName = "socialConnection",
-                Variables = this
-            };
-        }
-
-
-        public static string SocialConnectionDocument = @"
+    public static string SocialConnectionDocument = @"
         query socialConnection($provider: String!) {
           socialConnection(provider: $provider) {
             provider
@@ -11606,47 +13944,47 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class SocialConnectionInstanceResponse
+{
+
+    [JsonProperty("socialConnectionInstance")]
+    public SocialConnectionInstance Result { get; set; }
+}
+
+public class SocialConnectionInstanceParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("provider")]
+    public string Provider { get; set; }
+
+    public SocialConnectionInstanceParam(string provider)
+    {
+        this.Provider = provider;
+    }
+    /// <summary>
+    /// SocialConnectionInstanceParam.Request 
+    /// <para>Required variables:<br/> { provider=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = SocialConnectionInstanceDocument,
+            OperationName = "socialConnectionInstance",
+            Variables = this
+        };
     }
 
 
-
-    public class SocialConnectionInstanceResponse
-    {
-
-        [JsonProperty("socialConnectionInstance")]
-        public SocialConnectionInstance Result { get; set; }
-    }
-
-    public class SocialConnectionInstanceParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("provider")]
-        public string Provider { get; set; }
-
-        public SocialConnectionInstanceParam(string provider)
-        {
-            this.Provider = provider;
-        }
-        /// <summary>
-        /// SocialConnectionInstanceParam.Request 
-        /// <para>Required variables:<br/> { provider=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = SocialConnectionInstanceDocument,
-                OperationName = "socialConnectionInstance",
-                Variables = this
-            };
-        }
-
-
-        public static string SocialConnectionInstanceDocument = @"
+    public static string SocialConnectionInstanceDocument = @"
         query socialConnectionInstance($provider: String!) {
           socialConnectionInstance(provider: $provider) {
             provider
@@ -11658,35 +13996,35 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
-    }
+}
 
 
 
-    public class SocialConnectionInstancesResponse
+public class SocialConnectionInstancesResponse
+{
+
+    [JsonProperty("socialConnectionInstances")]
+    public IEnumerable<SocialConnectionInstance> Result { get; set; }
+}
+
+public class SocialConnectionInstancesParam
+{
+
+
+    /// <summary>
+    /// SocialConnectionInstancesParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("socialConnectionInstances")]
-        public IEnumerable<SocialConnectionInstance> Result { get; set; }
-    }
-
-    public class SocialConnectionInstancesParam
-    {
-
-
-        /// <summary>
-        /// SocialConnectionInstancesParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = SocialConnectionInstancesDocument,
-                OperationName = "socialConnectionInstances"
-            };
-        }
+            Query = SocialConnectionInstancesDocument,
+            OperationName = "socialConnectionInstances"
+        };
+    }
 
 
-        public static string SocialConnectionInstancesDocument = @"
+    public static string SocialConnectionInstancesDocument = @"
         query socialConnectionInstances {
           socialConnectionInstances {
             provider
@@ -11698,35 +14036,35 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
-    }
+}
 
 
 
-    public class SocialConnectionsResponse
+public class SocialConnectionsResponse
+{
+
+    [JsonProperty("socialConnections")]
+    public IEnumerable<SocialConnection> Result { get; set; }
+}
+
+public class SocialConnectionsParam
+{
+
+
+    /// <summary>
+    /// SocialConnectionsParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("socialConnections")]
-        public IEnumerable<SocialConnection> Result { get; set; }
-    }
-
-    public class SocialConnectionsParam
-    {
-
-
-        /// <summary>
-        /// SocialConnectionsParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = SocialConnectionsDocument,
-                OperationName = "socialConnections"
-            };
-        }
+            Query = SocialConnectionsDocument,
+            OperationName = "socialConnections"
+        };
+    }
 
 
-        public static string SocialConnectionsDocument = @"
+    public static string SocialConnectionsDocument = @"
         query socialConnections {
           socialConnections {
             provider
@@ -11742,81 +14080,81 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
-    }
+}
 
 
 
-    public class TemplateCodeResponse
+public class TemplateCodeResponse
+{
+
+    [JsonProperty("templateCode")]
+    public string Result { get; set; }
+}
+
+public class TemplateCodeParam
+{
+
+
+    /// <summary>
+    /// TemplateCodeParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("templateCode")]
-        public string Result { get; set; }
-    }
-
-    public class TemplateCodeParam
-    {
-
-
-        /// <summary>
-        /// TemplateCodeParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = TemplateCodeDocument,
-                OperationName = "templateCode"
-            };
-        }
+            Query = TemplateCodeDocument,
+            OperationName = "templateCode"
+        };
+    }
 
 
-        public static string TemplateCodeDocument = @"
+    public static string TemplateCodeDocument = @"
         query templateCode {
           templateCode
         }
         ";
+}
+
+
+
+public class UdfResponse
+{
+
+    [JsonProperty("udf")]
+    public IEnumerable<UserDefinedField> Result { get; set; }
+}
+
+public class UdfParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("targetType")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public UdfTargetType TargetType { get; set; }
+
+    public UdfParam(UdfTargetType targetType)
+    {
+        this.TargetType = targetType;
+    }
+    /// <summary>
+    /// UdfParam.Request 
+    /// <para>Required variables:<br/> { targetType=(UDFTargetType) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UdfDocument,
+            OperationName = "udf",
+            Variables = this
+        };
     }
 
 
-
-    public class UdfResponse
-    {
-
-        [JsonProperty("udf")]
-        public IEnumerable<UserDefinedField> Result { get; set; }
-    }
-
-    public class UdfParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("targetType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public UdfTargetType TargetType { get; set; }
-
-        public UdfParam(UdfTargetType targetType)
-        {
-            this.TargetType = targetType;
-        }
-        /// <summary>
-        /// UdfParam.Request 
-        /// <para>Required variables:<br/> { targetType=(UDFTargetType) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UdfDocument,
-                OperationName = "udf",
-                Variables = this
-            };
-        }
-
-
-        public static string UdfDocument = @"
+    public static string UdfDocument = @"
         query udf($targetType: UDFTargetType!) {
           udf(targetType: $targetType) {
             targetType
@@ -11827,114 +14165,186 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class UdfValueBatchResponse
+{
+
+    [JsonProperty("udfValueBatch")]
+    public IEnumerable<UserDefinedDataMap> Result { get; set; }
+}
+
+public class UdfValueBatchParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("targetType")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public UdfTargetType TargetType { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("targetIds")]
+    public IEnumerable<string> TargetIds { get; set; }
+
+    public UdfValueBatchParam(UdfTargetType targetType, IEnumerable<string> targetIds)
+    {
+        this.TargetType = targetType;
+        this.TargetIds = targetIds;
+    }
+    /// <summary>
+    /// UdfValueBatchParam.Request 
+    /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetIds=(string[]) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UdfValueBatchDocument,
+            OperationName = "udfValueBatch",
+            Variables = this
+        };
     }
 
 
+    public static string UdfValueBatchDocument = @"
+        query udfValueBatch($targetType: UDFTargetType!, $targetIds: [String!]!) {
+          udfValueBatch(targetType: $targetType, targetIds: $targetIds) {
+            targetId
+            data {
+              key
+              dataType
+              value
+              label
+            }
+          }
+        }
+        ";
+}
 
-    public class UdvResponse
+
+
+public class UdvResponse
+{
+
+    [JsonProperty("udv")]
+    public IEnumerable<UserDefinedData> Result { get; set; }
+}
+
+public class UdvParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("targetType")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public UdfTargetType TargetType { get; set; }
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("targetId")]
+    public string TargetId { get; set; }
+
+    public UdvParam(UdfTargetType targetType, string targetId)
     {
-
-        [JsonProperty("udv")]
-        public IEnumerable<UserDefinedData> Result { get; set; }
+        this.TargetType = targetType;
+        this.TargetId = targetId;
+    }
+    /// <summary>
+    /// UdvParam.Request 
+    /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UdvDocument,
+            OperationName = "udv",
+            Variables = this
+        };
     }
 
-    public class UdvParam
-    {
 
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("targetType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public UdfTargetType TargetType { get; set; }
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("targetId")]
-        public string TargetId { get; set; }
-
-        public UdvParam(UdfTargetType targetType, string targetId)
-        {
-            this.TargetType = targetType;
-            this.TargetId = targetId;
-        }
-        /// <summary>
-        /// UdvParam.Request 
-        /// <para>Required variables:<br/> { targetType=(UDFTargetType), targetId=(string) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UdvDocument,
-                OperationName = "udv",
-                Variables = this
-            };
-        }
-
-
-        public static string UdvDocument = @"
+    public static string UdvDocument = @"
         query udv($targetType: UDFTargetType!, $targetId: String!) {
           udv(targetType: $targetType, targetId: $targetId) {
             key
             dataType
             value
+            label
           }
         }
         ";
+}
+
+
+
+public class UserResponse
+{
+
+    [JsonProperty("user")]
+    public User Result { get; set; }
+}
+
+public class UserParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("id")]
+    public string Id { get; set; }
+
+    public UserParam()
+    {
+
+    }
+    /// <summary>
+    /// UserParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { id=(string) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UserDocument,
+            OperationName = "user",
+            Variables = this
+        };
     }
 
 
-
-    public class UserResponse
-    {
-
-        [JsonProperty("user")]
-        public User Result { get; set; }
-    }
-
-    public class UserParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public UserParam()
-        {
-
-        }
-        /// <summary>
-        /// UserParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { id=(string) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UserDocument,
-                OperationName = "user",
-                Variables = this
-            };
-        }
-
-
-        public static string UserDocument = @"
+    public static string UserDocument = @"
         query user($id: String) {
           user(id: $id) {
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
             phone
             phoneVerified
+            identities {
+              openid
+              userIdInIdp
+              userId
+              connectionId
+              isSocial
+              provider
+              userPoolId
+            }
             unionid
             openid
             nickname
@@ -11975,55 +14385,57 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
+}
+
+
+
+public class UserBatchResponse
+{
+
+    [JsonProperty("userBatch")]
+    public IEnumerable<User> Result { get; set; }
+}
+
+public class UserBatchParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("ids")]
+    public IEnumerable<string> Ids { get; set; }
+
+    public UserBatchParam(IEnumerable<string> ids)
+    {
+        this.Ids = ids;
+    }
+    /// <summary>
+    /// UserBatchParam.Request 
+    /// <para>Required variables:<br/> { ids=(string[]) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UserBatchDocument,
+            OperationName = "userBatch",
+            Variables = this
+        };
     }
 
 
-
-    public class UserBatchResponse
-    {
-
-        [JsonProperty("userBatch")]
-        public IEnumerable<User> Result { get; set; }
-    }
-
-    public class UserBatchParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("ids")]
-        public IEnumerable<string> Ids { get; set; }
-
-        public UserBatchParam(IEnumerable<string> ids)
-        {
-            this.Ids = ids;
-        }
-        /// <summary>
-        /// UserBatchParam.Request 
-        /// <para>Required variables:<br/> { ids=(string[]) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UserBatchDocument,
-                OperationName = "userBatch",
-                Variables = this
-            };
-        }
-
-
-        public static string UserBatchDocument = @"
+    public static string UserBatchDocument = @"
         query userBatch($ids: [String!]!) {
           userBatch(ids: $ids) {
             id
             arn
             userPoolId
+            status
             username
             email
             emailVerified
@@ -12069,38 +14481,39 @@ namespace Authing.ApiClient.Types
             country
             createdAt
             updatedAt
+            externalId
           }
         }
         ";
-    }
+}
 
 
 
-    public class UserpoolResponse
+public class UserpoolResponse
+{
+
+    [JsonProperty("userpool")]
+    public UserPool Result { get; set; }
+}
+
+public class UserpoolParam
+{
+
+
+    /// <summary>
+    /// UserpoolParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("userpool")]
-        public UserPool Result { get; set; }
-    }
-
-    public class UserpoolParam
-    {
-
-
-        /// <summary>
-        /// UserpoolParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = UserpoolDocument,
-                OperationName = "userpool"
-            };
-        }
+            Query = UserpoolDocument,
+            OperationName = "userpool"
+        };
+    }
 
 
-        public static string UserpoolDocument = @"
+    public static string UserpoolDocument = @"
         query userpool {
           userpool {
             id
@@ -12109,6 +14522,7 @@ namespace Authing.ApiClient.Types
             description
             secret
             jwtSecret
+            ownerId
             userpoolTypes {
               code
               name
@@ -12122,6 +14536,7 @@ namespace Authing.ApiClient.Types
             emailVerifiedDefault
             sendWelcomeEmail
             registerDisabled
+            appSsoEnabled
             showWxQRCodeWhenRegisterDisabled
             allowedOrigins
             tokenExpiresAfter
@@ -12160,39 +14575,44 @@ namespace Authing.ApiClient.Types
             customSMSProvider {
               enabled
               provider
+              config
             }
+            packageType
+            useCustomUserStore
+            loginRequireEmailVerified
+            verifyCodeLength
           }
         }
         ";
-    }
+}
 
 
 
-    public class UserpoolTypesResponse
+public class UserpoolTypesResponse
+{
+
+    [JsonProperty("userpoolTypes")]
+    public IEnumerable<UserPoolType> Result { get; set; }
+}
+
+public class UserpoolTypesParam
+{
+
+
+    /// <summary>
+    /// UserpoolTypesParam.Request 
+    /// </summary>
+    public GraphQLRequest CreateRequest()
     {
-
-        [JsonProperty("userpoolTypes")]
-        public IEnumerable<UserPoolType> Result { get; set; }
-    }
-
-    public class UserpoolTypesParam
-    {
-
-
-        /// <summary>
-        /// UserpoolTypesParam.Request 
-        /// </summary>
-        public GraphQLRequest CreateRequest()
+        return new GraphQLRequest
         {
-            return new GraphQLRequest
-            {
-                Query = UserpoolTypesDocument,
-                OperationName = "userpoolTypes"
-            };
-        }
+            Query = UserpoolTypesDocument,
+            OperationName = "userpoolTypes"
+        };
+    }
 
 
-        public static string UserpoolTypesDocument = @"
+    public static string UserpoolTypesDocument = @"
         query userpoolTypes {
           userpoolTypes {
             code
@@ -12203,60 +14623,60 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
+}
+
+
+
+public class UserpoolsResponse
+{
+
+    [JsonProperty("userpools")]
+    public PaginatedUserpool Result { get; set; }
+}
+
+public class UserpoolsParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public UserpoolsParam()
+    {
+
+    }
+    /// <summary>
+    /// UserpoolsParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UserpoolsDocument,
+            OperationName = "userpools",
+            Variables = this
+        };
     }
 
 
-
-    public class UserpoolsResponse
-    {
-
-        [JsonProperty("userpools")]
-        public PaginatedUserpool Result { get; set; }
-    }
-
-    public class UserpoolsParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public UserpoolsParam()
-        {
-
-        }
-        /// <summary>
-        /// UserpoolsParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UserpoolsDocument,
-                OperationName = "userpools",
-                Variables = this
-            };
-        }
-
-
-        public static string UserpoolsDocument = @"
+    public static string UserpoolsDocument = @"
         query userpools($page: Int, $limit: Int, $sortBy: SortByEnum) {
           userpools(page: $page, limit: $limit, sortBy: $sortBy) {
             totalCount
@@ -12264,6 +14684,7 @@ namespace Authing.ApiClient.Types
               id
               name
               domain
+              ownerId
               description
               secret
               jwtSecret
@@ -12273,68 +14694,73 @@ namespace Authing.ApiClient.Types
               emailVerifiedDefault
               sendWelcomeEmail
               registerDisabled
+              appSsoEnabled
               showWxQRCodeWhenRegisterDisabled
               allowedOrigins
               tokenExpiresAfter
               isDeleted
+              packageType
+              useCustomUserStore
+              loginRequireEmailVerified
+              verifyCodeLength
             }
           }
         }
         ";
+}
+
+
+
+public class UsersResponse
+{
+
+    [JsonProperty("users")]
+    public PaginatedUsers Result { get; set; }
+}
+
+public class UsersParam
+{
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("page")]
+    public int? Page { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("limit")]
+    public int? Limit { get; set; }
+
+    /// <summary>
+    /// Optional
+    /// </summary>
+    [JsonProperty("sortBy")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public SortByEnum? SortBy { get; set; }
+
+    public UsersParam()
+    {
+
+    }
+    /// <summary>
+    /// UsersParam.Request 
+    /// <para>Required variables:<br/> {  }</para>
+    /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = UsersDocument,
+            OperationName = "users",
+            Variables = this
+        };
     }
 
 
-
-    public class UsersResponse
-    {
-
-        [JsonProperty("users")]
-        public PaginatedUsers Result { get; set; }
-    }
-
-    public class UsersParam
-    {
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("page")]
-        public int? Page { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("limit")]
-        public int? Limit { get; set; }
-
-        /// <summary>
-        /// Optional
-        /// </summary>
-        [JsonProperty("sortBy")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SortByEnum? SortBy { get; set; }
-
-        public UsersParam()
-        {
-
-        }
-        /// <summary>
-        /// UsersParam.Request 
-        /// <para>Required variables:<br/> {  }</para>
-        /// <para>Optional variables:<br/> { page=(int), limit=(int), sortBy=(SortByEnum) }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = UsersDocument,
-                OperationName = "users",
-                Variables = this
-            };
-        }
-
-
-        public static string UsersDocument = @"
+    public static string UsersDocument = @"
         query users($page: Int, $limit: Int, $sortBy: SortByEnum) {
           users(page: $page, limit: $limit, sortBy: $sortBy) {
             totalCount
@@ -12342,6 +14768,7 @@ namespace Authing.ApiClient.Types
               id
               arn
               userPoolId
+              status
               username
               email
               emailVerified
@@ -12387,52 +14814,53 @@ namespace Authing.ApiClient.Types
               country
               createdAt
               updatedAt
+              externalId
             }
           }
         }
         ";
+}
+
+
+
+public class WhitelistResponse
+{
+
+    [JsonProperty("whitelist")]
+    public IEnumerable<WhiteList> Result { get; set; }
+}
+
+public class WhitelistParam
+{
+
+    /// <summary>
+    /// Required
+    /// </summary>
+    [JsonProperty("type")]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public WhitelistType Type { get; set; }
+
+    public WhitelistParam(WhitelistType type)
+    {
+        this.Type = type;
+    }
+    /// <summary>
+    /// WhitelistParam.Request 
+    /// <para>Required variables:<br/> { type=(WhitelistType) }</para>
+    /// <para>Optional variables:<br/> {  }</para>
+    /// </summary>
+    public GraphQLRequest CreateRequest()
+    {
+        return new GraphQLRequest
+        {
+            Query = WhitelistDocument,
+            OperationName = "whitelist",
+            Variables = this
+        };
     }
 
 
-
-    public class WhitelistResponse
-    {
-
-        [JsonProperty("whitelist")]
-        public IEnumerable<WhiteList> Result { get; set; }
-    }
-
-    public class WhitelistParam
-    {
-
-        /// <summary>
-        /// Required
-        /// </summary>
-        [JsonProperty("type")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public WhitelistType Type { get; set; }
-
-        public WhitelistParam(WhitelistType type)
-        {
-            this.Type = type;
-        }
-        /// <summary>
-        /// WhitelistParam.Request 
-        /// <para>Required variables:<br/> { type=(WhitelistType) }</para>
-        /// <para>Optional variables:<br/> {  }</para>
-        /// </summary>
-        public GraphQLRequest CreateRequest()
-        {
-            return new GraphQLRequest
-            {
-                Query = WhitelistDocument,
-                OperationName = "whitelist",
-                Variables = this
-            };
-        }
-
-
-        public static string WhitelistDocument = @"
+    public static string WhitelistDocument = @"
         query whitelist($type: WhitelistType!) {
           whitelist(type: $type) {
             createdAt
@@ -12441,6 +14869,6 @@ namespace Authing.ApiClient.Types
           }
         }
         ";
-    }
-
 }
+
+    }

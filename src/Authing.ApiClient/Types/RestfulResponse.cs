@@ -12,4 +12,12 @@ namespace Authing.ApiClient.Types
 
         public T Data { get; set; }
     }
+
+    public class SimpleResponse
+    {
+        public int code { get; set; }
+
+        public string message { get; set; }
+
+    }
 }

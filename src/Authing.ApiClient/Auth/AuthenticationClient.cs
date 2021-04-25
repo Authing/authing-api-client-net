@@ -7,6 +7,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
+using Authing.ApiClient.Types;
 
 namespace Authing.ApiClient.Auth
 {
@@ -597,6 +600,10 @@ namespace Authing.ApiClient.Auth
             User = null;
         }
 
+        /// <summary>
+        /// 用户是否进行登录，登录返回用户信息，没有登录则抛出错误
+        /// </summary>
+        /// <returns></returns>
         private async Task CheckLoggedIn()
         {
             var user = await CurrentUser();
@@ -605,5 +612,48 @@ namespace Authing.ApiClient.Auth
                 throw new AuthingException("请先登录");
             }
         }
+
+        /// <summary>
+        /// 绑定邮箱
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailCode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> BindEamil(string email, string emailCode, CancellationToken cancellationToken = default)
+        {
+            var param = new BindEmailParam(email, emailCode);
+            var res = await Request<BindEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        public async Task<SimpleResponse> LinkAccount(string primaryUserToken, string secondaryUserToken, CancellationToken cancellationToken = default)
+        {
+            await Host.AppendPathSegment("api/v2/users/link").PostJsonAsync(new
+            {
+                primaryUserToken,
+                secondaryUserToken,
+            },
+            cancellationToken);
+            return new SimpleResponse
+            {
+                code = 200,
+                message = "绑定成功"
+            };
+        }
+
+        public async Task<HttpResponseMessage> ListOrgs(CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/users/me/orgs").GetAsync(cancellationToken);
+            return res.ResponseMessage;
+        }
+
+        public async Task<Object> CheckPasswordStrength(string password, CancellationToken cancellationToken = default)
+        {
+            var param = new CheckPasswordStrengthParam(password);
+            // var res = Request<CheckPasswordStrengthResult>(param.);
+        }
+
+        
     }
 }

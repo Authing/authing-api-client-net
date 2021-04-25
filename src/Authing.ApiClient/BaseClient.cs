@@ -54,6 +54,8 @@ namespace Authing.ApiClient
         /// </summary>
         private string Endpoint { get { return Host + "/graphql/v2"; } }
 
+        public HttpClient HttpClient;
+
         /// <summary>
         /// 加密密码使用的公钥
         /// </summary>
@@ -96,8 +98,6 @@ GKl64GDcIq3au+aqJQIDAQAB
             {
                 throw new Exception("参数错误");
             }
-            // UserPoolId ?? AppId ?? Console.WriteLine("oko");
-            // UserPoolId = userPoolId ?? throw new ArgumentNullException(nameof(userPoolId));
         }
 
         public string Token
