@@ -1,5 +1,7 @@
-﻿using Authing.ApiClient.Results;
+﻿using System.Linq;
+using Authing.ApiClient.Results;
 using Authing.ApiClient.Types;
+using Authing.ApiClient.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Authing.ApiClient.Types;
+using Authing.ApiClient.Auth.Types;
 
 namespace Authing.ApiClient.Auth
 {
@@ -18,6 +20,7 @@ namespace Authing.ApiClient.Auth
     /// </summary>
     public class AuthenticationClient : BaseClient
     {
+        [Obsolete("建议使用重载方法，使用委托完成初始化")]
         /// <summary>
         /// 通过用户池 ID 初始化
         /// </summary>
@@ -27,7 +30,7 @@ namespace Authing.ApiClient.Auth
         }
 
         /// <summary>
-        /// 通过用户池 ID 或者 AppId 初始化
+        /// 通过委托完成初始化
         /// </summary>
         /// <param name="init">配置参数</param>
         public AuthenticationClient(Action<InitAuthenticationClientOptions> init) : base(init)
@@ -47,6 +50,38 @@ namespace Authing.ApiClient.Auth
             }
         }
         private User user;
+
+        public string CheckLoggedIn(CancellationToken cancellationToken = default)
+        {
+            if (user != null)
+            {
+                return user.Id;
+            }
+            if (String.IsNullOrEmpty(Token))
+            {
+                throw new Exception("请先登录!");
+            }
+
+            var tokenInfo = AuthingUtils.GetPayloadByToken(Token);
+            var userDataString = tokenInfo.Payload.Claims.First(item => item.Type == "data").Value;
+            var userData = JsonConvert.DeserializeObject<UserData>(userDataString);
+            var userId = tokenInfo.Payload.Sub ?? userData.id;
+            if (String.IsNullOrEmpty(userId))
+            {
+                throw new Exception("不合法的 accessToken");
+            }
+            return userId;
+        }
+
+        public void SetCurrentUser(User user)
+        {
+            User = user;
+        }
+
+        public void SetToken(string token)
+        {
+            Token = token;
+        }
 
         /// <summary>
         /// 获取当前用户
@@ -96,6 +131,41 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        public async Task<User> RegisterByEmail(
+            string email,
+            string password,
+            RegisterProfile profile = null,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options != null && options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+            var param = new RegisterByEmailParam(
+                new RegisterByEmailInput(email, Encrypt(password))
+                {
+                    Profile = profile,
+                    ForceLogin = options?.ForceLogin,
+                    GenerateToken = options?.GenerateToken,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
+                }
+            );
+
+            var res = await Request<RegisterByEmailResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
         /// <summary>
         /// 通过用户名注册
         /// </summary>
@@ -120,6 +190,42 @@ namespace Authing.ApiClient.Auth
                     Profile = profile,
                     ForceLogin = forceLogin,
                     GenerateToken = generateToken,
+                }
+            );
+
+            var res = await Request<RegisterByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
+        public async Task<User> RegisterByUsername(
+            string username,
+            string password,
+            RegisterProfile profile = null,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options != null && options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new RegisterByUsernameParam(
+                new RegisterByUsernameInput(username, Encrypt(password))
+                {
+                    Profile = profile,
+                    ForceLogin = options?.ForceLogin,
+                    GenerateToken = options?.GenerateToken,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
                 }
             );
 
@@ -163,6 +269,51 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        public async Task<User> RegisterByPhoneCode(
+            string phone,
+            string code,
+            string password = null,
+            RegisterProfile profile = null,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options != null && options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new RegisterByPhoneCodeParam(
+                new RegisterByPhoneCodeInput(phone, code)
+                {
+                    Password = Encrypt(password),
+                    Profile = profile,
+                    ForceLogin = options?.ForceLogin,
+                    GenerateToken = options?.GenerateToken,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
+                }
+            );
+
+            var res = await Request<RegisterByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
+        public async Task<CheckPasswordStrengthResult> CheckPasswordStrength(string password, CancellationToken cancellationToken = default)
+        {
+            var param = new CheckPasswordStrengthParam(password);
+            var res = await Request<CheckPasswordStrengthResult>(param.CreateRequest(), cancellationToken);
+            return res;
+        }
+
         /// <summary>
         /// 发送短信验证码
         /// </summary>
@@ -183,7 +334,7 @@ namespace Authing.ApiClient.Auth
                     Formatting.None,
                     new JsonSerializerSettings
                     {
-                        NullValueHandling = NullValueHandling.Ignore
+                        NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
                     }), Encoding.UTF8, "application/json")
             };
             var result = await Send(message, cancellationToken);
@@ -231,6 +382,40 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        public async Task<User> LoginByEmail(
+            string email,
+            string password,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new LoginByEmailParam(
+                new LoginByEmailInput(email, Encrypt(password))
+                {
+                    AutoRegister = options?.AutoRegister ?? false,
+                    CaptchaCode = options?.CaptchaCode,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
+                }
+            );
+
+            var res = await Request<LoginByEmailResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
         /// <summary>
         /// 通过用户名登录
         /// </summary>
@@ -252,6 +437,40 @@ namespace Authing.ApiClient.Auth
                 {
                     AutoRegister = autoRegister,
                     CaptchaCode = captchaCode,
+                }
+            );
+
+            var res = await Request<LoginByUsernameResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
+        public async Task<User> LoginByUsername(
+            string username,
+            string password,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new LoginByUsernameParam(
+                new LoginByUsernameInput(username, Encrypt(password))
+                {
+                    AutoRegister = options?.AutoRegister ?? false,
+                    CaptchaCode = options?.CaptchaCode,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
                 }
             );
 
@@ -286,6 +505,39 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        public async Task<User> LoginByPhoneCode(
+            string phone,
+            string code,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new LoginByPhoneCodeParam(
+                new LoginByPhoneCodeInput(phone, code)
+                {
+                    AutoRegister = options?.AutoRegister ?? false,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
+                }
+            );
+
+            var res = await Request<LoginByPhoneCodeResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
         /// <summary>
         /// 通过手机号密码登录
         /// </summary>
@@ -309,6 +561,57 @@ namespace Authing.ApiClient.Auth
                     CaptchaCode = captchaCode,
                 }
             );
+
+            var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
+        public async Task<User> LoginByPhonePassword(
+            string phone,
+            string password,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            // 序列化 options.CustomData Params
+            string ParamsString = "{}";
+            string ContextString = "{}";
+            if (options != null && options.CustomData != null)
+            {
+                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+            }
+            if (options.Context != null)
+            {
+                ContextString = JsonConvert.SerializeObject(options.Context);
+            }
+
+            var param = new LoginByPhonePasswordParam(
+                new LoginByPhonePasswordInput(phone, Encrypt(password))
+                {
+                    AutoRegister = options?.AutoRegister ?? false,
+                    CaptchaCode = options?.CaptchaCode,
+                    ClientIp = options?.ClientIp,
+                    Params = ParamsString,
+                    Context = ContextString,
+                }
+            );
+
+            var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
+            User = res.Result;
+            return res.Result;
+        }
+
+        public async Task<User> LoginBySubAccount(
+            string account,
+            string password,
+            RegisterOptions options = null,
+            CancellationToken cancellationToken = default)
+        {
+            var param = new LoginBySubAccountParam(account, Encrypt(password))
+            {
+                CaptchaCode = options?.CaptchaCode,
+                ClientIp = options?.ClientIp,
+            };
 
             var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
             User = res.Result;
@@ -483,6 +786,44 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        public async Task<RefreshToken> RefreshToken(CancellationToken cancellationToken = default)
+        {
+            var param = new RefreshTokenParam();
+            var res = await Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken);
+            SetToken(res.Result.Token);
+            return res.Result;
+        }
+
+        public async Task<SimpleResponse> LinkAccount(string primaryUserToken, string secondaryUserToken, CancellationToken cancellationToken = default)
+        {
+            await Host.AppendPathSegment("api/v2/users/link").PostJsonAsync(new
+            {
+                primaryUserToken,
+                secondaryUserToken,
+            },
+            cancellationToken);
+            return new SimpleResponse
+            {
+                code = 200,
+                message = "绑定成功"
+            };
+        }
+
+        public async Task<SimpleResponse> UnLinkAccount(string primaryUserToken, ProviderType provider, CancellationToken cancellationToken = default)
+        {
+            await Host.AppendPathSegment("api/v2/users/unlink").PostJsonAsync(new
+            {
+                primaryUserToken,
+                provider,
+            },
+            cancellationToken);
+            return new SimpleResponse
+            {
+                code = 200,
+                message = "解绑成功"
+            };
+        }
+
         /// <summary>
         /// 绑定手机号，如果已绑定则会报错
         /// </summary>
@@ -514,6 +855,69 @@ namespace Authing.ApiClient.Auth
             var res = await Request<UnbindPhoneResponse>(param.CreateRequest(), cancellationToken);
             User = res.Result;
             return res.Result;
+        }
+
+        /// <summary>
+        /// 绑定邮箱
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailCode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> BindEamil(string email, string emailCode, CancellationToken cancellationToken = default)
+        {
+            var param = new BindEmailParam(email, emailCode);
+            var res = await Request<BindEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        public async Task<User> UnbindEmail(CancellationToken cancellationToken = default)
+        {
+            var param = new UnbindEmailParam();
+            var res = await Request<UnbindEmailResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        public async Task<User> GetCurrentUser(CancellationToken cancellationToken = default)
+        {
+            var param = new UserParam();
+            var res = await Request<UserResponse>(param.CreateRequest(), cancellationToken);
+            return res.Result;
+        }
+
+        public void Logout(CancellationToken cancellationToken = default)
+        {
+            Host.AppendPathSegment($"/api/v2/logout?app_id={Options.AppId}").GetAsync();
+        }
+
+        private object getHeaders()
+        {
+            const string SDK_VERSION = "4.2.1";
+            var headers = new
+            Dictionary<string, string>
+            {
+                {
+                    "x-authing-sdk-version",
+                    $"js:{ SDK_VERSION}"
+                },
+                {
+                    "x-authing-userpool-id",
+                    Options.UserPoolId ?? ""
+                },
+                {
+                    "x-authing-request-from",
+                    Options.RequestFrom ?? "sdk"
+                },
+                {
+                    "x-authing-app-id",
+                    Options.AppId ?? ""
+                },
+                {
+                    "x-authing-lang",
+                    Options.Lang ?? ""
+                },
+            };
+            return new { };
         }
 
         /// <summary>
@@ -579,26 +983,27 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        [Obsolete("该方法已经弃用")]
         /// <summary>
         /// 注销
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task Logout(CancellationToken cancellationToken = default)
-        {
-            await CheckLoggedIn();
-            var param = new UpdateUserParam(
-                new UpdateUserInput()
-                {
-                    TokenExpiredAt = "0",
-                }
-             )
-            {
-                Id = User.Id,
-            };
-            await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
-            User = null;
-        }
+        // public async Task Logout(CancellationToken cancellationToken = default)
+        // {
+        //     await CheckLoggedIn();
+        //     var param = new UpdateUserParam(
+        //         new UpdateUserInput()
+        //         {
+        //             TokenExpiredAt = "0",
+        //         }
+        //      )
+        //     {
+        //         Id = User.Id,
+        //     };
+        //     await Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
+        //     User = null;
+        // }
 
         /// <summary>
         /// 用户是否进行登录，登录返回用户信息，没有登录则抛出错误
@@ -613,34 +1018,8 @@ namespace Authing.ApiClient.Auth
             }
         }
 
-        /// <summary>
-        /// 绑定邮箱
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="emailCode"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<User> BindEamil(string email, string emailCode, CancellationToken cancellationToken = default)
-        {
-            var param = new BindEmailParam(email, emailCode);
-            var res = await Request<BindEmailResponse>(param.CreateRequest(), cancellationToken);
-            return res.Result;
-        }
 
-        public async Task<SimpleResponse> LinkAccount(string primaryUserToken, string secondaryUserToken, CancellationToken cancellationToken = default)
-        {
-            await Host.AppendPathSegment("api/v2/users/link").PostJsonAsync(new
-            {
-                primaryUserToken,
-                secondaryUserToken,
-            },
-            cancellationToken);
-            return new SimpleResponse
-            {
-                code = 200,
-                message = "绑定成功"
-            };
-        }
+
 
         public async Task<HttpResponseMessage> ListOrgs(CancellationToken cancellationToken = default)
         {
@@ -648,12 +1027,12 @@ namespace Authing.ApiClient.Auth
             return res.ResponseMessage;
         }
 
-        public async Task<Object> CheckPasswordStrength(string password, CancellationToken cancellationToken = default)
-        {
-            var param = new CheckPasswordStrengthParam(password);
-            // var res = Request<CheckPasswordStrengthResult>(param.);
-        }
 
-        
+
+
+
+
+
+
     }
 }

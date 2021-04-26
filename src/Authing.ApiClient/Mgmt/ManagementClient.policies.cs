@@ -48,7 +48,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     Page = page,
                     Limit = limit,
-                    ExcludeDefault = excludeDefault,
+                    // ExcludeDefault = excludeDefault,
                 };
 
                 await client.GetAccessToken();

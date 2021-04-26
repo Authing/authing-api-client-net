@@ -16,6 +16,10 @@ namespace Authing.ApiClient
     {
         public string AppId { get; set; }
         public string UserPoolId { get; set; }
+        // public string UserPoolId { get; set; }
+        public string RequestFrom { get; set; }
+        public string Lang { get; set; }
+        
     }
 
     /// <summary>
@@ -37,7 +41,7 @@ namespace Authing.ApiClient
         /// 配置对象
         /// </summary>
         /// <returns></returns>
-        public InitAuthenticationClientOptions initAuthenticationClientOptions = new();
+        public InitAuthenticationClientOptions Options = new();
 
         /// <summary>
         /// 接口超时时间，默认为 10 秒
@@ -91,9 +95,9 @@ GKl64GDcIq3au+aqJQIDAQAB
             {
                 throw new ArgumentNullException(nameof(init));
             }
-            init(initAuthenticationClientOptions);
-            UserPoolId = initAuthenticationClientOptions.UserPoolId;
-            AppId = initAuthenticationClientOptions.AppId;
+            init(Options);
+            UserPoolId = Options.UserPoolId;
+            AppId = Options.AppId;
             if (UserPoolId == string.Empty && AppId == string.Empty)
             {
                 throw new Exception("参数错误");
