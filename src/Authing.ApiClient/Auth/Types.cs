@@ -1,6 +1,8 @@
 using System.IO;
 using System;
 using System.Collections.Generic;
+using Authing.ApiClient.Types;
+using Newtonsoft.Json;
 
 namespace Authing.ApiClient.Auth.Types
 {
@@ -18,7 +20,7 @@ namespace Authing.ApiClient.Auth.Types
         }
     }
 
-    public class RegisterOptions
+    public class RegisterAndLoginOptions
     {
         public Boolean ForceLogin { get; set; }
         public Boolean GenerateToken { get; set; }
@@ -155,5 +157,55 @@ namespace Authing.ApiClient.Auth.Types
             get { return new ProviderType("wechat:miniprogram:qrconnect"); }
             set { }
         }
+    }
+
+    class HttpClientConfig
+    {
+        public Dictionary<string, object> [] Headers { get; set; }
+        
+    }
+    
+    public class ResUdv
+    {
+        public string Key { get; set; }
+
+        public UdfDataType DataType { get; set; }
+
+        public object Value { get; set; }
+
+        public string Label { get; set; }
+    }
+
+    public enum PasswordSecurityLevel
+    {
+        LOW = 1,
+        MIDDLE = 2,
+        HIGH = 3,
+    }
+    public class SecurityLevel
+    {
+        [JsonProperty(PropertyName = "email")]
+        public bool Email { get; set; }
+
+        [JsonProperty(PropertyName = "mfa")]
+        public bool Mfa { get; set; }
+        
+        [JsonProperty(PropertyName = "password")]
+        public bool Password { get; set; }
+        
+        [JsonProperty(PropertyName = "phone")]
+        public bool Phone { get; set; }
+        
+        [JsonProperty(PropertyName = "passwordSecurityLevel")]
+        public PasswordSecurityLevel PasswordSecurityLevel { get; set; }
+        
+        [JsonProperty(PropertyName = "score")]
+        public int Score { get; set; }
+    }
+
+    public class ListParams
+    {
+        public int Page { get; set; }
+        public int Limit { get; set; }
     }
 }

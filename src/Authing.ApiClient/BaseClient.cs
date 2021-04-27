@@ -19,6 +19,7 @@ namespace Authing.ApiClient
         // public string UserPoolId { get; set; }
         public string RequestFrom { get; set; }
         public string Lang { get; set; }
+        public string WebsocketHost { get; set; }
         
     }
 
@@ -82,7 +83,7 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         private readonly string type = "SDK";
-        private readonly string version = "c-sharp:3.1.0";
+        private readonly string version = "c-sharp:4.2.3";
 
         protected BaseClient(string userPoolId)
         {
