@@ -137,27 +137,27 @@ namespace Authing.ApiClient.Auth
             string email,
             string password,
             RegisterProfile profile = null,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options != null && options.Context != null)
+            if (andLoginOptions != null && andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
             var param = new RegisterByEmailParam(
                 new RegisterByEmailInput(email, Encrypt(password))
                 {
                     Profile = profile,
-                    ForceLogin = options?.ForceLogin,
-                    GenerateToken = options?.GenerateToken,
-                    ClientIp = options?.ClientIp,
+                    ForceLogin = andLoginOptions?.ForceLogin,
+                    GenerateToken = andLoginOptions?.GenerateToken,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -204,28 +204,28 @@ namespace Authing.ApiClient.Auth
             string username,
             string password,
             RegisterProfile profile = null,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options != null && options.Context != null)
+            if (andLoginOptions != null && andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new RegisterByUsernameParam(
                 new RegisterByUsernameInput(username, Encrypt(password))
                 {
                     Profile = profile,
-                    ForceLogin = options?.ForceLogin,
-                    GenerateToken = options?.GenerateToken,
-                    ClientIp = options?.ClientIp,
+                    ForceLogin = andLoginOptions?.ForceLogin,
+                    GenerateToken = andLoginOptions?.GenerateToken,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -276,19 +276,19 @@ namespace Authing.ApiClient.Auth
             string code,
             string password = null,
             RegisterProfile profile = null,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options != null && options.Context != null)
+            if (andLoginOptions != null && andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new RegisterByPhoneCodeParam(
@@ -296,9 +296,9 @@ namespace Authing.ApiClient.Auth
                 {
                     Password = Encrypt(password),
                     Profile = profile,
-                    ForceLogin = options?.ForceLogin,
-                    GenerateToken = options?.GenerateToken,
-                    ClientIp = options?.ClientIp,
+                    ForceLogin = andLoginOptions?.ForceLogin,
+                    GenerateToken = andLoginOptions?.GenerateToken,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -387,27 +387,27 @@ namespace Authing.ApiClient.Auth
         public async Task<User> LoginByEmail(
             string email,
             string password,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options.Context != null)
+            if (andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new LoginByEmailParam(
                 new LoginByEmailInput(email, Encrypt(password))
                 {
-                    AutoRegister = options?.AutoRegister ?? false,
-                    CaptchaCode = options?.CaptchaCode,
-                    ClientIp = options?.ClientIp,
+                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = andLoginOptions?.CaptchaCode,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -450,27 +450,27 @@ namespace Authing.ApiClient.Auth
         public async Task<User> LoginByUsername(
             string username,
             string password,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options.Context != null)
+            if (andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new LoginByUsernameParam(
                 new LoginByUsernameInput(username, Encrypt(password))
                 {
-                    AutoRegister = options?.AutoRegister ?? false,
-                    CaptchaCode = options?.CaptchaCode,
-                    ClientIp = options?.ClientIp,
+                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = andLoginOptions?.CaptchaCode,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -510,26 +510,26 @@ namespace Authing.ApiClient.Auth
         public async Task<User> LoginByPhoneCode(
             string phone,
             string code,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options.Context != null)
+            if (andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new LoginByPhoneCodeParam(
                 new LoginByPhoneCodeInput(phone, code)
                 {
-                    AutoRegister = options?.AutoRegister ?? false,
-                    ClientIp = options?.ClientIp,
+                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -572,27 +572,27 @@ namespace Authing.ApiClient.Auth
         public async Task<User> LoginByPhonePassword(
             string phone,
             string password,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 options.CustomData Params
+            // 序列化 andLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (options != null && options.CustomData != null)
+            if (andLoginOptions != null && andLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(options.CustomData);
+                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
             }
-            if (options.Context != null)
+            if (andLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(options.Context);
+                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
             }
 
             var param = new LoginByPhonePasswordParam(
                 new LoginByPhonePasswordInput(phone, Encrypt(password))
                 {
-                    AutoRegister = options?.AutoRegister ?? false,
-                    CaptchaCode = options?.CaptchaCode,
-                    ClientIp = options?.ClientIp,
+                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = andLoginOptions?.CaptchaCode,
+                    ClientIp = andLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -606,13 +606,13 @@ namespace Authing.ApiClient.Auth
         public async Task<User> LoginBySubAccount(
             string account,
             string password,
-            RegisterOptions options = null,
+            RegisterAndLoginOptions andLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
             var param = new LoginBySubAccountParam(account, Encrypt(password))
             {
-                CaptchaCode = options?.CaptchaCode,
-                ClientIp = options?.ClientIp,
+                CaptchaCode = andLoginOptions?.CaptchaCode,
+                ClientIp = andLoginOptions?.ClientIp,
             };
 
             var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
@@ -901,7 +901,7 @@ namespace Authing.ApiClient.Auth
         
         private object _getHeaders()
         {
-            const string SDK_VERSION = "4.2.1";
+            const string SDK_VERSION = "4.2.2";
             // 如果用户需要则取得 headers 之后进行合并
             return new
             {
@@ -1011,7 +1011,7 @@ namespace Authing.ApiClient.Auth
             return res.ResponseMessage;
         }
 
-        public async Task<User> LoginByLdap(string username, string password, RegisterOptions options = null, CancellationToken cancellationToken = default)
+        public async Task<User> LoginByLdap(string username, string password, CancellationToken cancellationToken = default)
         {
             var res = await Host.AppendPathSegment("api/v2/ldap/verify-user").PostJsonAsync(new
             {

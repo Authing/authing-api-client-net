@@ -13,7 +13,9 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 4.2.1
+    <PackageReleaseNotes>Version 4.2.2
+      - 完善认证模块-核心认证
+Version 4.2.1
       - 修改 AccessToken 为 Token
 Version 4.2.0
       - 添加 AuthenticationClient 重载方法

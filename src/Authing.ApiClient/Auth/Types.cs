@@ -20,7 +20,7 @@ namespace Authing.ApiClient.Auth.Types
         }
     }
 
-    public class RegisterOptions
+    public class RegisterAndLoginOptions
     {
         public Boolean ForceLogin { get; set; }
         public Boolean GenerateToken { get; set; }
