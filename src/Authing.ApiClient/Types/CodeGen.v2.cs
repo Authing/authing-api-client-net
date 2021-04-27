@@ -1393,7 +1393,7 @@ namespace Authing.ApiClient.Types
         public string Operator { get; set; }
 
         [JsonProperty("value")]
-        public any Value { get; set; }
+        public Object Value { get; set; }
         #endregion
     }
     #endregion
@@ -3195,7 +3195,7 @@ namespace Authing.ApiClient.Types
   
     [JsonProperty("value")]
     [JsonRequired]
-    public any Value { get; set; }
+    public Object Value { get; set; }
     #endregion
   
     
@@ -3205,11 +3205,11 @@ namespace Authing.ApiClient.Types
   /// <param name="value">value</param>
   /// </summary>
   
-  public PolicyStatementConditionInput(string param, string operator, any value) {
-  this.Param = param;
-  this.Operator = operator;
-  this.Value = value;
-  }
+  // public PolicyStatementConditionInput(string param, string operator, Object value) {
+  // this.Param = param;
+  // this.Operator = operator;
+  // this.Value = value;
+  // }
   
     #region methods
     public dynamic GetInputObject()

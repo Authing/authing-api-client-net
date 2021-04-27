@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Types;
 
 namespace Authing.ApiClient.Auth
 {
