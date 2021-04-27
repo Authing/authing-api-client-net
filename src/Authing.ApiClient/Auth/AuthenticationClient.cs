@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
@@ -51,7 +52,7 @@ namespace Authing.ApiClient.Auth
         }
         private User user;
 
-        public string CheckLoggedIn(CancellationToken cancellationToken = default)
+        public string CheckLoggedIn()
         {
             if (user != null)
             {
@@ -83,6 +84,7 @@ namespace Authing.ApiClient.Auth
             Token = token;
         }
 
+        [Obsolete("该函数已弃用，请使用　GetCurrentUser")]
         /// <summary>
         /// 获取当前用户
         /// </summary>
@@ -722,7 +724,7 @@ namespace Authing.ApiClient.Auth
             string oldPassword,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId = CheckLoggedIn();
             var param = new UpdatePasswordParam(Encrypt(newPassword))
             {
                 OldPassword = Encrypt(oldPassword),
@@ -748,7 +750,7 @@ namespace Authing.ApiClient.Auth
             string oldPhoneCode = null,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId = CheckLoggedIn();
             var param = new UpdatePhoneParam(phone, phoneCode)
             {
                 OldPhone = oldPhone,
@@ -775,7 +777,7 @@ namespace Authing.ApiClient.Auth
             string oldEmailCode = null,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId = CheckLoggedIn();
             var param = new UpdateEmailParam(email, emailCode)
             {
                 OldEmail = oldEmail,
@@ -836,7 +838,7 @@ namespace Authing.ApiClient.Auth
             string phoneCode,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId = CheckLoggedIn();
             var param = new BindPhoneParam(phone, phoneCode);
             var res = await Request<BindPhoneResponse>(param.CreateRequest(), cancellationToken);
             User = res.Result;
@@ -850,7 +852,7 @@ namespace Authing.ApiClient.Auth
         /// <returns></returns>
         public async Task<User> UnbindPhone(CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId =  CheckLoggedIn();
             var param = new UnbindPhoneParam();
             var res = await Request<UnbindPhoneResponse>(param.CreateRequest(), cancellationToken);
             User = res.Result;
@@ -884,56 +886,32 @@ namespace Authing.ApiClient.Auth
             var res = await Request<UserResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
-
-        public void Logout(CancellationToken cancellationToken = default)
+        
+        public async void Logout(CancellationToken cancellationToken = default)
         {
-            Host.AppendPathSegment($"/api/v2/logout?app_id={Options.AppId}").GetAsync();
+            await Host.AppendPathSegment($"/api/v2/logout?app_id={Options.AppId}").WithHeaders(_getHeaders()).GetAsync();
+            _clearUser();
         }
 
-        private object getHeaders()
+        private void _clearUser()
+        {
+            User = null;
+            Token = null;
+        }
+        
+        private object _getHeaders()
         {
             const string SDK_VERSION = "4.2.1";
-            var headers = new
-            Dictionary<string, string>
+            // 如果用户需要则取得 headers 之后进行合并
+            return new
             {
-                {
-                    "x-authing-sdk-version",
-                    $"js:{ SDK_VERSION}"
-                },
-                {
-                    "x-authing-userpool-id",
-                    Options.UserPoolId ?? ""
-                },
-                {
-                    "x-authing-request-from",
-                    Options.RequestFrom ?? "sdk"
-                },
-                {
-                    "x-authing-app-id",
-                    Options.AppId ?? ""
-                },
-                {
-                    "x-authing-lang",
-                    Options.Lang ?? ""
-                },
+                x_authing_sdk_version = $"js:{ SDK_VERSION}",
+                x_authing_userpool_id = Options.UserPoolId ?? "",
+                x_authing_request_from = Options.RequestFrom ?? "sdk",
+                x_authing_app_id = Options.AppId ?? "",
+                x_authing_lang = Options.Lang ?? "",
+                Authorization = $"Bearer {Token}",
             };
-            return new { };
-        }
-
-        /// <summary>
-        /// 刷新 access token
-        /// </summary>
-        /// <param name="accessToken">用户 access token</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<RefreshToken> RefreshToken(
-            string accessToken = null,
-            CancellationToken cancellationToken = default)
-        {
-            await CheckLoggedIn();
-            var param = new RefreshTokenParam();
-            var res = await Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken, accessToken);
-            return res.Result;
         }
 
         /// <summary>
@@ -943,12 +921,12 @@ namespace Authing.ApiClient.Auth
         /// <returns></returns>
         public async Task<IEnumerable<UserDefinedData>> ListUdv(CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            await CheckLoggedIn(cancellationToken);
             var param = new UdvParam(UdfTargetType.USER, User.Id);
             var res = await Request<UdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
-
+        
         /// <summary>
         /// 设置自定义字段值
         /// </summary>
@@ -961,11 +939,17 @@ namespace Authing.ApiClient.Auth
             object value,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId =  CheckLoggedIn();
             var param = new SetUdvParam(UdfTargetType.USER, User.Id, key, JsonConvert.SerializeObject(value));
             var res = await Request<SetUdvResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }
+
+        
+
+        
+
+        
 
         /// <summary>
         /// 移除用户自定义字段的值
@@ -973,17 +957,18 @@ namespace Authing.ApiClient.Auth
         /// <param name="key"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<UserDefinedData>> RemoveUdv(
+        public async Task<IEnumerable<ResUdv>> RemoveUdv(
             string key,
             CancellationToken cancellationToken = default)
         {
-            await CheckLoggedIn();
+            var userId = CheckLoggedIn();
             var param = new RemoveUdvParam(UdfTargetType.USER, User.Id, key);
             var res = await Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
-            return res.Result;
+            var resUdv = AuthingUtils.ConvertUdv(res.Result);
+            return resUdv;
         }
 
-        [Obsolete("该方法已经弃用")]
+        // [Obsolete("该方法已经弃用")]
         /// <summary>
         /// 注销
         /// </summary>
@@ -1009,17 +994,16 @@ namespace Authing.ApiClient.Auth
         /// 用户是否进行登录，登录返回用户信息，没有登录则抛出错误
         /// </summary>
         /// <returns></returns>
-        private async Task CheckLoggedIn()
+        private async Task<string> CheckLoggedIn(CancellationToken cancellationToken)
         {
-            var user = await CurrentUser();
+            var user = await GetCurrentUser(cancellationToken);
             if (user == null)
             {
                 throw new AuthingException("请先登录");
             }
+
+            return user.Id;
         }
-
-
-
 
         public async Task<HttpResponseMessage> ListOrgs(CancellationToken cancellationToken = default)
         {
@@ -1027,12 +1011,173 @@ namespace Authing.ApiClient.Auth
             return res.ResponseMessage;
         }
 
+        public async Task<User> LoginByLdap(string username, string password, RegisterOptions options = null, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/ldap/verify-user").PostJsonAsync(new
+            {
+                username,
+                password
+            });
+            var user = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(res.ResponseMessage));
+            SetCurrentUser(user);
+            return user;
+        }
+        
+        public async Task<User> LoginByAd(string username, string password, CancellationToken cancellationToken = default)
+        {
+            var firstLevelDomain = Url.Parse(Host).Host;
+            var websocketHost = Options.WebsocketHost ?? $"https://ws.{firstLevelDomain}";
+            var res = await Host.AppendPathSegment("api/v2/ldap/verify-user").PostJsonAsync(new
+            {
+                username,
+                password
+            },
+                cancellationToken);
+            var user = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(res.ResponseMessage));
+            SetCurrentUser(user);
+            return user;
+        }
 
+        public async Task<List<KeyValuePair<string, object>>> GetUdfValue(CancellationToken cancellationToken = default)
+        {
+            var userId = CheckLoggedIn();
+            var param = new UdvParam(UdfTargetType.USER, userId);
+            var res = await Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+            var list = res.Result;
+            var resUdvList = AuthingUtils.ConverUdvToKeyValuePair(list);
+            return resUdvList;
+        }
+        
+        public async Task<List<KeyValuePair<string, object>>> SetUdfValue(KeyValueDictionary data,CancellationToken 
+        cancellationToken = 
+        default)
+        {
+            if (data.Count == 0)
+            {
+                throw new Exception("empty udf value list");
+            }
 
+            var input = new List<UserDefinedDataInput>();
+            foreach (var item in data)
+            {
+                input.Add(new UserDefinedDataInput(item.Key)
+                {
+                    Key = item.Key,
+                    Value = item.Value,
+                });
+            }
+            var userId = CheckLoggedIn();
+            var param = new SetUdvBatchParam(UdfTargetType.USER, userId)
+            {
+                UdvList = input,
+            };
+            var res = await Request<SetUdvBatchResponse>(param.CreateRequest(), cancellationToken);
+            var list = res.Result;
+            var resUdvList = AuthingUtils.ConverUdvToKeyValuePair(list);
+            return resUdvList;
+        }
 
+        public async Task<bool> RemoveUdfValue(string key, CancellationToken cancellationToken = default)
+        {
+            var userId = CheckLoggedIn();
+            var param = new RemoveUdvParam(UdfTargetType.USER, userId, key);
+            var res = await Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
+            return true;
+        }
 
+        public async Task<SecurityLevel> GetSecurityLevel(CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/users/me/security-level").GetAsync(cancellationToken);
+            return res.ResponseMessage.Convert<SecurityLevel>();
+        }
 
+        public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string _namespace, ResourceType ? _resourceType, CancellationToken 
+        cancellationToken = default)
+        {
+            var userId = CheckLoggedIn();
+            string resourceType;
+            var param = new ListUserAuthorizedResourcesParam(userId)
+            {
+                Namespace = _namespace,
+                ResourceType = _resourceType == null ? String.Empty : _resourceType.ToString(),
+            };
+            var res = await Request<ListUserAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+            var user = res.Result;
+            if (user == null)
+            {
+                throw new Exception("用户不存在");
+            }
 
+            var authorizedResources = user.AuthorizedResources;
+            var list = authorizedResources.List;
+            var totalCount = authorizedResources.TotalCount;
+            AuthingUtils.FormatAuthorizedResources(ref list);
+            return authorizedResources;
+        }
 
+        public PasswordSecurityLevel ComputedPasswordSecurityLevel(string password, CancellationToken cancellationToken)
+        {
+            var highLevel = @"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,}$/g";
+            var middleLevel = @"/^(?=.*[a-zA-Z])(?=.*\d)[^]{8,}$/g";
+            if (Regex.Matches(password, highLevel).Count != 0)
+            {
+                return PasswordSecurityLevel.HIGH;
+            }
+            if (Regex.Matches(password, middleLevel).Count != 0)
+            {
+                return PasswordSecurityLevel.MIDDLE;
+            }
+
+            return PasswordSecurityLevel.LOW;
+        }
+        
+        /// <summary>
+        /// 刷新 access token
+        /// </summary>
+        /// <param name="accessToken">用户 access token</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<RefreshToken> RefreshToken(
+            string accessToken = null,
+            CancellationToken cancellationToken = default)
+        {
+            var userId =  CheckLoggedIn();
+            var param = new RefreshTokenParam();
+            var res = await Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken, accessToken);
+            return res.Result;
+        }
+
+        public async Task<bool> HasRole(string roleCode, string _namespace = "", CancellationToken 
+        cancellationToken = default)
+        {
+            var userId = CheckLoggedIn();
+            var param = new GetUserRolesParam(userId)
+            {
+                Namespace = _namespace,
+            };
+            var res = await Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
+            if (res.Result == null)
+            {
+                return false;
+            }
+
+            var roleList = user.Roles?.List;
+            if (!roleList.Any())
+            {
+                return false;
+            }
+
+            var hasRole = roleList.Any(item => string.Equals(item.Code, roleCode));
+            return hasRole;
+        }
+
+        public async Task<HttpResponseMessage> ListApplications(ListParams _params = null, CancellationToken cancellationToken = 
+        default)
+        {
+            _params = _params ?? AuthingUtils.ListParams;
+            var res = await Host.AppendPathSegment(
+                $"api/v2/users/me/applications/allowed?page={_params.Page}&limit={_params.Limit}").GetAsync();
+            return res.ResponseMessage;
+        }
     }
 }

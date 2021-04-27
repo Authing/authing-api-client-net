@@ -19,6 +19,7 @@ namespace Authing.ApiClient
         // public string UserPoolId { get; set; }
         public string RequestFrom { get; set; }
         public string Lang { get; set; }
+        public string WebsocketHost { get; set; }
         
     }
 
