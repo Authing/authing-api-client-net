@@ -902,7 +902,7 @@ namespace Authing.ApiClient.Auth
         
         private object _getHeaders()
         {
-            const string SDK_VERSION = "4.2.2";
+            const string SDK_VERSION = "4.2.3";
             // 如果用户需要则取得 headers 之后进行合并
             return new
             {

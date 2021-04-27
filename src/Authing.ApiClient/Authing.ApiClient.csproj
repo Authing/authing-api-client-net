@@ -13,8 +13,10 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 4.2.2
+    <PackageReleaseNotes>Version 4.2.3
       - 完善认证模块-核心认证
+Version 4.2.2
+      - 降低.net freamwork 版本要求
 Version 4.2.1
       - 修改 AccessToken 为 Token
 Version 4.2.0

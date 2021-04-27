@@ -10276,11 +10276,11 @@ public ArchivedUsersParam() {
     [JsonProperty("actions")]
     public AuthorizedTargetsActionsInput Actions { get; set; }
       
-public AuthorizedTargetsParam(string namespace,ResourceType resourceType,string resource) {
-this.Namespace = namespace;
-this.ResourceType = resourceType;
-this.Resource = resource;
-}
+// public AuthorizedTargetsParam(string namespace,ResourceType resourceType,string resource) {
+// this.Namespace = namespace;
+// this.ResourceType = resourceType;
+// this.Resource = resource;
+// }
       /// <summary>
       /// AuthorizedTargetsParam.Request 
       /// <para>Required variables:<br/> { namespace=(string), resourceType=(ResourceType), resource=(string) }</para>
