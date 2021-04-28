@@ -8,21 +8,10 @@ using System.Text;
 using XC.RSAUtil;
 using System.Security.Cryptography;
 using System.Net.Http.Headers;
+using Authing.ApiClient.Auth.Types;
 
 namespace Authing.ApiClient
 {
-
-    public class InitAuthenticationClientOptions
-    {
-        public string AppId { get; set; }
-        public string UserPoolId { get; set; }
-        // public string UserPoolId { get; set; }
-        public string RequestFrom { get; set; }
-        public string Lang { get; set; }
-        public string WebsocketHost { get; set; }
-        
-    }
-
     /// <summary>
     /// 客户端基类
     /// </summary>

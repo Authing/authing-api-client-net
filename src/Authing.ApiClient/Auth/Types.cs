@@ -6,6 +6,40 @@ using Newtonsoft.Json;
 
 namespace Authing.ApiClient.Auth.Types
 {
+
+    public class InitAuthenticationClientOptions
+    {
+        public string AppId { get; set; }
+        public string UserPoolId { get; set; }
+        // public string UserPoolId { get; set; }
+
+        public string Secret { get; set; }
+        public string RedirectUri { get; set; }
+        public string RequestFrom { get; set; }
+        public string Lang { get; set; }
+        public string WebsocketHost { get; set; }
+
+        public Protocol Protocol { get; set; } = Protocol.OIDC;
+        public TokenEndPointAuthMethod TokenEndPointAuthMethod { get; set; }
+
+        
+    }
+
+    public enum TokenEndPointAuthMethod
+    {
+        NONE,
+        CLIENT_SECRET_POST,
+        CLIENT_SECRET_BASIC,
+    }
+
+    public enum Protocol
+    {
+        OIDC,
+        OAUTH,
+        SAML,
+        CAS,
+    }
+
     public class KeyValueDictionary : Dictionary<string, string>
     {
         public new void Add(string key, string value)
@@ -207,5 +241,146 @@ namespace Authing.ApiClient.Auth.Types
     {
         public int Page { get; set; }
         public int Limit { get; set; }
+    }
+
+    public class GetAccessTokenByCodeOptions
+    {
+        public string CodeVerifier { get; set; }
+    }
+
+    public class CodeChallengeDigestOption
+    {
+        public string CodeChallenge { get; set; }
+        public CodeChallengeDigestMethod Method { get; set; } = CodeChallengeDigestMethod.S256;
+
+    }
+    public enum CodeChallengeDigestMethod
+    {
+        S256,
+        PLAIN,
+    }
+
+    public class GetAccessTokenByClientCredentialsOption
+    {
+        public string AccessKey { get; set; }
+        public string AccessSecret { get; set; }
+        
+    }
+
+    public class OidcOption
+    {
+        public string AppId { get; set; }
+        public string RedirectUri { get; set; }
+        public ResponseType ResponseType { get; set; }
+        public ResponseMode ResponseMode { get; set; }
+        public string State { get; set; }
+        public string Nonce { get; set; }
+        public string Scope { get; set; }
+        public CodeChallengeDigestMethod CodeChallengeMethod { get; set; }
+        public string CodeChallenge { get; set; }
+        
+    }
+
+    public enum ResponseMode
+    {
+        QUERY,
+        FRAGMENT,
+        FORM_POST,
+    }
+
+    public class ResponseType
+    {
+        public static string Value { get; set; }
+
+        private ResponseType(string value)
+        {
+            Value = value;
+        }
+
+
+        public static ResponseType CODE
+        {
+            get { return new ResponseType("code"); }
+            set { }
+        }
+
+        public static ResponseType CODE_TOKEN_IDTOKEN
+        {
+            get { return new ResponseType("code id_token token"); }
+            set { }
+        }
+
+        public static ResponseType CODE_IDTOKEN
+        {
+            get { return new ResponseType("code id_token"); }
+            set { }
+        }
+
+        public static ResponseType CODE_TOKEN
+        {
+            get { return new ResponseType("code token"); }
+            set { }
+        }
+
+        public static ResponseType TOKEN_IDTOKEN
+        {
+            get { return new ResponseType("id_token token"); }
+            set { }
+        }
+
+        public static ResponseType IDTOKEN
+        {
+            get { return new ResponseType("id_token"); }
+            set { }
+        }
+
+        public static ResponseType NONE
+        {
+            get { return new ResponseType("none"); }
+            set { }
+        }
+    }
+
+    public class OauthOption
+    {
+        public string AppId { get; set; }
+        public string RedirectUri { get; set; }
+        public OauthResponseType ResponseType { get; set; }
+        public string State { get; set; }
+        public string Scope { get; set; }
+        
+    }
+
+    public class CasOption
+    {
+        public string Service { get; set; }
+    }
+
+
+    public enum OauthResponseType
+    {
+        CODE,
+        TOKEN,
+    }
+
+    public class LogoutParams
+    {
+        public bool Expert { get; set; }
+        public string? RedirectUri { get; set; }
+        public string? IdToken { get; set; }
+    }
+
+    public class ValidateTicketV1Res
+    {
+        public bool Valid { get; set; }
+        public string Username { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class ValidateTokenOption
+    {
+        public string AccessToken { get; set; }
+        public string IdToken { get; set; }
+        
     }
 }

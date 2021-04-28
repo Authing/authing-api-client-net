@@ -16,14 +16,14 @@ namespace Authing.ApiClient.Utils
             Limit = 10,
             Page = 1,
         };
-        
+
         public static JwtSecurityToken GetPayloadByToken(string token)
         {
             var tokenInfo = new JwtSecurityToken(token);
             return tokenInfo;
         }
 
-        public static IEnumerable<ResUdv>  ConvertUdv(IEnumerable<UserDefinedData> udvList)
+        public static IEnumerable<ResUdv> ConvertUdv(IEnumerable<UserDefinedData> udvList)
         {
             var resUdvList = new List<ResUdv>();
             foreach (var udv in udvList)
@@ -34,11 +34,11 @@ namespace Authing.ApiClient.Utils
                     UdfDataType.NUMBER => int.Parse(udv.Value),
                     UdfDataType.DATETIME => new DateTime(int.Parse(udv.Value), DateTimeKind.Utc),
                     UdfDataType.BOOLEAN => JsonConvert.DeserializeObject<bool>(udv.Value),
-                    UdfDataType.OBJECT 
+                    UdfDataType.OBJECT
                         => JsonConvert.DeserializeObject<object>(udv.Value),
                     _ => throw new ArgumentOutOfRangeException()
                 };
-                
+
                 resUdvList.Add(new ResUdv()
                 {
                     DataType = udv.DataType,
@@ -62,17 +62,17 @@ namespace Authing.ApiClient.Utils
                     UdfDataType.NUMBER => int.Parse(udv.Value),
                     UdfDataType.DATETIME => new DateTime(int.Parse(udv.Value), DateTimeKind.Utc),
                     UdfDataType.BOOLEAN => JsonConvert.DeserializeObject<bool>(udv.Value),
-                    UdfDataType.OBJECT 
+                    UdfDataType.OBJECT
                         => JsonConvert.DeserializeObject<object>(udv.Value),
                     _ => throw new ArgumentOutOfRangeException()
                 };
-                
+
                 resUdvList.Add(new KeyValuePair<string, object>(udv.Key, value));
             }
 
             return resUdvList;
         }
-        
+
         public static T Convert<T>(this object obj)
         {
             // 将这个对象先序列化成 json
@@ -86,18 +86,19 @@ namespace Authing.ApiClient.Utils
         {
             // list.Where(item => item.)
         }
-        
-        // [AttributeUsage(AttributeTargets.Parameter)  
-        // ]  
-        // public class SetListParamsAttribute : Attribute  
-        // {  
-        //     public SetListParamsAttribute(object value, string argumentName)  
-        //     {
-        //         if (value == null)
-        //         {
-        //             value = AuthingUtils.ListParams;
-        //         }
-        //     }  
-        // } 
+
+        public static string GenerateRandomString(int length = 30)
+        {
+            var rd = new Random();
+            var strAtt = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var resAtt = new Char[length];
+            rd.Next(0, 35);
+            // resAtt.ToList().ForEach(item =>
+            // {
+            //     item = strAtt[rd.Next(0, 35)];
+            // });
+            var resStr = String.Join(",", resAtt.Select(p => strAtt[rd.Next(0, 35)]).ToArray());
+            return resStr;
+        }
     }
 }
