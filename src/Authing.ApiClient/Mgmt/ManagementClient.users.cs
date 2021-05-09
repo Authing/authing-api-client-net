@@ -443,7 +443,11 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-
+            public async Task<HttpResponseMessage> ListOrgs(string userId, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/users/{userId}/orgs").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
+                return res.ResponseMessage;
+            }
 
             /// <summary>
             /// 获取策略列表
