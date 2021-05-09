@@ -376,9 +376,12 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<PaginatedRoles> ListRoles(
                 string userId,
+                string space = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new GetUserRolesParam(userId);
+                var param = new GetUserRolesParam(userId){
+                    Namespace = space
+                };
                 await client.GetAccessToken();
                 var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
                 var user = res.Result;
