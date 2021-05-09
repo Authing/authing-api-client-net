@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Authing.ApiClient.Types;
+
 namespace Authing.ApiClient.Management.Types {
     public enum BatchFetchUserTypes {
         ID,
@@ -19,5 +22,21 @@ namespace Authing.ApiClient.Management.Types {
     public class FindUserOption : ExistsOption
     {
         public string? ExternalId { get; set; }
+    }
+
+    public class SearchOption
+    {
+        public string []? Fields { get; set; }
+
+        public int Page { get; set; } = 1;
+
+        public int Limit { get; set; } = 10;
+
+        public SearchUserDepartmentOpt [] ? DepartmentOpts { get; set; }
+        // public IEnumerable<SearchUserDepartmentOpt>? DepartmentOpts { get; set; }
+
+        public SearchUserGroupOpt [] ? GroupOpts { get; set; }
+
+        public SearchUserRoleOpt [] ? RoleOpts { get; set; }
     }
 }

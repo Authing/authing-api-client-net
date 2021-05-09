@@ -265,6 +265,37 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
+            /// 模糊搜索用户
+            /// </summary>
+            /// <param name="query">关键字</param>
+            /// <param name="page">分页页数，默认为 1</param>
+            /// <param name="limit">分页大小，默认为 10</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedUsers> Search(
+                string query,
+                SearchOption option = null,
+                CancellationToken cancellationToken = default)
+            {
+                if(option == null)
+                {
+                    option = new SearchOption();
+                }
+                var param = new SearchUserParam(query)
+                {
+                    Page = option.Page,
+                    Limit = option.Limit,
+                    Fields = option.Fields,
+                    DepartmentOpts = option.DepartmentOpts,
+                    GroupOpts = option.GroupOpts,
+                    RoleOpts = option.RoleOpts,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<SearchUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
             /// 刷新 access token
             /// </summary>
             /// <param name="userId">用户 ID</param>
