@@ -178,12 +178,12 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<bool?> Exists(ExistsOptions options, CancellationToken cancellation = default)
+            public async Task<bool?> Exists(ExistsOption options, CancellationToken cancellation = default)
             {
                 var parma = new IsUserExistsParam() { 
                     Username = options.Username,
                     Email = options.Email,
-                    Phone = options.Email
+                    Phone = options.Phone
                 };
                 var res = await client.Request<IsUserExistsResponse>(parma.CreateRequest(), cancellation);
                 return res.Result;
@@ -208,6 +208,30 @@ namespace Authing.ApiClient.Mgmt
                     Username = username,
                     Phone = phone,
                     Email = email
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 通过手机号、游戏、用户名查找用户
+            /// </summary>
+            /// <param name="username">用户名</param>
+            /// <param name="phone">手机号</param>
+            /// <param name="email">邮箱</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<User> Find(
+                FindUserOption options,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new FindUserParam()
+                {
+                    Username = options.Username,
+                    Phone = options.Phone,
+                    Email = options.Email,
+                    ExternalId = options.ExternalId,
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
