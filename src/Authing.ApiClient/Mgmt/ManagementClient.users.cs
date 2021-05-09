@@ -402,9 +402,14 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> AddRoles(
                 string userId,
                 IEnumerable<string> roles,
+                string space = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AssignRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
+                var param = new AssignRoleParam()
+                 { 
+                     UserIds = new string[] { userId }, RoleCodes = roles,
+                     Namespace = space,
+                 };
                 await client.GetAccessToken();
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
