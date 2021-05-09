@@ -138,7 +138,8 @@ namespace Authing.ApiClient.Mgmt
                 BatchFetchUserTypes batchFetchUserType = BatchFetchUserTypes.ID,
                 CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment("api/v2/users/batch").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new {
+                var res = await client.Host.AppendPathSegment("api/v2/users/batch").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                {
                     ids = userIds,
                     type = batchFetchUserType.ToString(),
                 }, cancellationToken);
@@ -180,7 +181,8 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<bool?> Exists(ExistsOption options, CancellationToken cancellation = default)
             {
-                var parma = new IsUserExistsParam() { 
+                var parma = new IsUserExistsParam()
+                {
                     Username = options.Username,
                     Email = options.Email,
                     Phone = options.Phone
@@ -277,7 +279,7 @@ namespace Authing.ApiClient.Mgmt
                 SearchOption option = null,
                 CancellationToken cancellationToken = default)
             {
-                if(option == null)
+                if (option == null)
                 {
                     option = new SearchOption();
                 }
@@ -376,11 +378,12 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<PaginatedRoles> ListRoles(
                 string userId,
-                string space = null,
+                string nameSpace = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new GetUserRolesParam(userId){
-                    Namespace = space
+                var param = new GetUserRolesParam(userId)
+                {
+                    Namespace = nameSpace
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
@@ -402,14 +405,15 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> AddRoles(
                 string userId,
                 IEnumerable<string> roles,
-                string space = null,
+                string nameSpace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new AssignRoleParam()
-                 { 
-                     UserIds = new string[] { userId }, RoleCodes = roles,
-                     Namespace = space,
-                 };
+                {
+                    UserIds = new string[] { userId },
+                    RoleCodes = roles,
+                    Namespace = nameSpace,
+                };
                 await client.GetAccessToken();
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -425,9 +429,15 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> RemoveRoles(
                 string userId,
                 IEnumerable<string> roles,
+                string nameSpace = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RevokeRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
+                var param = new RevokeRoleParam()
+                {
+                    UserIds = new string[] { userId },
+                    RoleCodes = roles,
+                    Namespace = nameSpace,
+                };
                 await client.GetAccessToken();
                 var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
