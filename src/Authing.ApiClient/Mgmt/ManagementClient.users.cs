@@ -1,7 +1,11 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Types;
+using Flurl;
+using Flurl.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,10 +44,14 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<User> Create(
                 CreateUserInput userInfo,
+                bool keepPassword = false,
                 CancellationToken cancellationToken = default)
             {
                 userInfo.Password = client.Encrypt(userInfo.Password);
-                var param = new CreateUserParam(userInfo);
+                var param = new CreateUserParam(userInfo)
+                {
+                    KeepPassword = keepPassword,
+                };
                 await client.GetAccessToken();
                 var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -125,14 +133,16 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userIds">用户 ID 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<IEnumerable<User>> Batch(
+            public async Task<HttpResponseMessage> Batch(
                 IEnumerable<string> userIds,
+                BatchFetchUserTypes batchFetchUserType = BatchFetchUserTypes.ID,
                 CancellationToken cancellationToken = default)
             {
-                var param = new UserBatchParam(userIds);
-                await client.GetAccessToken();
-                var res = await client.Request<UserBatchResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
+                var res = await client.Host.AppendPathSegment("api/v2/users/batch").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new {
+                    ids = userIds,
+                    type = batchFetchUserType.ToString(),
+                }, cancellationToken);
+                return res.ResponseMessage;
             }
 
             /// <summary>
@@ -154,6 +164,28 @@ namespace Authing.ApiClient.Mgmt
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<UsersResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<PaginatedUsers> ListArchivedUsers(int page = 1, int limit = 10, CancellationToken cancellation = default)
+            {
+                var param = new ArchivedUsersParam()
+                {
+                    Page = page,
+                    Limit = limit,
+                };
+                var res = await client.Request<ArchivedUsersResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<bool?> Exists(ExistsOptions options, CancellationToken cancellation = default)
+            {
+                var parma = new IsUserExistsParam() { 
+                    Username = options.Username,
+                    Email = options.Email,
+                    Phone = options.Email
+                };
+                var res = await client.Request<IsUserExistsResponse>(parma.CreateRequest(), cancellation);
                 return res.Result;
             }
 
@@ -182,7 +214,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+
 
             /// <summary>
             /// 模糊搜索用户
@@ -281,7 +313,7 @@ namespace Authing.ApiClient.Mgmt
             }
 
 
-            
+
 
             /// <summary>
             /// 获取用户角色列表
@@ -335,7 +367,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+
 
             /// <summary>
             /// 获取策略列表
@@ -351,7 +383,8 @@ namespace Authing.ApiClient.Mgmt
                 int limit = 10,
                 CancellationToken cancellationToken = default)
             {
-                var param = new PolicyAssignmentsParam() {
+                var param = new PolicyAssignmentsParam()
+                {
                     TargetType = PolicyAssignmentTargetType.USER,
                     TargetIdentifier = userId,
                     Page = page,

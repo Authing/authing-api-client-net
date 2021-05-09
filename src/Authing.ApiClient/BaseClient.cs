@@ -59,8 +59,6 @@ namespace Authing.ApiClient
         /// </summary>
         private string Endpoint { get { return Host + "/graphql/v2"; } }
 
-        public HttpClient HttpClient;
-
         /// <summary>
         /// 加密密码使用的公钥
         /// </summary>
@@ -214,6 +212,18 @@ GKl64GDcIq3au+aqJQIDAQAB
                 var error = result.Errors[0].Message;
                 throw new AuthingException(error.Message, error.Code);
             }
+        }
+
+        public object GetAuthHeaders() 
+        {
+            return new
+            {
+                x_authing_userpool_id =
+                UserPoolId,
+                x_authing_app_id = AppId,
+                x_authing_request_from = type,
+                x_authing_sdk_version = version,
+            };
         }
     }
 }
