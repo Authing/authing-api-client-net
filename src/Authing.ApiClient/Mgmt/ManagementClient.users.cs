@@ -368,8 +368,6 @@ namespace Authing.ApiClient.Mgmt
             }
 
 
-
-
             /// <summary>
             /// 获取用户角色列表
             /// </summary>
@@ -383,7 +381,12 @@ namespace Authing.ApiClient.Mgmt
                 var param = new GetUserRolesParam(userId);
                 await client.GetAccessToken();
                 var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result.Roles;
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                return user.Roles;
             }
 
             /// <summary>
