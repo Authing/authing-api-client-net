@@ -1,4 +1,5 @@
-﻿using Authing.ApiClient.Management.Types;
+﻿using System.Linq;
+using Authing.ApiClient.Management.Types;
 using Authing.ApiClient.Types;
 using Authing.ApiClient.Utils;
 using Flurl;
@@ -488,6 +489,22 @@ namespace Authing.ApiClient.Mgmt
                 var param = new UdvParam(UdfTargetType.USER,userId);
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellation);
                 return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
+            }
+
+            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string [] userIds, CancellationToken cancellation = default)
+            {
+                if (userIds.Length < 1)
+                {
+                    throw new Exception("empty user id list");
+                }
+                var param = new UdfValueBatchParam(UdfTargetType.USER, userIds);
+                var res = await client.Request<UdfValueBatchResponse>(param.CreateRequest(), cancellation);
+                var dic = new Dictionary<string, List<KeyValuePair<string, object>>>();
+                foreach (var item in res.Result)
+                {
+                    dic.Add(item.TargetId, AuthingUtils.ConverUdvToKeyValuePair(item.Data));
+                }
+                return dic;
             }
 
             /// <summary>
