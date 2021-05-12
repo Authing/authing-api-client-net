@@ -39,4 +39,9 @@ namespace Authing.ApiClient.Management.Types {
 
         public SearchUserRoleOpt [] ? RoleOpts { get; set; }
     }
+
+    public interface ListAuthorizedResourcesOption
+    {
+        public ResourceType? ResourceType { get; set; }
+    }
 }

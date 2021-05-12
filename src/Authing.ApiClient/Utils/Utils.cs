@@ -87,17 +87,9 @@ namespace Authing.ApiClient.Utils
             // list.Where(item => item.)
         }
         
-        // [AttributeUsage(AttributeTargets.Parameter)  
-        // ]  
-        // public class SetListParamsAttribute : Attribute  
-        // {  
-        //     public SetListParamsAttribute(object value, string argumentName)  
-        //     {
-        //         if (value == null)
-        //         {
-        //             value = AuthingUtils.ListParams;
-        //         }
-        //     }  
-        // } 
+        // public static void FormatAuthorizedResources(ref IEnumerable<AuthorizedResource> authorizedResources)
+        // {
+        //     authorizedResources.Where(item => );
+        // }
     }
 }

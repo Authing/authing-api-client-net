@@ -449,6 +449,39 @@ namespace Authing.ApiClient.Mgmt
                 return res.ResponseMessage;
             }
 
+            public async Task<PaginatedDepartments> ListDepartment(string userId, CancellationToken cancellation = default)
+            {
+                var param = new GetUserDepartmentsParam(userId);
+                var res = await client.Request<GetUserDepartmentsResponse>(param.CreateRequest(), cancellation);
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                return user.Departments;
+            }
+
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string userId, string nameSpace, ListAuthorizedResourcesOption option = null, CancellationToken cancellationToken = default)
+            {
+                var resourceType = option.ResourceType;
+                var param = new ListUserAuthorizedResourcesParam(userId)
+                {
+                    Namespace = nameSpace,
+                };
+                if (resourceType != null)
+                {
+                    param.ResourceType = resourceType.ToString();
+                }
+                var res = await client.Request<ListUserAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                // var authorizedResources = user.AuthorizedResources;
+                return user.AuthorizedResources;
+            }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
