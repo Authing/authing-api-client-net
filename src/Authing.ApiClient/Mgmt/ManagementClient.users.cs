@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Authing.ApiClient.Auth.Types;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -505,6 +506,17 @@ namespace Authing.ApiClient.Mgmt
                     dic.Add(item.TargetId, AuthingUtils.ConverUdvToKeyValuePair(item.Data));
                 }
                 return dic;
+            }
+
+            public async Task<IEnumerable<UserDefinedData>> SetUdfValue(string userId, KeyValueDictionary data, CancellationToken cancellation = default)
+            {
+                if (data.Count < 1)
+                {
+                    throw new Exception("empty udf value list");
+                }
+                var param = new SetUdvBatchParam(UdfTargetType.USER, userId);
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
             }
 
             /// <summary>
