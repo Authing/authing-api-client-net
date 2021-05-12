@@ -1,5 +1,6 @@
 ﻿using Authing.ApiClient.Management.Types;
 using Authing.ApiClient.Types;
+using Authing.ApiClient.Utils;
 using Flurl;
 using Flurl.Http;
 using Newtonsoft.Json;
@@ -480,6 +481,13 @@ namespace Authing.ApiClient.Mgmt
                 }
                 // var authorizedResources = user.AuthorizedResources;
                 return user.AuthorizedResources;
+            }
+
+            public async Task<List<KeyValuePair<string, object>>> GetUdfValue(string userId, CancellationToken cancellation = default)
+            {
+                var param = new UdvParam(UdfTargetType.USER,userId);
+                var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellation);
+                return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
             }
 
             /// <summary>
