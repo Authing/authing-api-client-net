@@ -540,6 +540,16 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<CommonMessage> RemoveUdfValue(string userId, string key, CancellationToken cancellation = default)
+            {
+                var param = new RemoveUdfParam(UdfTargetType.USER, key)
+                {
+                    
+                };
+                var res = await client.Request<SetUdfValueBatchResponse>(_param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
