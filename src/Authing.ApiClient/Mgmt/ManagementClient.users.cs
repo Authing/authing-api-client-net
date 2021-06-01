@@ -1,10 +1,17 @@
-﻿using Authing.ApiClient.Types;
+﻿using System.Linq;
+using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Types;
+using Authing.ApiClient.Utils;
+using Flurl;
+using Flurl.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Authing.ApiClient.Auth.Types;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -31,52 +38,6 @@ namespace Authing.ApiClient.Mgmt
                 this.client = client;
             }
 
-            /// <summary>
-            /// 获取用户列表
-            /// </summary>
-            /// <param name="page">当前页数，默认为 1</param>
-            /// <param name="limit">每页最大数量，默认为 10</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<PaginatedUsers> List(
-                int page = 1,
-                int limit = 10,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new UsersParam()
-                {
-                    Page = page,
-                    Limit = limit,
-                };
-                await client.GetAccessToken();
-                var res = await client.Request<UsersResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
-
-            /// <summary>
-            /// 通过手机号、游戏、用户名查找用户
-            /// </summary>
-            /// <param name="username">用户名</param>
-            /// <param name="phone">手机号</param>
-            /// <param name="email">邮箱</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<User> Find(
-                string username = null,
-                string phone = null,
-                string email = null,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new FindUserParam()
-                {
-                    Username = username,
-                    Phone = phone,
-                    Email = email
-                };
-                await client.GetAccessToken();
-                var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
 
             /// <summary>
             /// 创建用户
@@ -86,10 +47,14 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<User> Create(
                 CreateUserInput userInfo,
+                bool keepPassword = false,
                 CancellationToken cancellationToken = default)
             {
                 userInfo.Password = client.Encrypt(userInfo.Password);
-                var param = new CreateUserParam(userInfo);
+                var param = new CreateUserParam(userInfo)
+                {
+                    KeepPassword = keepPassword,
+                };
                 await client.GetAccessToken();
                 var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -134,46 +99,6 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
-            /// 模糊搜索用户
-            /// </summary>
-            /// <param name="query">关键字</param>
-            /// <param name="page">分页页数，默认为 1</param>
-            /// <param name="limit">分页大小，默认为 10</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<PaginatedUsers> Search(
-                string query,
-                int page = 1,
-                int limit = 10,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new SearchUserParam(query)
-                {
-                    Page = page,
-                    Limit = limit,
-                };
-                await client.GetAccessToken();
-                var res = await client.Request<SearchUserResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
-
-            /// <summary>
-            /// 通过 ID 列表批量获取用户信息
-            /// </summary>
-            /// <param name="userIds">用户 ID 列表</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<IEnumerable<User>> Batch(
-                IEnumerable<string> userIds,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new UserBatchParam(userIds);
-                await client.GetAccessToken();
-                var res = await client.Request<UserBatchResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
-
-            /// <summary>
             /// 删除用户
             /// </summary>
             /// <param name="userId">用户 ID</param>
@@ -206,69 +131,172 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
-            /// 检查登录状态
+            /// 通过 ID 列表批量获取用户信息
             /// </summary>
-            /// <param name="token"></param>
+            /// <param name="userIds">用户 ID 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<JWTTokenStatus> CheckLoginStatus(
-                string token,
+            public async Task<HttpResponseMessage> Batch(
+                IEnumerable<string> userIds,
+                BatchFetchUserTypes batchFetchUserType = BatchFetchUserTypes.ID,
                 CancellationToken cancellationToken = default)
             {
-                var param = new CheckLoginStatusParam() { Token = token };
-                var res = await client.Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Host.AppendPathSegment("api/v2/users/batch").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                {
+                    ids = userIds,
+                    type = batchFetchUserType.ToString(),
+                }, cancellationToken);
+                return res.ResponseMessage;
+            }
+
+            /// <summary>
+            /// 获取用户列表
+            /// </summary>
+            /// <param name="page">当前页数，默认为 1</param>
+            /// <param name="limit">每页最大数量，默认为 10</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedUsers> List(
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new UsersParam()
+                {
+                    Page = page,
+                    Limit = limit,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<UsersResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<PaginatedUsers> ListArchivedUsers(int page = 1, int limit = 10, CancellationToken cancellation = default)
+            {
+                var param = new ArchivedUsersParam()
+                {
+                    Page = page,
+                    Limit = limit,
+                };
+                var res = await client.Request<ArchivedUsersResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<bool?> Exists(ExistsOption options, CancellationToken cancellation = default)
+            {
+                var parma = new IsUserExistsParam()
+                {
+                    Username = options.Username,
+                    Email = options.Email,
+                    Phone = options.Phone
+                };
+                var res = await client.Request<IsUserExistsResponse>(parma.CreateRequest(), cancellation);
                 return res.Result;
             }
 
             /// <summary>
-            /// 获取用户角色列表
+            /// 通过手机号、游戏、用户名查找用户
             /// </summary>
-            /// <param name="userId">用户 ID</param>
+            /// <param name="username">用户名</param>
+            /// <param name="phone">手机号</param>
+            /// <param name="email">邮箱</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<PaginatedRoles> ListRoles(
-                string userId,
+            public async Task<User> Find(
+                string username = null,
+                string phone = null,
+                string email = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new GetUserRolesParam(userId);
+                var param = new FindUserParam()
+                {
+                    Username = username,
+                    Phone = phone,
+                    Email = email
+                };
                 await client.GetAccessToken();
-                var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result.Roles;
-            }
-
-            /// <summary>
-            /// 批量授权角色
-            /// </summary>
-            /// <param name="userId">用户 ID</param>
-            /// <param name="roles">用户角色 Code 列表</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<CommonMessage> AddRoles(
-                string userId,
-                IEnumerable<string> roles,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new AssignRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
-                await client.GetAccessToken();
-                var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
             /// <summary>
-            /// 批量撤销用户角色
+            /// 通过手机号、游戏、用户名查找用户
             /// </summary>
-            /// <param name="userId">用户 ID</param>
-            /// <param name="roles">用户角色 Code 列表</param>
+            /// <param name="username">用户名</param>
+            /// <param name="phone">手机号</param>
+            /// <param name="email">邮箱</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<CommonMessage> RemoveRoles(
-                string userId,
-                IEnumerable<string> roles,
+            public async Task<User> Find(
+                FindUserOption options,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RevokeRoleParam() { UserIds = new string[] { userId }, RoleCodes = roles };
+                var param = new FindUserParam()
+                {
+                    Username = options.Username,
+                    Phone = options.Phone,
+                    Email = options.Email,
+                    ExternalId = options.ExternalId,
+                };
                 await client.GetAccessToken();
-                var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+
+
+            /// <summary>
+            /// 模糊搜索用户
+            /// </summary>
+            /// <param name="query">关键字</param>
+            /// <param name="page">分页页数，默认为 1</param>
+            /// <param name="limit">分页大小，默认为 10</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedUsers> Search(
+                string query,
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new SearchUserParam(query)
+                {
+                    Page = page,
+                    Limit = limit,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<SearchUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 模糊搜索用户
+            /// </summary>
+            /// <param name="query">关键字</param>
+            /// <param name="page">分页页数，默认为 1</param>
+            /// <param name="limit">分页大小，默认为 10</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedUsers> Search(
+                string query,
+                SearchOption option = null,
+                CancellationToken cancellationToken = default)
+            {
+                if (option == null)
+                {
+                    option = new SearchOption();
+                }
+                var param = new SearchUserParam(query)
+                {
+                    Page = option.Page,
+                    Limit = option.Limit,
+                    Fields = option.Fields,
+                    DepartmentOpts = option.DepartmentOpts,
+                    GroupOpts = option.GroupOpts,
+                    RoleOpts = option.RoleOpts,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<SearchUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
@@ -289,6 +317,209 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
+            /// 获取用户分组列表
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedGroups> ListGroups(string userId, CancellationToken cancellationToken = default)
+            {
+                var param = new GetUserGroupsParam(userId);
+                await client.GetAccessToken();
+                var res = await client.Request<GetUserGroupsResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result.Groups;
+            }
+
+            /// <summary>
+            /// 加入分组
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="group">分组 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> AddGroup(
+                string userId,
+                string group,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new AddUserToGroupParam(new string[] { userId })
+                {
+                    Code = group
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<AddUserToGroupResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 退出分组
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="group">分组 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> RemoveGroup(
+                string userId,
+                string group,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RemoveUserFromGroupParam(new string[] { userId })
+                {
+                    Code = group
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<RemoveUserFromGroupResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+
+            /// <summary>
+            /// 获取用户角色列表
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedRoles> ListRoles(
+                string userId,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new GetUserRolesParam(userId)
+                {
+                    Namespace = nameSpace
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                return user.Roles;
+            }
+
+            /// <summary>
+            /// 批量授权角色
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="roles">用户角色 Code 列表</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> AddRoles(
+                string userId,
+                IEnumerable<string> roles,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new AssignRoleParam()
+                {
+                    UserIds = new string[] { userId },
+                    RoleCodes = roles,
+                    Namespace = nameSpace,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 批量撤销用户角色
+            /// </summary>
+            /// <param name="userId">用户 ID</param>
+            /// <param name="roles">用户角色 Code 列表</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> RemoveRoles(
+                string userId,
+                IEnumerable<string> roles,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RevokeRoleParam()
+                {
+                    UserIds = new string[] { userId },
+                    RoleCodes = roles,
+                    Namespace = nameSpace,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<HttpResponseMessage> ListOrgs(string userId, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/users/{userId}/orgs").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
+                return res.ResponseMessage;
+            }
+
+            public async Task<PaginatedDepartments> ListDepartment(string userId, CancellationToken cancellation = default)
+            {
+                var param = new GetUserDepartmentsParam(userId);
+                var res = await client.Request<GetUserDepartmentsResponse>(param.CreateRequest(), cancellation);
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                return user.Departments;
+            }
+
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string userId, string nameSpace, ListAuthorizedResourcesOption option = null, CancellationToken cancellationToken = default)
+            {
+                var resourceType = option.ResourceType;
+                var param = new ListUserAuthorizedResourcesParam(userId)
+                {
+                    Namespace = nameSpace,
+                };
+                if (resourceType != null)
+                {
+                    param.ResourceType = resourceType.ToString();
+                }
+                var res = await client.Request<ListUserAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                var user = res.Result;
+                if (user == null)
+                {
+                    throw new Exception("用户不存在！");
+                }
+                // var authorizedResources = user.AuthorizedResources;
+                return user.AuthorizedResources;
+            }
+
+            public async Task<List<KeyValuePair<string, object>>> GetUdfValue(string userId, CancellationToken cancellation = default)
+            {
+                var param = new UdvParam(UdfTargetType.USER,userId);
+                var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellation);
+                return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
+            }
+
+            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string [] userIds, CancellationToken cancellation = default)
+            {
+                if (userIds.Length < 1)
+                {
+                    throw new Exception("empty user id list");
+                }
+                var param = new UdfValueBatchParam(UdfTargetType.USER, userIds);
+                var res = await client.Request<UdfValueBatchResponse>(param.CreateRequest(), cancellation);
+                var dic = new Dictionary<string, List<KeyValuePair<string, object>>>();
+                foreach (var item in res.Result)
+                {
+                    dic.Add(item.TargetId, AuthingUtils.ConverUdvToKeyValuePair(item.Data));
+                }
+                return dic;
+            }
+
+            public async Task<IEnumerable<UserDefinedData>> SetUdfValue(string userId, KeyValueDictionary data, CancellationToken cancellation = default)
+            {
+                if (data.Count < 1)
+                {
+                    throw new Exception("empty udf value list");
+                }
+                var param = new SetUdvBatchParam(UdfTargetType.USER, userId);
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            /// <summary>
             /// 获取策略列表
             /// </summary>
             /// <param name="userId">用户 ID</param>
@@ -302,7 +533,8 @@ namespace Authing.ApiClient.Mgmt
                 int limit = 10,
                 CancellationToken cancellationToken = default)
             {
-                var param = new PolicyAssignmentsParam() {
+                var param = new PolicyAssignmentsParam()
+                {
                     TargetType = PolicyAssignmentTargetType.USER,
                     TargetIdentifier = userId,
                     Page = page,
@@ -410,58 +642,17 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
-            /// 获取用户分组列表
+            /// 检查登录状态
             /// </summary>
-            /// <param name="userId">用户 ID</param>
+            /// <param name="token"></param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<PaginatedGroups> ListGroups(string userId, CancellationToken cancellationToken = default)
-            {
-                var param = new GetUserGroupsParam(userId);
-                await client.GetAccessToken();
-                var res = await client.Request<GetUserGroupsResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result.Groups;
-            }
-
-            /// <summary>
-            /// 加入分组
-            /// </summary>
-            /// <param name="userId">用户 ID</param>
-            /// <param name="group">分组 ID</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<CommonMessage> AddGroup(
-                string userId,
-                string group,
+            public async Task<JWTTokenStatus> CheckLoginStatus(
+                string token,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AddUserToGroupParam(new string[] { userId })
-                {
-                    Code = group
-                };
-                await client.GetAccessToken();
-                var res = await client.Request<AddUserToGroupResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
-
-            /// <summary>
-            /// 退出分组
-            /// </summary>
-            /// <param name="userId">用户 ID</param>
-            /// <param name="group">分组 ID</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<CommonMessage> RemoveGroup(
-                string userId,
-                string group,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new RemoveUserFromGroupParam(new string[] { userId })
-                {
-                    Code = group
-                };
-                await client.GetAccessToken();
-                var res = await client.Request<RemoveUserFromGroupResponse>(param.CreateRequest(), cancellationToken);
+                var param = new CheckLoginStatusParam() { Token = token };
+                var res = await client.Request<CheckLoginStatusResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Security.Cryptography;
+using System.Linq;
 using Authing.ApiClient.Results;
 using Authing.ApiClient.Types;
 using Authing.ApiClient.Utils;
@@ -53,6 +54,10 @@ namespace Authing.ApiClient.Auth
         }
         private User user;
 
+        /// <summary>
+        /// 检查登录状态
+        /// </summary>
+        /// <returns>当前用户 ID</returns>
         public string CheckLoggedIn()
         {
             if (user != null)
@@ -75,11 +80,19 @@ namespace Authing.ApiClient.Auth
             return userId;
         }
 
+        /// <summary>
+        /// 设置当前用户信息
+        /// </summary>
+        /// <param name="user">用户数据</param>
         public void SetCurrentUser(User user)
         {
             User = user;
         }
 
+        /// <summary>
+        /// 设置当前 Token
+        /// </summary>
+        /// <param name="token">token 值</param>
         public void SetToken(string token)
         {
             Token = token;
@@ -90,8 +103,8 @@ namespace Authing.ApiClient.Auth
         /// 获取当前用户
         /// </summary>
         /// <param name="accessToken">用户 access token</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">请求令牌</param>
+        /// <returns>当前用户</returns>
         public async Task<User> CurrentUser(
             string accessToken = null,
             CancellationToken cancellationToken = default)
@@ -110,8 +123,8 @@ namespace Authing.ApiClient.Auth
         /// <param name="profile">用户资料</param>
         /// <param name="forceLogin">强制登录</param>
         /// <param name="generateToken">自动生成 token</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">请求令牌</param>
+        /// <returns>注册的用户</returns>
         public async Task<User> RegisterByEmail(
             string email,
             string password,
@@ -134,31 +147,40 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过邮箱注册用户
+        /// </summary>
+        /// <param name="email">邮箱</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户信息</param>
+        /// <param name="registerAndLoginOptions">注册配置信息</param>
+        /// <param name="cancellationToken">请求令牌</param>
+        /// <returns>注册的用户</returns>
         public async Task<User> RegisterByEmail(
             string email,
             string password,
             RegisterProfile profile = null,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions != null && andLoginOptions.Context != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
             var param = new RegisterByEmailParam(
                 new RegisterByEmailInput(email, Encrypt(password))
                 {
                     Profile = profile,
-                    ForceLogin = andLoginOptions?.ForceLogin,
-                    GenerateToken = andLoginOptions?.GenerateToken,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    ForceLogin = registerAndLoginOptions?.ForceLogin,
+                    GenerateToken = registerAndLoginOptions?.GenerateToken,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -177,8 +199,8 @@ namespace Authing.ApiClient.Auth
         /// <param name="profile">用户资料</param>
         /// <param name="forceLogin">强制登录</param>
         /// <param name="generateToken">自动生成 token</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>User</returns>
+        /// <param name="cancellationToken">请求令牌</param>
+        /// <returns>注册的用户</returns>
         public async Task<User> RegisterByUsername(
             string username,
             string password,
@@ -201,32 +223,41 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过用户名注册用户
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户信息</param>
+        /// <param name="registerAndLoginOptions">注册配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>注册的用户</returns>
         public async Task<User> RegisterByUsername(
             string username,
             string password,
             RegisterProfile profile = null,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions != null && andLoginOptions.Context != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new RegisterByUsernameParam(
                 new RegisterByUsernameInput(username, Encrypt(password))
                 {
                     Profile = profile,
-                    ForceLogin = andLoginOptions?.ForceLogin,
-                    GenerateToken = andLoginOptions?.GenerateToken,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    ForceLogin = registerAndLoginOptions?.ForceLogin,
+                    GenerateToken = registerAndLoginOptions?.GenerateToken,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -272,24 +303,34 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过手机验证码注册用户
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="code">验证码</param>
+        /// <param name="password">密码</param>
+        /// <param name="profile">用户信息</param>
+        /// <param name="registerAndLoginOptions">注册配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>注册的用户</returns>
         public async Task<User> RegisterByPhoneCode(
             string phone,
             string code,
             string password = null,
             RegisterProfile profile = null,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions != null && andLoginOptions.Context != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new RegisterByPhoneCodeParam(
@@ -297,9 +338,9 @@ namespace Authing.ApiClient.Auth
                 {
                     Password = Encrypt(password),
                     Profile = profile,
-                    ForceLogin = andLoginOptions?.ForceLogin,
-                    GenerateToken = andLoginOptions?.GenerateToken,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    ForceLogin = registerAndLoginOptions?.ForceLogin,
+                    GenerateToken = registerAndLoginOptions?.GenerateToken,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -310,6 +351,12 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 检查密码强度
+        /// </summary>
+        /// <param name="password">密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>CheckPasswordStrengthResult</returns>
         public async Task<CheckPasswordStrengthResult> CheckPasswordStrength(string password, CancellationToken cancellationToken = default)
         {
             var param = new CheckPasswordStrengthParam(password);
@@ -364,7 +411,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="autoRegister">自动注册</param>
         /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> LoginByEmail(
             string email,
             string password,
@@ -385,30 +432,38 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过邮箱登录
+        /// </summary>
+        /// <param name="email">邮箱</param>
+        /// <param name="password">密码</param>
+        /// <param name="registerAndLoginOptions">登录配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByEmail(
             string email,
             string password,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions.Context != null)
+            if (registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new LoginByEmailParam(
                 new LoginByEmailInput(email, Encrypt(password))
                 {
-                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
-                    CaptchaCode = andLoginOptions?.CaptchaCode,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    AutoRegister = registerAndLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = registerAndLoginOptions?.CaptchaCode,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -427,7 +482,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="autoRegister">自动注册</param>
         /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> LoginByUsername(
             string username,
             string password,
@@ -448,30 +503,38 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过用户名登录
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <param name="registerAndLoginOptions">注册配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByUsername(
             string username,
             string password,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions.Context != null)
+            if (registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new LoginByUsernameParam(
                 new LoginByUsernameInput(username, Encrypt(password))
                 {
-                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
-                    CaptchaCode = andLoginOptions?.CaptchaCode,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    AutoRegister = registerAndLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = registerAndLoginOptions?.CaptchaCode,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -489,7 +552,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="code">验证码</param>
         /// <param name="autoRegister">自动注册</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> LoginByPhoneCode(
             string phone,
             string code,
@@ -508,29 +571,37 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过手机验证码登录
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="code">验证码</param>
+        /// <param name="registerAndLoginOptions">登录配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByPhoneCode(
             string phone,
             string code,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions.Context != null)
+            if (registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new LoginByPhoneCodeParam(
                 new LoginByPhoneCodeInput(phone, code)
                 {
-                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    AutoRegister = registerAndLoginOptions?.AutoRegister ?? false,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -549,7 +620,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="autoRegister">自动注册</param>
         /// <param name="captchaCode">人机验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> LoginByPhonePassword(
             string phone,
             string password,
@@ -570,30 +641,38 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过手机号密码登录
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="password">密码</param>
+        /// <param name="registerAndLoginOptions">登录信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByPhonePassword(
             string phone,
             string password,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
-            // 序列化 andLoginOptions.CustomData Params
+            // 序列化 registerAndLoginOptions.CustomData Params
             string ParamsString = "{}";
             string ContextString = "{}";
-            if (andLoginOptions != null && andLoginOptions.CustomData != null)
+            if (registerAndLoginOptions != null && registerAndLoginOptions.CustomData != null)
             {
-                ParamsString = JsonConvert.SerializeObject(andLoginOptions.CustomData);
+                ParamsString = JsonConvert.SerializeObject(registerAndLoginOptions.CustomData);
             }
-            if (andLoginOptions.Context != null)
+            if (registerAndLoginOptions.Context != null)
             {
-                ContextString = JsonConvert.SerializeObject(andLoginOptions.Context);
+                ContextString = JsonConvert.SerializeObject(registerAndLoginOptions.Context);
             }
 
             var param = new LoginByPhonePasswordParam(
                 new LoginByPhonePasswordInput(phone, Encrypt(password))
                 {
-                    AutoRegister = andLoginOptions?.AutoRegister ?? false,
-                    CaptchaCode = andLoginOptions?.CaptchaCode,
-                    ClientIp = andLoginOptions?.ClientIp,
+                    AutoRegister = registerAndLoginOptions?.AutoRegister ?? false,
+                    CaptchaCode = registerAndLoginOptions?.CaptchaCode,
+                    ClientIp = registerAndLoginOptions?.ClientIp,
                     Params = ParamsString,
                     Context = ContextString,
                 }
@@ -604,16 +683,24 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 通过子账户登录
+        /// </summary>
+        /// <param name="account">子账户</param>
+        /// <param name="password">密码</param>
+        /// <param name="registerAndLoginOptions">登录配置信息</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginBySubAccount(
             string account,
             string password,
-            RegisterAndLoginOptions andLoginOptions = null,
+            RegisterAndLoginOptions registerAndLoginOptions = null,
             CancellationToken cancellationToken = default)
         {
             var param = new LoginBySubAccountParam(account, Encrypt(password))
             {
-                CaptchaCode = andLoginOptions?.CaptchaCode,
-                ClientIp = andLoginOptions?.ClientIp,
+                CaptchaCode = registerAndLoginOptions?.CaptchaCode,
+                ClientIp = registerAndLoginOptions?.ClientIp,
             };
 
             var res = await Request<LoginByPhonePasswordResponse>(param.CreateRequest(), cancellationToken);
@@ -626,7 +713,7 @@ namespace Authing.ApiClient.Auth
         /// </summary>
         /// <param name="accessToken">用户的 access token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>JWTTokenStatus</returns>
         public async Task<JWTTokenStatus> CheckLoginStatus(
             string accessToken = null,
             CancellationToken cancellationToken = default)
@@ -640,9 +727,9 @@ namespace Authing.ApiClient.Auth
         /// 发送邮件
         /// </summary>
         /// <param name="email">邮件</param>
-        /// <param name="scene"></param>
+        /// <param name="scene">场景</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>CommonMessage</returns>
         public async Task<CommonMessage> SendEmail(
             string email,
             EmailScene scene,
@@ -660,7 +747,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="code">验证码</param>
         /// <param name="newPassword">新密码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>CommonMessage</returns>
         public async Task<CommonMessage> ResetPasswordByPhoneCode(
             string phone,
             string code,
@@ -682,7 +769,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="code">验证码</param>
         /// <param name="newPassword">新密码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>CommonMessage</returns>
         public async Task<CommonMessage> ResetPasswordByEmailCode(
             string email,
             string code,
@@ -702,7 +789,7 @@ namespace Authing.ApiClient.Auth
         /// </summary>
         /// <param name="updates">更新项</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> UpdateProfile(
             UpdateUserInput updates,
             CancellationToken cancellationToken = default)
@@ -719,7 +806,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="newPassword">新密码</param>
         /// <param name="oldPassword">旧密码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> UpdatePassword(
             string newPassword,
             string oldPassword,
@@ -743,7 +830,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="oldPhone">旧手机号</param>
         /// <param name="oldPhoneCode">旧手机号的验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> UpdatePhone(
             string phone,
             string phoneCode,
@@ -770,7 +857,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="oldEmail">旧邮箱</param>
         /// <param name="oldEmailCode">旧邮箱的验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> UpdateEmail(
             string email,
             string emailCode,
@@ -789,6 +876,11 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 刷新 Token
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>RefreshToken</returns>
         public async Task<RefreshToken> RefreshToken(CancellationToken cancellationToken = default)
         {
             var param = new RefreshTokenParam();
@@ -797,6 +889,13 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 关联账户
+        /// </summary>
+        /// <param name="primaryUserToken">主账号</param>
+        /// <param name="secondaryUserToken">子账号</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>SimpleResponse</returns>
         public async Task<SimpleResponse> LinkAccount(string primaryUserToken, string secondaryUserToken, CancellationToken cancellationToken = default)
         {
             await Host.AppendPathSegment("api/v2/users/link").WithHeaders(GetHeaders()).PostJsonAsync(new
@@ -812,6 +911,13 @@ namespace Authing.ApiClient.Auth
             };
         }
 
+        /// <summary>
+        /// 取消关联账户
+        /// </summary>
+        /// <param name="primaryUserToken">主账户</param>
+        /// <param name="provider">提供者</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>SimpleResponse</returns>
         public async Task<SimpleResponse> UnLinkAccount(string primaryUserToken, ProviderType provider, CancellationToken cancellationToken = default)
         {
             await Host.AppendPathSegment("api/v2/users/unlink").WithHeaders(GetHeaders()).PostJsonAsync(new
@@ -833,7 +939,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="phone">手机号</param>
         /// <param name="phoneCode">手机号验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> BindPhone(
             string phone,
             string phoneCode,
@@ -850,7 +956,7 @@ namespace Authing.ApiClient.Auth
         /// 解绑定手机号，如果未绑定则会报错
         /// </summary>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> UnbindPhone(CancellationToken cancellationToken = default)
         {
             var userId = CheckLoggedIn();
@@ -863,10 +969,10 @@ namespace Authing.ApiClient.Auth
         /// <summary>
         /// 绑定邮箱
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="emailCode"></param>
+        /// <param name="email">邮箱</param>
+        /// <param name="emailCode">邮箱验证码</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>User</returns>
         public async Task<User> BindEamil(string email, string emailCode, CancellationToken cancellationToken = default)
         {
             var param = new BindEmailParam(email, emailCode);
@@ -874,6 +980,11 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 取消绑定的邮箱
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> UnbindEmail(CancellationToken cancellationToken = default)
         {
             var param = new UnbindEmailParam();
@@ -881,6 +992,11 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 获取当前用户
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> GetCurrentUser(CancellationToken cancellationToken = default)
         {
             var param = new UserParam();
@@ -888,6 +1004,11 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 当前用户登出
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async void Logout(CancellationToken cancellationToken = default)
         {
             await Host.AppendPathSegment($"/api/v2/logout?app_id={Options.AppId}").WithHeaders(GetHeaders()).GetAsync();
@@ -919,7 +1040,7 @@ namespace Authing.ApiClient.Auth
         /// 获取用户自定义字段的值列表
         /// </summary>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>自定义字段列表</returns>
         public async Task<IEnumerable<UserDefinedData>> ListUdv(CancellationToken cancellationToken = default)
         {
             await CheckLoggedIn(cancellationToken);
@@ -931,10 +1052,10 @@ namespace Authing.ApiClient.Auth
         /// <summary>
         /// 设置自定义字段值
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">自定义字段的 key</param>
+        /// <param name="value">自定义字段的 value</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>用户自定义字段</returns>
         public async Task<IEnumerable<UserDefinedData>> SetUdv(
             string key,
             object value,
@@ -947,15 +1068,10 @@ namespace Authing.ApiClient.Auth
         }
 
 
-
-
-
-
-
         /// <summary>
         /// 移除用户自定义字段的值
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">自定义字段的 key </param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<IEnumerable<ResUdv>> RemoveUdv(
@@ -994,7 +1110,7 @@ namespace Authing.ApiClient.Auth
         /// <summary>
         /// 用户是否进行登录，登录返回用户信息，没有登录则抛出错误
         /// </summary>
-        /// <returns></returns>
+        /// <returns>用户 ID</returns>
         private async Task<string> CheckLoggedIn(CancellationToken cancellationToken)
         {
             var user = await GetCurrentUser(cancellationToken);
@@ -1006,24 +1122,46 @@ namespace Authing.ApiClient.Auth
             return user.Id;
         }
 
+        /// <summary>
+        /// 组织列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>HttpResponseMessage</returns>
         public async Task<HttpResponseMessage> ListOrgs(CancellationToken cancellationToken = default)
         {
             var res = await Host.AppendPathSegment("api/v2/users/me/orgs").WithHeaders(GetHeaders()).GetAsync(cancellationToken);
             return res.ResponseMessage;
         }
 
+        /// <summary>
+        /// 通过 LDAP 进行登录
+        /// </summary>
+        /// <param name="username">LDAP 用户名</param>
+        /// <param name="password">LDAP 用户密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByLdap(string username, string password, CancellationToken cancellationToken = default)
         {
-            var res = await Host.AppendPathSegment("api/v2/ldap/verify-user").WithHeaders(GetHeaders()).PostJsonAsync(new
-            {
-                username,
-                password
-            });
+            var res = await Host.AppendPathSegment("api/v2/ldap/verify-user").WithHeaders(GetHeaders()).PostJsonAsync(
+                new
+                {
+                    username,
+                    password
+                },
+                cancellationToken
+            );
             var user = JsonConvert.DeserializeObject<User>(JsonConvert.SerializeObject(res.ResponseMessage));
             SetCurrentUser(user);
             return user;
         }
 
+        /// <summary>
+        /// 通过 AD 登录
+        /// </summary>
+        /// <param name="username">AD 用户账号</param>
+        /// <param name="password">AD 用户密码</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>User</returns>
         public async Task<User> LoginByAd(string username, string password, CancellationToken cancellationToken = default)
         {
             var firstLevelDomain = Url.Parse(Host).Host;
@@ -1039,6 +1177,11 @@ namespace Authing.ApiClient.Auth
             return user;
         }
 
+        /// <summary>
+        /// 获取自定义字段列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>自定义字段列表</returns>
         public async Task<List<KeyValuePair<string, object>>> GetUdfValue(CancellationToken cancellationToken = default)
         {
             var userId = CheckLoggedIn();
@@ -1049,6 +1192,12 @@ namespace Authing.ApiClient.Auth
             return resUdvList;
         }
 
+        /// <summary>
+        /// 设置自定义字段
+        /// </summary>
+        /// <param name="data">自定义字段相关数据</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>自定义字段列表</returns>
         public async Task<List<KeyValuePair<string, object>>> SetUdfValue(KeyValueDictionary data, CancellationToken
         cancellationToken =
         default)
@@ -1078,6 +1227,12 @@ namespace Authing.ApiClient.Auth
             return resUdvList;
         }
 
+        /// <summary>
+        /// 删除自定义字段
+        /// </summary>
+        /// <param name="key">自定义字段的 key</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>是否成功</returns>
         public async Task<bool> RemoveUdfValue(string key, CancellationToken cancellationToken = default)
         {
             var userId = CheckLoggedIn();
@@ -1086,12 +1241,24 @@ namespace Authing.ApiClient.Auth
             return true;
         }
 
+        /// <summary>
+        /// 获取密码登记
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>SecurityLevel</returns>
         public async Task<SecurityLevel> GetSecurityLevel(CancellationToken cancellationToken = default)
         {
             var res = await Host.AppendPathSegment("api/v2/users/me/security-level").WithHeaders(GetHeaders()).GetAsync(cancellationToken);
             return res.ResponseMessage.Convert<SecurityLevel>();
         }
 
+        /// <summary>
+        /// 允许访问的资源列表
+        /// </summary>
+        /// <param name="_namespace">命名空间</param>
+        /// <param name="_resourceType">资源类型</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>PaginatedAuthorizedResources</returns>
         public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string _namespace, ResourceType? _resourceType, CancellationToken
         cancellationToken = default)
         {
@@ -1116,7 +1283,12 @@ namespace Authing.ApiClient.Auth
             return authorizedResources;
         }
 
-        public PasswordSecurityLevel ComputedPasswordSecurityLevel(string password, CancellationToken cancellationToken)
+        /// <summary>
+        /// 计算密码强度
+        /// </summary>
+        /// <param name="password">密码</param>
+        /// <returns>PasswordSecurityLevel</returns>
+        public PasswordSecurityLevel ComputedPasswordSecurityLevel(string password)
         {
             var highLevel = @"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{12,}$/g";
             var middleLevel = @"/^(?=.*[a-zA-Z])(?=.*\d)[^]{8,}$/g";
@@ -1137,7 +1309,7 @@ namespace Authing.ApiClient.Auth
         /// </summary>
         /// <param name="accessToken">用户 access token</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>RefreshToken</returns>
         public async Task<RefreshToken> RefreshToken(
             string accessToken = null,
             CancellationToken cancellationToken = default)
@@ -1148,6 +1320,13 @@ namespace Authing.ApiClient.Auth
             return res.Result;
         }
 
+        /// <summary>
+        /// 当前用户是否具有某种角色
+        /// </summary>
+        /// <param name="roleCode">角色 code</param>
+        /// <param name="_namespace">命名空间</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>bool</returns>
         public async Task<bool> HasRole(string roleCode, string _namespace = "", CancellationToken
         cancellationToken = default)
         {
@@ -1172,22 +1351,23 @@ namespace Authing.ApiClient.Auth
             return hasRole;
         }
 
+        /// <summary>
+        /// 应用程序列表
+        /// </summary>
+        /// <param name="_params">列表参数</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>HttpResponseMessage</returns>
         public async Task<HttpResponseMessage> ListApplications(ListParams _params = null, CancellationToken cancellationToken =
         default)
         {
             _params = _params ?? AuthingUtils.ListParams;
             var res = await Host.AppendPathSegment(
-                $"api/v2/users/me/applications/allowed?page={_params.Page}&limit={_params.Limit}").WithHeaders(GetHeaders()).GetAsync();
+                $"api/v2/users/me/applications/allowed?page={_params.Page}&limit={_params.Limit}").WithHeaders(GetHeaders()).GetAsync(cancellationToken);
             return res.ResponseMessage;
         }
 
-        private string GenerateTokenRequest()
-        {
-            // let p = new URLSearchParams(params);
-            // return p.toString();
-        }
-
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretPost(string code, string codeVerifier = null)
+        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretPost(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        default)
         {
             string api = Options.Protocol switch
             {
@@ -1204,12 +1384,14 @@ namespace Authing.ApiClient.Auth
                     code,
                     redirect_uri = Options.RedirectUri,
                     code_verifier = codeVerifier
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretBasic(string code, string codeVerifier = null)
+        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretBasic(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        default)
         {
             string api = Options.Protocol switch
             {
@@ -1224,12 +1406,14 @@ namespace Authing.ApiClient.Auth
                     code,
                     redirect_uri = Options.RedirectUri,
                     code_verifier = codeVerifier
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithNone(string code, string codeVerifier = null)
+        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithNone(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        default)
         {
             string api = Options.Protocol switch
             {
@@ -1245,12 +1429,21 @@ namespace Authing.ApiClient.Auth
                     code,
                     redirect_uri = Options.RedirectUri,
                     code_verifier = codeVerifier
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> GetAccessTokenByCode(string code, GetAccessTokenByCodeOptions options = null)
+        /// <summary>
+        /// code 换 token
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetAccessTokenByCode(string code, GetAccessTokenByCodeOptions options = null, CancellationToken cancellationToken =
+        default)
         {
             if (Options.Secret != null && Options.TokenEndPointAuthMethod != TokenEndPointAuthMethod.NONE)
             {
@@ -1258,22 +1451,32 @@ namespace Authing.ApiClient.Auth
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_POST)
             {
-                return await GetAccessTokenByCodeWithClientSecretPost(code, options?.CodeVerifier);
+                return await GetAccessTokenByCodeWithClientSecretPost(code, options?.CodeVerifier, cancellationToken);
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_BASIC)
             {
-                return await GetAccessTokenByCodeWithClientSecretBasic(code, options?.CodeVerifier);
+                return await GetAccessTokenByCodeWithClientSecretBasic(code, options?.CodeVerifier, cancellationToken);
             }
             if (Options.Secret != null && Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.NONE)
             {
-                return await GetAccessTokenByCodeWithNone(code, options?.CodeVerifier);
+                return await GetAccessTokenByCodeWithNone(code, options?.CodeVerifier, cancellationToken);
             }
         }
+
+        /// <summary>
+        /// 生成 codechallenge
+        /// </summary>
+        /// <returns>codechallenge</returns>
         public string GenerateCodeChallenge()
         {
             return AuthingUtils.GenerateRandomString(43);
         }
 
+        /// <summary>
+        /// 获取 codechallengedigest
+        /// </summary>
+        /// <param name="options">相关配置</param>
+        /// <returns>codechallengedigest</returns>
         public string GetCodeChallengeDigest(CodeChallengeDigestOption options)
         {
             if (options.CodeChallenge == null)
@@ -1292,7 +1495,8 @@ namespace Authing.ApiClient.Auth
             throw new Exception("不支持的 options.method，可选值为 S256、plain");
         }
 
-        public async Task<HttpResponseMessage> GetAccessTokenByClientCredentials(string scope, GetAccessTokenByClientCredentialsOption options)
+        public async Task<HttpResponseMessage> GetAccessTokenByClientCredentials(string scope, GetAccessTokenByClientCredentialsOption options, CancellationToken cancellationToken =
+        default)
         {
             var i = options.AccessKey ?? Options.AppId;
             var s = options.AccessSecret ?? Options.Secret;
@@ -1302,17 +1506,21 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).PostUrlEncodedAsync(new
-            {
-                client_id = i,
-                client_secret = s,
-                grant_type = "client_credentials",
-                scope,
-            });
+            var res = await Host.AppendPathSegment(api).PostUrlEncodedAsync(
+                new
+                {
+                    client_id = i,
+                    client_secret = s,
+                    grant_type = "client_credentials",
+                    scope,
+                },
+                cancellationToken
+            );
             return res.ResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> GetUserInfoByAccessToken(string token)
+        public async Task<HttpResponseMessage> GetUserInfoByAccessToken(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options.Protocol switch
             {
@@ -1320,7 +1528,7 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/me",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithOAuthBearerToken(token).PostAsync();
+            var res = await Host.AppendPathSegment(api).WithOAuthBearerToken(token).PostAsync(null, cancellationToken);
             return res.ResponseMessage;
         }
 
@@ -1449,7 +1657,8 @@ namespace Authing.ApiClient.Auth
             return BuildEasyLogoutUrl(option);
         }
 
-        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretPost(string refreshToken)
+        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretPost(string refreshToken, CancellationToken cancellationToken =
+        default)
         {
             var api = Options.Protocol switch
             {
@@ -1457,17 +1666,21 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(new
-            {
-                client_id = Options.AppId,
-                client_secret = Options.Secret,
-                grant_type = "refresh_token",
-                refresh_token = refreshToken,
-            });
+            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(
+                new
+                {
+                    client_id = Options.AppId,
+                    client_secret = Options.Secret,
+                    grant_type = "refresh_token",
+                    refresh_token = refreshToken,
+                },
+                cancellationToken
+            );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretBasic(string refreshToken)
+        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretBasic(string refreshToken, CancellationToken cancellationToken =
+        default)
         {
             var api = Options.Protocol switch
             {
@@ -1475,15 +1688,19 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).WithBasicAuth(Options.AppId, Options.Secret).PostUrlEncodedAsync(new
-            {
-                grant_type = "refresh_token",
-                refresh_token = refreshToken,
-            });
+            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).WithBasicAuth(Options.AppId, Options.Secret).PostUrlEncodedAsync(
+                new
+                {
+                    grant_type = "refresh_token",
+                    refresh_token = refreshToken,
+                },
+                cancellationToken
+            );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithNone(string refreshToken)
+        private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithNone(string refreshToken, CancellationToken cancellationToken =
+        default)
         {
             var api = Options.Protocol switch
             {
@@ -1491,16 +1708,20 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(new
-            {
-                client_id = Options.AppId,
-                grant_type = "refresh_token",
-                refresh_token = refreshToken,
-            });
+            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(
+                new
+                {
+                    client_id = Options.AppId,
+                    grant_type = "refresh_token",
+                    refresh_token = refreshToken,
+                },
+                cancellationToken
+            );
             return res.ResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> GetNewAccessTokenByRefreshToken(string refreshToken)
+        public async Task<HttpResponseMessage> GetNewAccessTokenByRefreshToken(string refreshToken, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1514,19 +1735,20 @@ namespace Authing.ApiClient.Auth
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_POST)
             {
-                return await GetNewAccessTokenByRefreshTokenWithClientSecretPost(refreshToken);
+                return await GetNewAccessTokenByRefreshTokenWithClientSecretPost(refreshToken, cancellationToken);
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_BASIC)
             {
-                return await GetNewAccessTokenByRefreshTokenWithClientSecretBasic(refreshToken);
+                return await GetNewAccessTokenByRefreshTokenWithClientSecretBasic(refreshToken, cancellationToken);
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.NONE)
             {
-                return await GetNewAccessTokenByRefreshTokenWithNone(refreshToken);
+                return await GetNewAccessTokenByRefreshTokenWithNone(refreshToken, cancellationToken);
             }
         }
 
-        private async Task<HttpResponseMessage> RevokeTokenWithClientSecretPost(string token)
+        private async Task<HttpResponseMessage> RevokeTokenWithClientSecretPost(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1540,12 +1762,14 @@ namespace Authing.ApiClient.Auth
                     client_id = Options.AppId,
                     client_secret = Options.Secret,
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> RevokeTokenWithClientSecretBasic(string token)
+        private async Task<HttpResponseMessage> RevokeTokenWithClientSecretBasic(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1557,12 +1781,14 @@ namespace Authing.ApiClient.Auth
                 new
                 {
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> RevokeTokenWithNone(string token)
+        private async Task<HttpResponseMessage> RevokeTokenWithNone(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1575,12 +1801,14 @@ namespace Authing.ApiClient.Auth
                 {
                     client_id = Options.AppId,
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        public async Task<bool> RevokeToken(string token)
+        public async Task<bool> RevokeToken(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1594,23 +1822,24 @@ namespace Authing.ApiClient.Auth
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_POST)
             {
-                await RevokeTokenWithClientSecretPost(token);
+                await RevokeTokenWithClientSecretPost(token, cancellationToken);
                 return true;
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_BASIC)
             {
-                await RevokeTokenWithClientSecretBasic(token);
+                await RevokeTokenWithClientSecretBasic(token, cancellationToken);
                 return true;
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.NONE)
             {
-                await RevokeTokenWithNone(token);
+                await RevokeTokenWithNone(token, cancellationToken);
                 return true;
             }
             throw new Exception("初始化 AuthenticationClient 时传入的 revocationEndPointAuthMethod 参数可选值为 client_secret_base、client_secret_post、none，请检查参数");
         }
 
-        private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretPost(string token)
+        private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretPost(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1624,12 +1853,14 @@ namespace Authing.ApiClient.Auth
                     client_id = Options.AppId,
                     client_secret = Options.Secret,
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretBasic(string token)
+        private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretBasic(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1641,12 +1872,14 @@ namespace Authing.ApiClient.Auth
                 new
                 {
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> IntrospectTokenWithNone(string token)
+        private async Task<HttpResponseMessage> IntrospectTokenWithNone(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1659,12 +1892,14 @@ namespace Authing.ApiClient.Auth
                 {
                     client_id = Options.AppId,
                     token,
-                }
+                },
+                cancellationToken
             );
             return res.ResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> IntrospectToken(string token)
+        public async Task<HttpResponseMessage> IntrospectToken(string token, CancellationToken cancellationToken =
+        default)
         {
             var api = Options?.Protocol switch
             {
@@ -1678,27 +1913,29 @@ namespace Authing.ApiClient.Auth
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_POST)
             {
-                return await RevokeTokenWithClientSecretPost(token);
+                return await IntrospectTokenWithClientSecretPost(token, cancellationToken);
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.CLIENT_SECRET_BASIC)
             {
-                return await RevokeTokenWithClientSecretBasic(token);
+                return await IntrospectTokenWithClientSecretBasic(token, cancellationToken);
             }
             if (Options.TokenEndPointAuthMethod == TokenEndPointAuthMethod.NONE)
             {
-                return await RevokeTokenWithNone(token);
+                return await IntrospectTokenWithNone(token, cancellationToken);
             }
             throw new Exception("初始化 AuthenticationClient 时传入的 revocationEndPointAuthMethod 参数可选值为 client_secret_base、client_secret_post、none，请检查参数");
         }
 
-        public async Task<ValidateTicketV1Res> ValidateTicketV1(string ticket, string service)
+        public async Task<ValidateTicketV1Res> ValidateTicketV1(string ticket, string service, CancellationToken cancellationToken =
+        default)
         {
             var api = $"cas-idp/{Options.AppId}/validate";
             var resStr = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).SetQueryParams(new
             {
                 ticket,
                 service
-            }).GetJsonAsync<string>();
+            }).
+            GetJsonAsync<string>(cancellationToken);
             var regex = new Regex("\n");
             var resAtt = regex.Split(resStr);
             var valid = resAtt[0];
@@ -1723,14 +1960,15 @@ namespace Authing.ApiClient.Auth
             }
         }
 
-        public async Task<HttpResponseMessage> ValidateToken(ValidateTokenOption option)
+        public async Task<HttpResponseMessage> ValidateToken(ValidateTokenOption option, CancellationToken cancellationToken =
+        default)
         {
             if (option.IdToken != null)
             {
                 var res = await Host.AppendPathSegment("api/v2/oidc/validate_token").SetQueryParams(new
                 {
                     id_token = option.IdToken
-                }).GetAsync();
+                }).GetAsync(cancellationToken);
                 return res.ResponseMessage;
             }
             else if (option.AccessToken != null)
@@ -1738,7 +1976,7 @@ namespace Authing.ApiClient.Auth
                 var res = await Host.AppendPathSegment("api/v2/oidc/validate_token").SetQueryParams(new
                 {
                     access_token = option.AccessToken
-                }).GetAsync();
+                }).GetAsync(cancellationToken);
                 return res.ResponseMessage;
             }
             throw new Exception("请在传入的参数对象中包含 accessToken 或 idToken 字段");

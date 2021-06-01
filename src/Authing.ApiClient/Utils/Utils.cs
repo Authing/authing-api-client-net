@@ -86,19 +86,10 @@ namespace Authing.ApiClient.Utils
         {
             // list.Where(item => item.)
         }
-
-        public static string GenerateRandomString(int length = 30)
-        {
-            var rd = new Random();
-            var strAtt = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var resAtt = new Char[length];
-            rd.Next(0, 35);
-            // resAtt.ToList().ForEach(item =>
-            // {
-            //     item = strAtt[rd.Next(0, 35)];
-            // });
-            var resStr = String.Join(",", resAtt.Select(p => strAtt[rd.Next(0, 35)]).ToArray());
-            return resStr;
-        }
+        
+        // public static void FormatAuthorizedResources(ref IEnumerable<AuthorizedResource> authorizedResources)
+        // {
+        //     authorizedResources.Where(item => );
+        // }
     }
 }
