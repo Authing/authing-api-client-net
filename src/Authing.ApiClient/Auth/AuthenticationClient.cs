@@ -1461,6 +1461,7 @@ namespace Authing.ApiClient.Auth
             {
                 return await GetAccessTokenByCodeWithNone(code, options?.CodeVerifier, cancellationToken);
             }
+            throw new Exception("请检查参数 TokenEndPointAuthMethod");
         }
 
         /// <summary>
@@ -1745,6 +1746,7 @@ namespace Authing.ApiClient.Auth
             {
                 return await GetNewAccessTokenByRefreshTokenWithNone(refreshToken, cancellationToken);
             }
+            throw new Exception("请检查参数 TokenEndPointAuthMethod");
         }
 
         private async Task<HttpResponseMessage> RevokeTokenWithClientSecretPost(string token, CancellationToken cancellationToken =

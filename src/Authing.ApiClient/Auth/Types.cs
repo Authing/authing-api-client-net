@@ -12,6 +12,7 @@ namespace Authing.ApiClient.Auth.Types
         public string AppId { get; set; }
         public string UserPoolId { get; set; }
         // public string UserPoolId { get; set; }
+        public string Host { get; set; }
 
         public string Secret { get; set; }
         public string RedirectUri { get; set; }
@@ -382,5 +383,14 @@ namespace Authing.ApiClient.Auth.Types
         public string AccessToken { get; set; }
         public string IdToken { get; set; }
         
+    }
+
+    public class CodeToTokenRes
+    {
+        public string AccessToken { get; set; }
+        public int ExpiresIn { get; set; }
+        public string IdToken { get; set; }
+        public string Scope { get; set; }
+        public string TokenType { get; set; }
     }
 }
