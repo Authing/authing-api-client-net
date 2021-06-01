@@ -487,12 +487,12 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<List<KeyValuePair<string, object>>> GetUdfValue(string userId, CancellationToken cancellation = default)
             {
-                var param = new UdvParam(UdfTargetType.USER,userId);
+                var param = new UdvParam(UdfTargetType.USER, userId);
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellation);
                 return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
             }
 
-            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string [] userIds, CancellationToken cancellation = default)
+            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string[] userIds, CancellationToken cancellation = default)
             {
                 if (userIds.Length < 1)
                 {
@@ -510,12 +510,33 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<IEnumerable<UserDefinedData>> SetUdfValue(string userId, KeyValueDictionary data, CancellationToken cancellation = default)
             {
-                if (data.Count < 1)
+                if (data.Count() < 1)
                 {
                     throw new Exception("empty udf value list");
                 }
                 var param = new SetUdvBatchParam(UdfTargetType.USER, userId);
                 var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<CommonMessage> SetUdfValueBatch(UdfValues[] udfValues, CancellationToken cancellation = default)
+            {
+                if (udfValues.Count() < 1)
+                {
+                    throw new Exception("empty input list");
+                }
+                var param = new List<SetUdfValueBatchInput> { };
+                foreach (var udfValue in udfValues)
+                {
+                    foreach (var kvp in udfValue.Data)
+                    {
+                        param.Add(new SetUdfValueBatchInput(udfValue.UserId,
+                            kvp.Key,
+                            JsonConvert.SerializeObject(kvp.Value)));
+                    }
+                }
+                var _param = new SetUdfValueBatchParam(UdfTargetType.USER, param);
+                var res = await client.Request<SetUdfValueBatchResponse>(_param.CreateRequest(), cancellation);
                 return res.Result;
             }
 

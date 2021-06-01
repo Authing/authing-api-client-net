@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Types;
 
 namespace Authing.ApiClient.Management.Types {
@@ -24,6 +25,13 @@ namespace Authing.ApiClient.Management.Types {
         public string? ExternalId { get; set; }
     }
 
+    public class UdfValues
+    {
+        public string UserId { get; set; }
+
+        public KeyValueDictionary Data { get; set; }
+    }
+
     public class SearchOption
     {
         public string []? Fields { get; set; }
@@ -32,16 +40,19 @@ namespace Authing.ApiClient.Management.Types {
 
         public int Limit { get; set; } = 10;
 
-        public SearchUserDepartmentOpt [] ? DepartmentOpts { get; set; }
+        public SearchUserDepartmentOpt [] DepartmentOpts { get; set; }
+
         // public IEnumerable<SearchUserDepartmentOpt>? DepartmentOpts { get; set; }
+        public SearchUserGroupOpt [] GroupOpts { get; set; }
 
-        public SearchUserGroupOpt [] ? GroupOpts { get; set; }
+        public SearchUserRoleOpt [] RoleOpts { get; set; }
 
-        public SearchUserRoleOpt [] ? RoleOpts { get; set; }
     }
 
     public interface ListAuthorizedResourcesOption
     {
         public ResourceType? ResourceType { get; set; }
     }
+
+    
 }
