@@ -563,6 +563,18 @@ namespace Authing.ApiClient.Mgmt
                 return hasRole.Count > 0;
             }
 
+            public async Task<CommonMessage> Kick(string [] userIds, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new {
+                    userIds,
+                }, cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制下线成功"
+                };
+            }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
