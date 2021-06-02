@@ -540,14 +540,27 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<CommonMessage> RemoveUdfValue(string userId, string key, CancellationToken cancellation = default)
+            public async Task<CommonMessage> RemoveUdfValue(string key, CancellationToken cancellation = default)
             {
                 var param = new RemoveUdfParam(UdfTargetType.USER, key)
                 {
-                    
                 };
                 var res = await client.Request<SetUdfValueBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
+            }
+
+            public async Task<bool> hasRole(string userId, string roleCode, string nameSpace = null, CancellationToken cancellation = default)
+            {
+                var roleList = await ListRoles(userId, nameSpace, cancellation);
+
+                if (roleList.TotalCount < 1)
+                {
+                    return false;
+                }
+
+                var hasRole = roleList.List.Where(item => item.Code == roleCode).ToList();
+
+                return hasRole.Count > 0;
             }
 
             /// <summary>
