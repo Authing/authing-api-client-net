@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Linq;
+﻿using System.Linq;
 using Authing.ApiClient.Results;
 using Authing.ApiClient.Types;
 using Authing.ApiClient.Utils;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Authing.ApiClient.Auth.Types;
-using Authing.ApiClient.Types;
+using Authing.ApiClient.Extensions;
 
 namespace Authing.ApiClient.Auth
 {
@@ -1027,12 +1026,12 @@ namespace Authing.ApiClient.Auth
             // 如果用户需要则取得 headers 之后进行合并
             return new
             {
-                x_authing_sdk_version = $"js:{ SDK_VERSION}",
+                x_authing_sdk_version = $"csharp:{SDK_VERSION}",
                 x_authing_userpool_id = Options.UserPoolId ?? "",
                 x_authing_request_from = Options.RequestFrom ?? "sdk",
                 x_authing_app_id = Options.AppId ?? "",
                 x_authing_lang = Options.Lang ?? "",
-                Authorization = $"Bearer {Token}",
+                // Authorization = $"Bearer {Token}",
             };
         }
 
@@ -1366,7 +1365,7 @@ namespace Authing.ApiClient.Auth
             return res.ResponseMessage;
         }
 
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretPost(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        private async Task<CodeToTokenRes> GetAccessTokenByCodeWithClientSecretPost(string code, string codeVerifier = null, CancellationToken cancellationToken =
         default)
         {
             string api = Options.Protocol switch
@@ -1386,11 +1385,11 @@ namespace Authing.ApiClient.Auth
                     code_verifier = codeVerifier
                 },
                 cancellationToken
-            );
-            return res.ResponseMessage;
+            ).ReceiveJson<CodeToTokenRes>();
+            return res;
         }
 
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithClientSecretBasic(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        private async Task<CodeToTokenRes> GetAccessTokenByCodeWithClientSecretBasic(string code, string codeVerifier = null, CancellationToken cancellationToken =
         default)
         {
             string api = Options.Protocol switch
@@ -1408,11 +1407,11 @@ namespace Authing.ApiClient.Auth
                     code_verifier = codeVerifier
                 },
                 cancellationToken
-            );
-            return res.ResponseMessage;
+            ).ReceiveJson<CodeToTokenRes>();
+            return res;
         }
 
-        private async Task<HttpResponseMessage> GetAccessTokenByCodeWithNone(string code, string codeVerifier = null, CancellationToken cancellationToken =
+        private async Task<CodeToTokenRes> GetAccessTokenByCodeWithNone(string code, string codeVerifier = null, CancellationToken cancellationToken =
         default)
         {
             string api = Options.Protocol switch
@@ -1421,18 +1420,21 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(
+            var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).
+            PostUrlEncodedAsync(
                 new
                 {
                     client_id = Options.AppId,
                     grant_type = "authorization_code",
+                    // secrect = Options.Secret,
                     code,
                     redirect_uri = Options.RedirectUri,
                     code_verifier = codeVerifier
                 },
                 cancellationToken
-            );
-            return res.ResponseMessage;
+            ).ReceiveJson<CodeToTokenRes>();
+
+            return res;
         }
 
         /// <summary>
@@ -1442,10 +1444,10 @@ namespace Authing.ApiClient.Auth
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> GetAccessTokenByCode(string code, GetAccessTokenByCodeOptions options = null, CancellationToken cancellationToken =
+        public async Task<CodeToTokenRes> GetAccessTokenByCode(string code, GetAccessTokenByCodeOptions options = null, CancellationToken cancellationToken =
         default)
         {
-            if (Options.Secret != null && Options.TokenEndPointAuthMethod != TokenEndPointAuthMethod.NONE)
+            if (Options.Secret == null && Options.TokenEndPointAuthMethod != TokenEndPointAuthMethod.NONE)
             {
                 throw new Exception("请在初始化 AuthenticationClient 时传入 appId 和 secret 参数");
             }
@@ -1520,7 +1522,7 @@ namespace Authing.ApiClient.Auth
             return res.ResponseMessage;
         }
 
-        public async Task<HttpResponseMessage> GetUserInfoByAccessToken(string token, CancellationToken cancellationToken =
+        public async Task<UserInfo> GetUserInfoByAccessToken(string token, CancellationToken cancellationToken =
         default)
         {
             var api = Options.Protocol switch
@@ -1529,8 +1531,8 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/me",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            var res = await Host.AppendPathSegment(api).WithOAuthBearerToken(token).PostAsync(null, cancellationToken);
-            return res.ResponseMessage;
+            var res = await Host.AppendPathSegment(api).WithOAuthBearerToken(token).PostAsync(null, cancellationToken).ReceiveJson<UserInfo>();
+            return res;
         }
 
         public string BuildAuthorizeUrl<T>(T option)
@@ -1563,7 +1565,7 @@ namespace Authing.ApiClient.Auth
         private string BuildOidcAuthorizeUrl(OidcOption option)
         {
             string prompt = "";
-            if (option?.Scope.IndexOf("offline_access") != -1)
+            if (option?.Scope?.IndexOf("offline_access") != -1)
             {
                 prompt = "consent";
             }
@@ -1575,13 +1577,13 @@ namespace Authing.ApiClient.Auth
                 scope = "openid profile email phone address",
                 client_id = option.AppId ?? Options.AppId,
                 redirect_uri = option.RedirectUri ?? Options.RedirectUri,
-                response_type = option.ResponseType.ToString() ?? "code",
-                code_challenge_method = option.CodeChallengeMethod.ToString(),
+                response_type = !(option.ResponseType is null) ? option.ResponseType.ToString().ToLower() : "code",
+                code_challenge_method = option.CodeChallengeMethod?.ToString().ToLower(),
                 code_challenge = option.CodeChallenge,
-                response_mode = option.ResponseMode.ToString(),
+                response_mode = option.ResponseMode?.ToString().ToLower(),
                 prompt = string.IsNullOrEmpty(prompt) ? null : prompt,
             };
-            return $"{Host}/oidc/auth{"".SetQueryParams(res)}";
+            return $"{Options.Host ?? Host}/oidc/auth{"".SetQueryParams(res)}";
         }
 
         private string BuildOauthAuthorizeUrl(OauthOption option)
@@ -1593,9 +1595,9 @@ namespace Authing.ApiClient.Auth
                 scope = option.Scope ?? "openid profile email phone address",
                 client_id = option.AppId ?? Options.AppId,
                 redirect_uri = option.RedirectUri ?? Options.RedirectUri,
-                response_type = option.ResponseType.ToString() ?? "code",
+                response_type = option.ResponseType.ToString().ToLower() ?? "code",
             };
-            return $"{Host}/oidc/auth{"".SetQueryParams(res)}";
+            return $"{Options.Host ?? Host}/oidc/auth{"".SetQueryParams(res)}";
         }
 
         private string BuildSamlAuthorizeUrl()

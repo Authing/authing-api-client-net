@@ -546,7 +546,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     
                 };
-                var res = await client.Request<SetUdfValueBatchResponse>(_param.CreateRequest(), cancellation);
+                var res = await client.Request<SetUdfValueBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
             }
 
