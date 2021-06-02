@@ -49,10 +49,15 @@ namespace Authing.ApiClient.Management.Types {
 
     }
 
-    public interface ListAuthorizedResourcesOption
+    public class ListAuthorizedResourcesOption
     {
         public ResourceType? ResourceType { get; set; }
     }
 
-    
+    public class LogoutParam
+    {
+        public string? AppId { get; set; }
+        public string UserId { get; set; }
+    }
+
 }

@@ -563,15 +563,35 @@ namespace Authing.ApiClient.Mgmt
                 return hasRole.Count > 0;
             }
 
-            public async Task<CommonMessage> Kick(string [] userIds, CancellationToken cancellation = default)
+            public async Task<CommonMessage> Kick(string[] userIds, CancellationToken cancellation = default)
             {
-                var res = await client.Host.AppendPathSegment("api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new {
+                var res = await client.Host.AppendPathSegment($"api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                {
                     userIds,
                 }, cancellation);
                 return new CommonMessage
                 {
                     Code = 200,
                     Message = "强制下线成功"
+                };
+            }
+
+            public async Task<CommonMessage> Logout(LogoutParam logoutParam, CancellationToken cancellation = default)
+            {
+                if (logoutParam.UserId == null)
+                {
+                    throw new Exception("请传入 options.userId，内容为要下线的用户 ID");
+                }
+
+                var res = await client.Host.AppendPathSegment("logout").SetQueryParams(new
+                {
+                    appId = logoutParam.AppId,
+                    userId = logoutParam.UserId
+                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制等出成功"
                 };
             }
 
