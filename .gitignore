@@ -253,3 +253,5 @@ paket-files/
 .idea/
 *.sln.iml
 .vscode/
+test/
+tmp/

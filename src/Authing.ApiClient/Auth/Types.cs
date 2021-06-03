@@ -3,9 +3,45 @@ using System;
 using System.Collections.Generic;
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Authing.ApiClient.Auth.Types
 {
+
+    public class InitAuthenticationClientOptions
+    {
+        public string AppId { get; set; }
+        public string UserPoolId { get; set; }
+        // public string UserPoolId { get; set; }
+        public string Host { get; set; }
+
+        public string Secret { get; set; }
+        public string RedirectUri { get; set; }
+        public string RequestFrom { get; set; }
+        public string Lang { get; set; }
+        public string WebsocketHost { get; set; }
+
+        public Protocol Protocol { get; set; } = Protocol.OIDC;
+        public TokenEndPointAuthMethod TokenEndPointAuthMethod { get; set; }
+
+        
+    }
+
+    public enum TokenEndPointAuthMethod
+    {
+        NONE,
+        CLIENT_SECRET_POST,
+        CLIENT_SECRET_BASIC,
+    }
+
+    public enum Protocol
+    {
+        OIDC,
+        OAUTH,
+        SAML,
+        CAS,
+    }
+
     public class KeyValueDictionary : Dictionary<string, string>
     {
         public new void Add(string key, string value)
@@ -207,5 +243,300 @@ namespace Authing.ApiClient.Auth.Types
     {
         public int Page { get; set; }
         public int Limit { get; set; }
+    }
+
+    public class GetAccessTokenByCodeOptions
+    {
+        public string CodeVerifier { get; set; }
+    }
+
+    public class CodeChallengeDigestOption
+    {
+        public string CodeChallenge { get; set; }
+        public CodeChallengeDigestMethod Method { get; set; } = CodeChallengeDigestMethod.S256;
+
+    }
+    public enum CodeChallengeDigestMethod
+    {
+        S256,
+        PLAIN,
+    }
+
+    public class GetAccessTokenByClientCredentialsOption
+    {
+        public string AccessKey { get; set; }
+        public string AccessSecret { get; set; }
+        
+    }
+
+    public class OidcOption
+    {
+        public string AppId { get; set; }
+        public string RedirectUri { get; set; }
+        public ResponseType? ResponseType { get; set; }
+        public ResponseMode? ResponseMode { get; set; }
+        public string State { get; set; }
+        public string Nonce { get; set; }
+        public string Scope { get; set; }
+        public CodeChallengeDigestMethod? CodeChallengeMethod { get; set; }
+        public string CodeChallenge { get; set; }
+        
+    }
+
+    public enum ResponseMode
+    {
+        QUERY,
+        FRAGMENT,
+        FORM_POST,
+    }
+
+    public class ResponseType
+    {
+        public static string Value { get; set; }
+
+        private ResponseType(string value)
+        {
+            Value = value;
+        }
+
+
+        public static ResponseType CODE
+        {
+            get { return new ResponseType("code"); }
+            set { }
+        }
+
+        public static ResponseType CODE_TOKEN_IDTOKEN
+        {
+            get { return new ResponseType("code id_token token"); }
+            set { }
+        }
+
+        public static ResponseType CODE_IDTOKEN
+        {
+            get { return new ResponseType("code id_token"); }
+            set { }
+        }
+
+        public static ResponseType CODE_TOKEN
+        {
+            get { return new ResponseType("code token"); }
+            set { }
+        }
+
+        public static ResponseType TOKEN_IDTOKEN
+        {
+            get { return new ResponseType("id_token token"); }
+            set { }
+        }
+
+        public static ResponseType IDTOKEN
+        {
+            get { return new ResponseType("id_token"); }
+            set { }
+        }
+
+        public static ResponseType NONE
+        {
+            get { return new ResponseType("none"); }
+            set { }
+        }
+    }
+
+    public class OauthOption
+    {
+        public string AppId { get; set; }
+        public string RedirectUri { get; set; }
+        public OauthResponseType? ResponseType { get; set; }
+        public string State { get; set; }
+        public string Scope { get; set; }
+        
+    }
+
+    public class CasOption
+    {
+        public string Service { get; set; }
+    }
+
+
+    public enum OauthResponseType
+    {
+        CODE,
+        TOKEN,
+    }
+
+    public class LogoutParams
+    {
+        public bool Expert { get; set; }
+        public string? RedirectUri { get; set; }
+        public string? IdToken { get; set; }
+    }
+
+    public class ValidateTicketV1Res
+    {
+        public bool Valid { get; set; }
+        public string Username { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class ValidateTokenOption
+    {
+        public string AccessToken { get; set; }
+        public string IdToken { get; set; }
+        
+    }
+
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public class CodeToTokenRes
+    {
+        public string AccessToken { get; set; }
+
+        public int ExpiresIn { get; set; }
+        
+        public string IdToken { get; set; }
+
+        public string Scope { get; set; }
+
+        public string TokenType { get; set; }
+    }
+
+    public class UserInfo
+    {
+        [JsonProperty("sub")]
+        public string Sub { get; set; }
+
+        /// <summary>
+        /// 用户池 ID
+        /// </summary>
+        [JsonProperty("userPoolId")]
+        public string UserPoolId { get; set; }
+
+        /// <summary>
+        /// 用户名，用户池内唯一
+        /// </summary>
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        /// <summary>
+        /// 邮箱，用户池内唯一
+        /// </summary>
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        /// <summary>
+        /// 邮箱是否已验证
+        /// </summary>
+        [JsonProperty("email_verified")]
+        public bool? EmailVerified { get; set; }
+
+        /// <summary>
+        /// 手机号，用户池内唯一
+        /// </summary>
+        [JsonProperty("phone_number")]
+        public string Phone { get; set; }
+
+        /// <summary>
+        /// 手机号是否已验证
+        /// </summary>
+        [JsonProperty("phone_number_verified")]
+        public bool? PhoneVerified { get; set; }
+
+        [JsonProperty("unionid")]
+        public string Unionid { get; set; }
+
+        /// <summary>
+        /// 昵称，该字段不唯一。
+        /// </summary>
+        [JsonProperty("nickname")]
+        public string Nickname { get; set; }
+
+        /// <summary>
+        /// 头像链接，默认为 https://usercontents.authing.cn/authing-avatar.png
+        /// </summary>
+        [JsonProperty("picture")]
+        public string Photo { get; set; }
+
+        [JsonProperty("device")]
+        public string Device { get; set; }
+
+        [JsonProperty("browser")]
+        public string Browser { get; set; }
+
+        [JsonProperty("company")]
+        public string Company { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("givenName")]
+        public string GivenName { get; set; }
+
+        [JsonProperty("familyName")]
+        public string FamilyName { get; set; }
+
+        [JsonProperty("middleName")]
+        public string MiddleName { get; set; }
+
+        [JsonProperty("profile")]
+        public string Profile { get; set; }
+
+        [JsonProperty("preferred_username")]
+        public string PreferredUsername { get; set; }
+
+        [JsonProperty("website")]
+        public string Website { get; set; }
+
+        [JsonProperty("gender")]
+        public string Gender { get; set; }
+
+        [JsonProperty("birthdate")]
+        public string Birthdate { get; set; }
+
+        [JsonProperty("zoneinfo")]
+        public string Zoneinfo { get; set; }
+
+        [JsonProperty("locale")]
+        public string Locale { get; set; }
+
+        [JsonProperty("address")]
+        public string Address { get; set; }
+
+        [JsonProperty("formatted")]
+        public string Formatted { get; set; }
+
+        [JsonProperty("streetAddress")]
+        public string StreetAddress { get; set; }
+
+        [JsonProperty("locality")]
+        public string Locality { get; set; }
+
+        [JsonProperty("region")]
+        public string Region { get; set; }
+
+        [JsonProperty("postalCode")]
+        public string PostalCode { get; set; }
+
+        [JsonProperty("city")]
+        public string City { get; set; }
+
+        [JsonProperty("province")]
+        public string Province { get; set; }
+
+        [JsonProperty("country")]
+        public string Country { get; set; }
+
+        [JsonProperty("createdAt")]
+        public string CreatedAt { get; set; }
+
+        [JsonProperty("updated_at")]
+        public string UpdatedAt { get; set; }
+
+        /// 用户外部 ID
+        /// </summary>
+        [JsonProperty("external_id")]
+        public string ExternalId { get; set; }
+
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
 }

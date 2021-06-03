@@ -510,7 +510,7 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<IEnumerable<UserDefinedData>> SetUdfValue(string userId, KeyValueDictionary data, CancellationToken cancellation = default)
             {
-                if (data.Count < 1)
+                if (data.Count() < 1)
                 {
                     throw new Exception("empty udf value list");
                 }
@@ -535,6 +535,97 @@ namespace Authing.ApiClient.Mgmt
                 }
                 var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
+            }
+
+            public async Task<CommonMessage> SetUdfValueBatch(UdfValues[] udfValues, CancellationToken cancellation = default)
+            {
+                if (udfValues.Count() < 1)
+                {
+                    throw new Exception("empty input list");
+                }
+                var param = new List<SetUdfValueBatchInput> { };
+                foreach (var udfValue in udfValues)
+                {
+                    foreach (var kvp in udfValue.Data)
+                    {
+                        param.Add(new SetUdfValueBatchInput(udfValue.UserId,
+                            kvp.Key,
+                            JsonConvert.SerializeObject(kvp.Value)));
+                    }
+                }
+                var _param = new SetUdfValueBatchParam(UdfTargetType.USER, param);
+                var res = await client.Request<SetUdfValueBatchResponse>(_param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<CommonMessage> RemoveUdfValue(string key, CancellationToken cancellation = default)
+            {
+                var param = new RemoveUdfParam(UdfTargetType.USER, key)
+                {
+                };
+                var res = await client.Request<SetUdfValueBatchResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<bool> hasRole(string userId, string roleCode, string nameSpace = null, CancellationToken cancellation = default)
+            {
+                var roleList = await ListRoles(userId, nameSpace, cancellation);
+
+                if (roleList.TotalCount < 1)
+                {
+                    return false;
+                }
+
+                var hasRole = roleList.List.Where(item => item.Code == roleCode).ToList();
+
+                return hasRole.Count > 0;
+            }
+
+            public async Task<CommonMessage> Kick(string[] userIds, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                {
+                    userIds,
+                }, cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制下线成功"
+                };
+            }
+
+            public async Task<CommonMessage> Logout(LogoutParam logoutParam, CancellationToken cancellation = default)
+            {
+                if (logoutParam.UserId == null)
+                {
+                    throw new Exception("请传入 options.userId，内容为要下线的用户 ID");
+                }
+
+                var res = await client.Host.AppendPathSegment("logout").SetQueryParams(new
+                {
+                    appId = logoutParam.AppId,
+                    userId = logoutParam.UserId
+                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制等出成功"
+                };
+            }
+
+            public async Task<CommonMessage> CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/users/login-status").SetQueryParams(new
+                {
+                    appId,
+                    userId,
+                    devicdId
+                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetJsonAsync<>(cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制等出成功"
+                };
             }
 
             /// <summary>

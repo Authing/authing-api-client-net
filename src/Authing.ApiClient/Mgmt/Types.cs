@@ -25,6 +25,13 @@ namespace Authing.ApiClient.Management.Types {
         public string? ExternalId { get; set; }
     }
 
+    public class UdfValues
+    {
+        public string UserId { get; set; }
+
+        public KeyValueDictionary Data { get; set; }
+    }
+
     public class SearchOption
     {
         public string []? Fields { get; set; }
@@ -33,23 +40,35 @@ namespace Authing.ApiClient.Management.Types {
 
         public int Limit { get; set; } = 10;
 
-        public SearchUserDepartmentOpt [] ? DepartmentOpts { get; set; }
+        public SearchUserDepartmentOpt [] DepartmentOpts { get; set; }
+
         // public IEnumerable<SearchUserDepartmentOpt>? DepartmentOpts { get; set; }
+        public SearchUserGroupOpt [] GroupOpts { get; set; }
 
-        public SearchUserGroupOpt [] ? GroupOpts { get; set; }
+        public SearchUserRoleOpt [] RoleOpts { get; set; }
 
-        public SearchUserRoleOpt [] ? RoleOpts { get; set; }
     }
 
-    public interface ListAuthorizedResourcesOption
+    public class ListAuthorizedResourcesOption
     {
         public ResourceType? ResourceType { get; set; }
     }
 
-    public interface SetUdfValueBatchInput
+    public class LogoutParam
     {
+        public string? AppId { get; set; }
         public string UserId { get; set; }
+    }
 
-        public KeyValueDictionary Data { get; set; }
+    public class Application
+    {
+        
+    }
+
+    public class CheckLoginStatusRes
+    {
+        public bool IsLogin { get; set; }
+        public User User { get; set; }
+        public Application [] Application { get; set; }
     }
 }
