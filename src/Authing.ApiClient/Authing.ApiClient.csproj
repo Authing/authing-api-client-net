@@ -45,7 +45,7 @@ Version 1.1.0
       - 增加十个接口，详见文档。
 Version 1.0.0
       - 提供了注册、登录、更新等 11 个常用的接口。</PackageReleaseNotes>
-<Version>4.2.4.8</Version>
+<Version>4.2.4</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Authing.ApiClient.xml</DocumentationFile>
