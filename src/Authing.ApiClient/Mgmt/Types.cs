@@ -60,4 +60,15 @@ namespace Authing.ApiClient.Management.Types {
         public string UserId { get; set; }
     }
 
+    public class Application
+    {
+        
+    }
+
+    public class CheckLoginStatusRes
+    {
+        public bool IsLogin { get; set; }
+        public User User { get; set; }
+        public Application [] Application { get; set; }
+    }
 }

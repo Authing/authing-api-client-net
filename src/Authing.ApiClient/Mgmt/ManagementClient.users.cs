@@ -595,6 +595,21 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
+            public async Task<CommonMessage> CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/users/login-status").SetQueryParams(new
+                {
+                    appId,
+                    userId,
+                    devicdId
+                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetJsonAsync<>(cancellation);
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "强制等出成功"
+                };
+            }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
