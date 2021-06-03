@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Types;
 
 namespace Authing.ApiClient.Management.Types {
@@ -43,5 +44,12 @@ namespace Authing.ApiClient.Management.Types {
     public interface ListAuthorizedResourcesOption
     {
         public ResourceType? ResourceType { get; set; }
+    }
+
+    public interface SetUdfValueBatchInput
+    {
+        public string UserId { get; set; }
+
+        public KeyValueDictionary Data { get; set; }
     }
 }

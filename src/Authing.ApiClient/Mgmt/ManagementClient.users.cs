@@ -487,12 +487,12 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<List<KeyValuePair<string, object>>> GetUdfValue(string userId, CancellationToken cancellation = default)
             {
-                var param = new UdvParam(UdfTargetType.USER,userId);
+                var param = new UdvParam(UdfTargetType.USER, userId);
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellation);
                 return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
             }
 
-            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string [] userIds, CancellationToken cancellation = default)
+            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(string[] userIds, CancellationToken cancellation = default)
             {
                 if (userIds.Length < 1)
                 {
@@ -514,7 +514,25 @@ namespace Authing.ApiClient.Mgmt
                 {
                     throw new Exception("empty udf value list");
                 }
-                var param = new SetUdvBatchParam(UdfTargetType.USER, userId);
+                var param = new SetUdvBatchParam(UdfTargetType.USER, userId){
+                    UdvList,
+                };
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            public async Task<IEnumerable<UserDefinedData>> SetUdfValueBatch(Management.Types.SetUdfValueBatchInput[] setUdfValueBatchInput, CancellationToken cancellation = default)
+            {
+                if (setUdfValueBatchInput.Length < 1)
+                {
+                    throw new Exception("empty input list");
+                }
+                var param = new List<Types.SetUdfValueBatchInput>();
+                foreach (var item in setUdfValueBatchInput)
+                {
+                    var tmp = new Types.SetUdfValueBatchInput(item.UserId, item.Data.Keys.ToArray<string>[0])
+                    param.Add();
+                }
                 var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
             }
