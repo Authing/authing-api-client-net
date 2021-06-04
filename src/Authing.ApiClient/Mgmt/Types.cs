@@ -376,5 +376,14 @@ namespace Authing.ApiClient.Management.Types {
         public object [] DisabledCasConnections { get; set; }
     }
 
+    public class GetAuthorizedTargetsOptions
+    {
+        public string NameSpace { get; set; }
+        public string Resource { get; set; }
+        public ResourceType ResourceType { get; set; } = default;
 
+        public AuthorizedTargetsActionsInput Actions { get; set; }
+
+        public PolicyAssignmentTargetType TargetType { get; set; }
+    }
 }

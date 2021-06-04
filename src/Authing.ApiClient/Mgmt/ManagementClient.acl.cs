@@ -1,4 +1,5 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -123,7 +124,7 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> AuthorizeResource(
                 string nameSpace,
                 string resource,
-                AuthorizeResourceOpt []authorizeResourceOptions,
+                AuthorizeResourceOpt[] authorizeResourceOptions,
                 CancellationToken cancellation = default
             )
             {
@@ -137,7 +138,28 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+            public async Task<object> GetAuthorizedTargets(GetAuthorizedTargetsOptions getAuthorizedTargetsOptions, CancellationToken cancellation = default)
+            {
+                if (getAuthorizedTargetsOptions.NameSpace == null)
+                {
+                    throw new Exception("请传入 options.namespace，含义为权限分组标识");
+                }
+                if (getAuthorizedTargetsOptions.Resource == null)
+                {
+                    throw new Exception("请传入 options.resource，含义为资源标识");
+                }
+                if (getAuthorizedTargetsOptions.ResourceType == default)
+                {
+                    throw new Exception("请传入 options.resourceType，含义为资源类型");
+                }
+                var param = new AuthorizedTargetsParam(getAuthorizedTargetsOptions.NameSpace, getAuthorizedTargetsOptions.ResourceType, getAuthorizedTargetsOptions.Resource)
+                {
+                    Actions = getAuthorizedTargetsOptions.Actions
+                };
+                var res = await client.Request<AuthorizedTargetsResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
         }
     }
 }
