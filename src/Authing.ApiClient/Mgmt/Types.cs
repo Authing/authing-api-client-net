@@ -375,5 +375,6 @@ namespace Authing.ApiClient.Management.Types {
 
         public object [] DisabledCasConnections { get; set; }
     }
-    
+
+
 }

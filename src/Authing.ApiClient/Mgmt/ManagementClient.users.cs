@@ -687,6 +687,11 @@ namespace Authing.ApiClient.Mgmt
                 return resReal;
             }
 
+            // public void SendFirstLoginVerifyEmail(SendFirstLoginVerifyEmailParam sendFirstLoginVerifyEmailParam, CancellationToken cancellation = default)
+            // {
+            //     // var param = new SendFirstLoginVerifyEmailParam()
+            // }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
