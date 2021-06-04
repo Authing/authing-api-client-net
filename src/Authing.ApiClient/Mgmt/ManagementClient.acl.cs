@@ -92,6 +92,52 @@ namespace Authing.ApiClient.Mgmt
                 var res = await client.Request<IsActionAllowedResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
+            public async Task<bool> IsAllowed(
+                string userId,
+                string resource,
+                string action,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new IsActionAllowedParam(resource, action, userId)
+                {
+                    Namespace = nameSpace
+                };
+                var res = await client.Request<IsActionAllowedResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            // public async Task<object> listAuthorizedResources(
+            //     PolicyAssignmentTargetType policyAssignmentTargetType,
+            //     string targetIdentifier,
+            //     string nameSpace,
+            //     ResourceType resourceType,
+            //     CancellationToken cancellation = default
+            // )
+            // {
+            //     var param = new ListAuth
+            //     var res = 
+            // }
+
+            public async Task<CommonMessage> AuthorizeResource(
+                string nameSpace,
+                string resource,
+                AuthorizeResourceOpt []authorizeResourceOptions,
+                CancellationToken cancellation = default
+            )
+            {
+                var param = new AuthorizeResourceParam()
+                {
+                    Namespace = nameSpace,
+                    Resource = resource,
+                    Opts = authorizeResourceOptions
+                };
+                var res = await client.Request<AuthorizeResourceResponse>(param.CreateRequest(), cancellation);
+                return res.Result;
+            }
+
+            
         }
     }
 }
