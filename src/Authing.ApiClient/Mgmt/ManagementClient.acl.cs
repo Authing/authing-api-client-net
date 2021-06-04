@@ -138,7 +138,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> GetAuthorizedTargets(GetAuthorizedTargetsOptions getAuthorizedTargetsOptions, CancellationToken cancellation = default)
+            public async Task<PaginatedAuthorizedTargets> GetAuthorizedTargets(GetAuthorizedTargetsOptions getAuthorizedTargetsOptions, CancellationToken cancellation = default)
             {
                 if (getAuthorizedTargetsOptions.NameSpace == null)
                 {
@@ -158,6 +158,11 @@ namespace Authing.ApiClient.Mgmt
                 };
                 var res = await client.Request<AuthorizedTargetsResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
+            }
+
+            public async Task<object> ListResources()
+            {
+                
             }
 
         }
