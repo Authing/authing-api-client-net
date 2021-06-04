@@ -687,10 +687,12 @@ namespace Authing.ApiClient.Mgmt
                 return resReal;
             }
 
-            // public void SendFirstLoginVerifyEmail(SendFirstLoginVerifyEmailParam sendFirstLoginVerifyEmailParam, CancellationToken cancellation = default)
-            // {
-            //     // var param = new SendFirstLoginVerifyEmailParam()
-            // }
+            public async Task<SendFirstLoginVerifyEmailResponse> SendFirstLoginVerifyEmail(SendFirstLoginVerifyEmailParam sendFirstLoginVerifyEmailParam, CancellationToken cancellation = default)
+            {
+                var param = sendFirstLoginVerifyEmailParam;
+                var res = await client.Request<SendFirstLoginVerifyEmailResponse>(param.CreateRequest(), cancellation);
+                return res;
+            }
 
             /// <summary>
             /// 获取策略列表
