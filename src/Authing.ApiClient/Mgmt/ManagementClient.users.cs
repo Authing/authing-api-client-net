@@ -522,21 +522,25 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            // public async Task<IEnumerable<UserDefinedData>> SetUdfValueBatch(Management.Types.SetUdfValueBatchInput[] setUdfValueBatchInput, CancellationToken cancellation = default)
-            // {
-            //     if (setUdfValueBatchInput.Length < 1)
-            //     {
-            //         throw new Exception("empty input list");
-            //     }
-            //     var param = new List<SetUdfValueBatchInput>();
-            //     foreach (var item in setUdfValueBatchInput)
-            //     {
-            //         var tmp = new SetUdfValueBatchInput(item.UserId, item.Data.Keys.ToArray<string>[0])
-            //         param.Add();
-            //     }
-            //     var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
-            //     return res.Result;
-            // }
+            public async Task<IEnumerable<UserDefinedData>> SetUdfValueBatch(Management.Types.SetUdfValueBatchParam[] setUdfValueBatchInput, CancellationToken cancellation = default)
+            {
+                if (setUdfValueBatchInput.Length < 1)
+                {
+                    throw new Exception("empty input list");
+                }
+                var param = new List<SetUdfValueBatchInput>();
+                foreach (var item in setUdfValueBatchInput)
+                {
+                    foreach (KeyValuePair<string, string> keyValue in item.Data)
+                    {
+                        var tmp = new SetUdfValueBatchInput(item.UserId, keyValue.Key, keyValue.Value);
+                        param.Add(tmp);
+                    }
+                }
+                var _param = new Types.SetUdfValueBatchParam(UdfTargetType.USER, param);
+                var res = await client.Request<SetUdvBatchResponse>(_param.CreateRequest(), cancellation);
+                return res.Result;
+            }
 
             public async Task<CommonMessage> SetUdfValueBatch(UdfValues[] udfValues, CancellationToken cancellation = default)
             {
@@ -554,7 +558,7 @@ namespace Authing.ApiClient.Mgmt
                             JsonConvert.SerializeObject(kvp.Value)));
                     }
                 }
-                var _param = new SetUdfValueBatchParam(UdfTargetType.USER, param);
+                var _param = new Types.SetUdfValueBatchParam(UdfTargetType.USER, param);
                 var res = await client.Request<SetUdfValueBatchResponse>(_param.CreateRequest(), cancellation);
                 return res.Result;
             }
@@ -614,19 +618,14 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public void CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
+            public async Task<CheckLoginStatusRes> CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
             {
-                // var res = await client.Host.AppendPathSegment("api/v2/users/login-status").SetQueryParams(new
-                // {
-                //     appId,
-                //     userId,
-                //     devicdId
-                // }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetJsonAsync<>(cancellation);
-                // return new CommonMessage
-                // {
-                //     Code = 200,
-                //     Message = "强制等出成功"
-                // };
+                var res = client.Host.AppendPathSegment("api/v2/users/login-status").WithOAuthBearerToken(client.Token).SetQueryParams(new {
+                    userId,
+                    appId,
+                    devicdId
+                }).GetJsonAsync<CheckLoginStatusRes>();
+                return res;
             }
 
             /// <summary>
