@@ -194,4 +194,186 @@ namespace Authing.ApiClient.Management.Types {
         public string UserId { get; set; }
         public KeyValueDictionary Data { get; set; }
     }
+
+    public class ListUserActionsParam
+    {
+        public string? ClientIp { get; set; }
+
+        public string []? OperationNames { get; set; }
+
+        public string []? UserIds { get; set; }
+
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
+
+        public string ExcludeNonAppRecords { get; set; }
+
+        public string [] ? AppIds { get; set; }
+
+        public int? Start { get; set; }
+        public int? End { get; set; }
+    }
+
+    public class ListUserActionsRes
+    {
+        public int TotalCount { get; set; }
+
+        public UserAction [] List { get; set; }
+
+    }
+
+    public class ListUserActionsRealRes
+    {
+        public int TotalCount { get; set; }
+
+        public UserActionRes[] List { get; set; }
+    }
+
+    public class UserActionRes
+    {
+        public string Id { get; set; }
+
+        public string UserPoolId { get; set; }
+
+        public string UserName { get; set; }
+
+        public string CityName { get; set; }
+
+        public string RegionName { get; set; }
+
+        public string ClientIp { get; set; }
+
+        public string OperationDesc { get; set; }
+
+        public string OperationName { get; set; }
+
+        public string TimeStamp { get; set; }
+
+        public string AppId { get; set; }
+        public string AppName { get; set; }
+    }
+
+    public class UserAction
+    {
+        public string OperatorArn { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public string UserAgent { get; set; }
+
+        public Geoip Geoip { get; set; }
+
+        public string Message { get; set; }
+
+        public Ua Ua { get; set; }
+        public string UserPoolId { get; set; }
+        public string Host { get; set; }
+        public string Version { get; set; }
+
+        public string AppId { get; set; }
+
+        public string OperationName { get; set; }
+
+        public string ClientIp { get; set; }
+
+        public string ExtraData { get; set; }
+
+        public string RequestId { get; set; }
+
+        public string Path { get; set; }
+
+        public User User { get; set; }
+
+        public App App { get; set; }
+        public string OperationDesc { get; set; }
+    }
+
+    public class Geoip
+    {
+        public string ContinentCode { get; set; }
+
+        public string CountryCode2 { get; set; }
+
+        public string RegionName { get; set; }
+
+        public string CityName { get; set; }
+
+        public string Ip { get; set; }
+
+        public int Latitude { get; set; }
+
+        public string RegionCode { get; set; }
+
+        public string Timezone { get; set; }
+
+        public string CountryCode3 { get; set; }
+
+        public int Longitude { get; set; }
+
+        public string CountryName { get; set; }
+
+        public Location Location { get; set; }
+
+    }
+
+    public class Location
+    {
+        public int Lon { get; set; }
+
+        public int Lat { get; set; }
+    }
+
+    public class Ua
+    {
+        public string Build { get; set; }
+        public string Os { get; set; }
+        public string Device { get; set; }
+
+        public string Patch { get; set; }
+        public string OsMinor { get; set; }
+
+        public string OsMajor { get; set; }
+
+        public string OsName { get; set; }
+
+        public string Minor { get; set; }
+
+        public string Name { get; set; }
+        public string major { get; set; }
+    }
+
+
+    public class App
+    {
+        public KeyValuePair<string, object>  QrcodeScanning { get; set; }
+
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public object? Description { get; set; }
+
+        public string Identifier { get; set; }
+
+        public string Logo { get; set; }
+
+        public string [] LoginTabs { get; set; }
+
+        public string [] RegisterTabs { get; set; }
+
+        public object [] AdConnections { get; set; }
+
+        public object []   DisabledOidcConnections { get; set; }
+
+        public object [] DisabledSamlConnections { get; set; }
+
+        public object [] ExtendsFields { get; set; }
+
+        public object [] DisabledAzureAdConnections { get; set; }
+
+        public object [] DisabledOauth2Connections { get; set; }
+
+        public object [] DisabledCasConnections { get; set; }
+    }
+    
 }

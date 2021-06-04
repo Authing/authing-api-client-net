@@ -620,12 +620,71 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<CheckLoginStatusRes> CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
             {
-                var res = client.Host.AppendPathSegment("api/v2/users/login-status").WithOAuthBearerToken(client.Token).SetQueryParams(new {
+                var res = await client.Host.AppendPathSegment("api/v2/users/login-status").WithOAuthBearerToken(client.Token).SetQueryParams(new
+                {
                     userId,
                     appId,
                     devicdId
-                }).GetJsonAsync<CheckLoginStatusRes>();
+                }).GetJsonAsync<CheckLoginStatusRes>(cancellation);
                 return res;
+            }
+
+            public async Task<ListUserActionsRealRes> ListUserActions(ListUserActionsParam listUserActionsParam = null, CancellationToken cancellation = default)
+            {
+                var dic = new Dictionary<string, object>()
+                {
+                    {
+                        "clientip", listUserActionsParam.ClientIp
+                    },
+                    {
+                        "operation_name", listUserActionsParam.OperationNames
+                    },
+                    {
+                        "operator_arn",
+                        listUserActionsParam.UserIds.Select(userId => $"arn:cn:authing:{client.Options.UserPoolId}:user:${userId}").ToArray()
+                    },
+                    {
+                        "page", listUserActionsParam.Page
+                    },
+                    {
+                        "limit", listUserActionsParam.Limit
+                    },
+                    {
+                        "exclude_non_app_records", listUserActionsParam.ExcludeNonAppRecords
+                    },
+                    {
+                        "app_id", listUserActionsParam.AppIds
+                    },
+                    {
+                        "start", listUserActionsParam.Start
+                    },
+                    {
+                        "end", listUserActionsParam.End
+                    }
+                };
+                dic["exclude_non_app_records"] = listUserActionsParam.ExcludeNonAppRecords ?? "1";
+                var res = await client.Host.AppendPathSegment("api/v2/analysis/user-action").SetQueryParams(dic).GetJsonAsync<ListUserActionsRes>(cancellation);
+                var list = res.List;
+                var resList = list.Select(log => new UserActionRes
+                {
+                    UserPoolId = log.UserPoolId,
+                    Id = log.User.Id,
+                    UserName = log.User.Username,
+                    CityName = log.Geoip.CityName,
+                    RegionName = log.Geoip.RegionName,
+                    ClientIp = log.Geoip.Ip,
+                    OperationDesc = log.OperationDesc,
+                    OperationName = log.OperationName,
+                    TimeStamp = log.Timestamp,
+                    AppId = log.AppId,
+                    AppName = log.App.Name
+                }).ToArray();
+                var resReal = new ListUserActionsRealRes()
+                {
+                    TotalCount = res.TotalCount,
+                    List = resList
+                };
+                return resReal;
             }
 
             /// <summary>
