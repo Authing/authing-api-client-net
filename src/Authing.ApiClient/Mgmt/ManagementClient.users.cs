@@ -694,6 +694,7 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 获取策略列表
             /// </summary>
@@ -720,6 +721,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 添加策略
             /// </summary>
@@ -741,6 +743,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 移除策略
             /// </summary>
@@ -762,6 +765,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 获取用户自定义字段的值列表
             /// </summary>
@@ -778,6 +782,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 设置自定义字段值
             /// </summary>
@@ -798,6 +803,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 移除用户自定义字段的值
             /// </summary>
@@ -816,6 +822,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            [Obsolete("方法已经转移至 RolesManagementClient 中")]
             /// <summary>
             /// 检查登录状态
             /// </summary>
