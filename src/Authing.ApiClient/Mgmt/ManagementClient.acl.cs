@@ -30,28 +30,45 @@ namespace Authing.ApiClient.Mgmt
                 this.client = client;
             }
 
-            /// <summary>
-            /// 允许某个用户操作某个资源
-            /// </summary>
-            /// <param name="resource"></param>
-            /// <param name="action"></param>
-            /// <param name="userId"></param>
-            /// <param name="role"></param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
+            // /// <summary>
+            // /// 允许某个用户操作某个资源
+            // /// </summary>
+            // /// <param name="resource"></param>
+            // /// <param name="action"></param>
+            // /// <param name="userId"></param>
+            // /// <param name="role"></param>
+            // /// <param name="cancellationToken"></param>
+            // /// <returns></returns>
+            // public async Task<CommonMessage> Allow(
+            //     string resource, 
+            //     string action, 
+            //     string userId = null, 
+            //     string role= null,
+            //     CancellationToken cancellationToken = default)
+            // {
+            //     var param = new AllowParam(resource, action)
+            //     {
+            //         UserId = userId,
+            //         RoleCode = role,
+            //     };
+            //     await client.GetAccessToken();
+            //     var res = await client.Request<AllowResponse>(param.CreateRequest(), cancellationToken);
+            //     return res.Result;
+            // }
+
             public async Task<CommonMessage> Allow(
-                string resource, 
-                string action, 
-                string userId= null, 
-                string role= null,
+                string userId,
+                string resource,
+                string action,
+                string nameSpace,
                 CancellationToken cancellationToken = default)
             {
                 var param = new AllowParam(resource, action)
                 {
                     UserId = userId,
-                    RoleCode = role,
+                    Resource = resource,
+                    Namespace = nameSpace
                 };
-                await client.GetAccessToken();
                 var res = await client.Request<AllowResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }

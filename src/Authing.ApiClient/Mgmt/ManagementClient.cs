@@ -24,15 +24,23 @@ namespace Authing.ApiClient.Mgmt
         public ManagementClient(string userPoolId, string secret): base(userPoolId)
         {
             this.secret = secret;
+            // GetAccessToken();
+        }
 
-            Users = new UsersManagementClient(this);
-            Roles = new RolesManagementClient(this);
-            Acl = new AclManagementClient(this);
-            Groups = new GroupsManagementClient(this);
-            Udf = new UdfManagementClient(this);
-            Whitelist = new WhitelistManagementClient(this);
-            Userpool = new UserpoolManagementClient(this);
-            Policies = new PoliciesManagementClient(this);
+        public async Task<ManagementClient> InitManagementClient(string userPoolId, string secret)
+        {
+            var manageClient = new ManagementClient(userPoolId, secret);
+            await manageClient.GetAccessToken();
+
+            Users = new UsersManagementClient(manageClient);
+            Roles = new RolesManagementClient(manageClient);
+            Acl = new AclManagementClient(manageClient);
+            Groups = new GroupsManagementClient(manageClient);
+            Udf = new UdfManagementClient(manageClient);
+            Whitelist = new WhitelistManagementClient(manageClient);
+            Userpool = new UserpoolManagementClient(manageClient);
+            Policies = new PoliciesManagementClient(manageClient);
+            return manageClient;
         }
 
         private async Task<AccessTokenRes> GetClientWhenSdkInit(CancellationToken cancellationToken = default)
