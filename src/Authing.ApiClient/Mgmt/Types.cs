@@ -386,4 +386,42 @@ namespace Authing.ApiClient.Management.Types {
 
         public PolicyAssignmentTargetType TargetType { get; set; }
     }
+
+    public class ResourceQueryFilter
+    {
+        public int Page { get; set; }
+
+        public int Limit { get; set; }
+
+        public ResourceType Type { get; set; }
+        // public string NameSpaceCode { get; set; }       
+        public string NameSpace { get; set; }
+    }
+
+    public class ListResourcesRes
+    {
+        public int Code { get; set; }
+        public string Message { get; set; }
+
+        public Resources [] Data { get; set; }
+    }
+
+    public class Resources
+    {
+        public string UserPoolId { get; set; }
+        public string Code { get; set; }
+        public ResourceAction [] Actions { get; set; }
+        public ResourceType Type { get; set; }
+        public string Description { get; set; }
+        public bool IsDefault { get; set; }
+        public string NameSpaceId { get; set; }
+        public string ApiIdentifier { get; set; }
+
+    }
+
+    public class ResourceAction
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }

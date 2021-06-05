@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -160,9 +162,30 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> ListResources()
+            public async Task<ListResourcesRes> ListResources(ResourceQueryFilter resourceQueryFilter)
             {
-                
+                var res = await client.Host.AppendPathSegment("api/v2/resources").WithOAuthBearerToken(client.Token).SetQueryParams(
+                    new Dictionary<string, object>
+                    {
+                        {
+                            "namespace",
+                            resourceQueryFilter.NameSpace
+                        },
+                        {
+                            "type",
+                            resourceQueryFilter.Type
+                        },
+                        {
+                            "limit",
+                            resourceQueryFilter.Limit
+                        },
+                        {
+                            "page",
+                            resourceQueryFilter.Page
+                        }
+                    }
+                ).GetJsonAsync<ListResourcesRes>();
+                return res;
             }
 
         }
