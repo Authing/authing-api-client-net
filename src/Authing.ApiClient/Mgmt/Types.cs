@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Types;
+using Newtonsoft.Json;
 
 namespace Authing.ApiClient.Management.Types {
     public enum BatchFetchUserTypes {
@@ -433,12 +434,40 @@ namespace Authing.ApiClient.Management.Types {
 
     public class CreateResourceParam
     {
+        [JsonProperty("code")]
         public string Code { get; set; }
+        [JsonProperty("type")]
         public ResourceType Type { get; set; }
-
+        [JsonProperty("description")]
         public string? Description { get; set; }
+        [JsonProperty("actions")]
         public  ResourceAction [] Actions { get; set; }
-
+        [JsonProperty("namespace")]
         public string NameSpace { get; set; }
     }
+
+    public class UpdateResourceParam
+    {
+        [JsonProperty("type")]
+        public ResourceType Type { get; set; }
+        [JsonProperty("description")]
+        public string? Description { get; set; }
+        [JsonProperty("actions")]
+        public ResourceAction[] Actions { get; set; }
+        [JsonProperty("namespace")]
+        public string NameSpace { get; set; }
+    }
+
+    public class AppAccessPolicyQueryFilter
+    {
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
+        public string AppId { get; set; }
+    }
+
+    // public class ApplicationAccessPolicies
+    // {
+        
+    // }
+
 }

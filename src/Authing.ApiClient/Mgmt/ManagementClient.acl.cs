@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
+using Newtonsoft.Json;
+using Authing.ApiClient.Extensions;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -207,14 +209,14 @@ namespace Authing.ApiClient.Mgmt
                 }).GetJsonAsync<Resources?>(cancellation);
                 return res;
             }
-        
+
             public async Task<ListResourcesRes> GetResources(ResourceQueryFilter resourceQueryFilter, CancellationToken cancellationToken = default)
             {
                 var res = await ListResources(resourceQueryFilter);
                 return res;
             }
 
-            public async Task<object> CreateResource(CreateResourceParam createResourceParam, CancellationToken cancellationToken = default)
+            public async Task<Resources> CreateResource(CreateResourceParam createResourceParam, CancellationToken cancellationToken = default)
             {
                 if (createResourceParam.Code == null)
                 {
@@ -228,7 +230,35 @@ namespace Authing.ApiClient.Mgmt
                 {
                     throw new Exception("请传入权限分组标识符");
                 }
-                var res = await client.Host.AppendPathSegment("api/v2/resources").WithOAuthBearerToken(client.Token).PostAsync(createResourceParam, cancellationToken);
+                var res = await client.Host.AppendPathSegment("api/v2/resources").WithOAuthBearerToken(client.Token).PostJsonAsync(createResourceParam.ConvertJson(), cancellationToken).ReceiveJson<Resources>();
+                return res;
+            }
+
+       
+            public async Task<Resources> UpdateResource(string code, UpdateResourceParam updateResourceParam, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resources/{code}").PostJsonAsync(updateResourceParam.ConvertJson(), cancellationToken).ReceiveJson<Resources>();
+                return res;
+            }
+
+            public async Task<bool> DeleteResource(string code, string nameSpace, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resources/{code}").SetQueryParam("namespace", nameSpace).DeleteAsync(cancellationToken);
+                return true;
+            }
+
+            public async Task<object> GetApplicationAccessPolicies(AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            {
+                if (appAccessPolicyQueryFilter.AppId == null)
+                {
+                    throw new Exception("请传入 appId");
+                }
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appAccessPolicyQueryFilter.AppId}/authorization/records").SetQueryParams(new
+                {
+                    page = appAccessPolicyQueryFilter.Page,
+                    limit = appAccessPolicyQueryFilter.Limit
+                }).GetJsonAsync<object>(cancellationToken);
+                
             }
         }
     }
