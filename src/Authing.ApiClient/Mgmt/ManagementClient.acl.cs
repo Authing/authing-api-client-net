@@ -162,7 +162,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<ListResourcesRes> ListResources(ResourceQueryFilter resourceQueryFilter)
+            public async Task<ListResourcesRes> ListResources(ResourceQueryFilter resourceQueryFilter, CancellationToken cancellation = default)
             {
                 var res = await client.Host.AppendPathSegment("api/v2/resources").WithOAuthBearerToken(client.Token).SetQueryParams(
                     new Dictionary<string, object>
@@ -184,10 +184,30 @@ namespace Authing.ApiClient.Mgmt
                             resourceQueryFilter.Page
                         }
                     }
-                ).GetJsonAsync<ListResourcesRes>();
+                ).GetJsonAsync<ListResourcesRes>(cancellation);
                 return res;
             }
 
+            public async Task<Resources?> GetResourceById(string id, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/resources/detail").SetQueryParam("id", id).GetJsonAsync<Resources?>(cancellation);
+                return res;
+            }
+
+            public async Task<Resources?> GetResourceByCode(GetResourceByCodeParam getResourceByCodeParam, CancellationToken cancellation = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/resources/detail").SetQueryParams(new Dictionary<string, string>
+                {
+                    {
+                    "namespace", getResourceByCodeParam.NameSpace
+                    },
+                    {
+                        "code", getResourceByCodeParam.Code
+                    }
+                }).GetJsonAsync<Resources?>(cancellation);
+                return res;
+            }
+        
         }
     }
 }
