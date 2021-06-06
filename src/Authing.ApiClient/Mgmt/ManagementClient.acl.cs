@@ -208,6 +208,28 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
         
+            public async Task<ListResourcesRes> GetResources(ResourceQueryFilter resourceQueryFilter, CancellationToken cancellationToken = default)
+            {
+                var res = await ListResources(resourceQueryFilter);
+                return res;
+            }
+
+            public async Task<object> CreateResource(CreateResourceParam createResourceParam, CancellationToken cancellationToken = default)
+            {
+                if (createResourceParam.Code == null)
+                {
+                    throw new Exception("请为资源设定一个资源标识符");
+                }
+                if (createResourceParam.Actions?.Length < 1)
+                {
+                    throw new Exception("请至少定义一个资源操作");
+                }
+                if (createResourceParam.NameSpace == null)
+                {
+                    throw new Exception("请传入权限分组标识符");
+                }
+                var res = await client.Host.AppendPathSegment("api/v2/resources").WithOAuthBearerToken(client.Token).PostAsync(createResourceParam, cancellationToken);
+            }
         }
     }
 }

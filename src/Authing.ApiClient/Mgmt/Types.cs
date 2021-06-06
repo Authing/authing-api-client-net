@@ -430,4 +430,15 @@ namespace Authing.ApiClient.Management.Types {
         public string NameSpace { get; set; }
         public string Code { get; set; }
     }
+
+    public class CreateResourceParam
+    {
+        public string Code { get; set; }
+        public ResourceType Type { get; set; }
+
+        public string? Description { get; set; }
+        public  ResourceAction [] Actions { get; set; }
+
+        public string NameSpace { get; set; }
+    }
 }
