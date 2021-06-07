@@ -1,9 +1,12 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Types;
+using Authing.ApiClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -20,7 +23,7 @@ namespace Authing.ApiClient.Mgmt
         public class RolesManagementClient
         {
             private readonly ManagementClient client;
-            
+
             /// <summary>
             /// 构造方法
             /// </summary>
@@ -28,24 +31,6 @@ namespace Authing.ApiClient.Mgmt
             public RolesManagementClient(ManagementClient client)
             {
                 this.client = client;
-            }
-
-            /// <summary>
-            /// 获取用户池角色列表
-            /// </summary>
-            /// <param name="page">分页页数，默认为 1</param>
-            /// <param name="limit">分页大小，默认为 10</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<PaginatedRoles> List(
-                int page = 1,
-                int limit = 10,
-                CancellationToken cancellationToken = default)
-            {
-                var param = new RolesParam() { Page = page, Limit = limit };
-                await client.GetAccessToken();
-                var res = await client.Request<RolesResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
             }
 
             /// <summary>
@@ -67,24 +52,65 @@ namespace Authing.ApiClient.Mgmt
                     Description = description,
                     Parent = parentCode,
                 };
-                await client.GetAccessToken();
                 var res = await client.Request<CreateRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
             /// <summary>
-            /// 获取角色详情
+            /// 删除角色
             /// </summary>
             /// <param name="code">角色唯一标志</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<Role> Detail(
+            public async Task<CommonMessage> Delete(
                 string code,
                 CancellationToken cancellationToken = default)
             {
-                var param = new RoleParam(code);
+                var param = new DeleteRoleParam(code);
                 await client.GetAccessToken();
-                var res = await client.Request<RoleResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<DeleteRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<CommonMessage> Delete(
+                string code,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteRoleParam(code)
+                {
+                    Namespace = nameSpace
+                };
+                var res = await client.Request<DeleteRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 批量删除角色
+            /// </summary>
+            /// <param name="codeList">角色 code 列表</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> DeleteMany(
+                IEnumerable<string> codeList,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteRolesParam(codeList);
+                await client.GetAccessToken();
+                var res = await client.Request<DeleteRolesResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<CommonMessage> DeleteMany(
+                IEnumerable<string> codeList,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteRolesParam(codeList)
+                {
+                    Namespace = nameSpace
+                };
+                var res = await client.Request<DeleteRolesResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
@@ -112,37 +138,92 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<Role> Update(
+                string code,
+                UpdateRoleOptions updateRoleOptions,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new UpdateRoleParam(code)
+                {
+                    Description = updateRoleOptions.Description,
+                    NewCode = updateRoleOptions.NewCode,
+                };
+                var res = await client.Request<UpdateRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+
             /// <summary>
-            /// 删除角色
+            /// 获取角色详情
             /// </summary>
             /// <param name="code">角色唯一标志</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<CommonMessage> Delete(
+            public async Task<Role> Detail(
                 string code,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteRoleParam(code);
+                var param = new RoleParam(code);
                 await client.GetAccessToken();
-                var res = await client.Request<DeleteRoleResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<RoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
-            /// <summary>
-            /// 批量删除角色
-            /// </summary>
-            /// <param name="codeList">角色 code 列表</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<CommonMessage> DeleteMany(
-                IEnumerable<string> codeList,
+            public async Task<Role> Detail(
+                string code,
+                string nameSpace = null,
                 CancellationToken cancellationToken = default)
             {
-                var param = new DeleteRolesParam(codeList);
-                await client.GetAccessToken();
-                var res = await client.Request<DeleteRolesResponse>(param.CreateRequest(), cancellationToken);
+                var param = new RoleParam(code)
+                {
+                    Namespace = nameSpace
+                };
+                var res = await client.Request<RoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
-            } 
+            }
+
+            public async Task<Role> FindByCode(
+                string code,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await Detail(code, nameSpace, cancellationToken);
+                return res;
+            }
+
+            /// <summary>
+            /// 获取用户池角色列表
+            /// </summary>
+            /// <param name="page">分页页数，默认为 1</param>
+            /// <param name="limit">分页大小，默认为 10</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<PaginatedRoles> List(
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RolesParam() { Page = page, Limit = limit };
+                await client.GetAccessToken();
+                var res = await client.Request<RolesResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<PaginatedRoles> List(
+                string nameSpace,
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RolesParam()
+                {
+                    Page = page,
+                    Limit = limit,
+                    Namespace = nameSpace
+                };
+                var res = await client.Request<RolesResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
 
             /// <summary>
             /// 获取用户列表
@@ -160,6 +241,36 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result.Users;
             }
 
+            public async Task<PaginatedUsers> ListUsers(
+                string code,
+                ListUsersOption listUsersOption,
+                CancellationToken cancellationToken = default)
+            {
+                if (!listUsersOption.WithCustomData)
+                {
+                    var _param = new RoleWithUsersParam(code)
+                    {
+                        Code = code,
+                        Limit = listUsersOption.Limit,
+                        Page = listUsersOption.Page,
+                        Namespace = listUsersOption.NameSpace
+                    };
+                    var _res = await client.Request<RoleWithUsersResponse>(_param.CreateRequest(), cancellationToken);
+                    return _res.Result.Users;
+                } else 
+                {
+                    var _param = new RoleWithUsersWithCustomDataParam(code)
+                    {
+                        Code = code,
+                        Namespace = listUsersOption.NameSpace,
+                        Page = listUsersOption.Page,
+                        Limit = listUsersOption.Limit
+                    };
+                    var _res = await client.Request<RoleWithUsersWithCustomDataResponse>(_param.CreateRequest(), cancellationToken);
+                    return _res.Result.Users;
+                }
+            }
+
             /// <summary>
             /// 批量添加用户到角色
             /// </summary>
@@ -172,11 +283,28 @@ namespace Authing.ApiClient.Mgmt
                 IEnumerable<string> userIds,
                 CancellationToken cancellationToken = default)
             {
-                var param = new AssignRoleParam() {
+                var param = new AssignRoleParam()
+                {
                     UserIds = userIds,
                     RoleCode = code
                 };
                 await client.GetAccessToken();
+                var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<CommonMessage> AddUsers(
+                string code,
+                IEnumerable<string> userIds,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new AssignRoleParam()
+                {
+                    UserIds = userIds,
+                    RoleCode = code,
+                    Namespace = nameSpace
+                };
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -203,6 +331,22 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<CommonMessage> RemoveUsers(
+                string code,
+                IEnumerable<string> userIds,
+                string nameSpace = null,
+                CancellationToken cancellationToken = default)
+            {
+                var param = new RevokeRoleParam()
+                {
+                    UserIds = userIds,
+                    RoleCode = code,
+                    Namespace = nameSpace,
+                };
+                var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
             /// <summary>
             /// 获取策略列表
             /// </summary>
@@ -224,7 +368,6 @@ namespace Authing.ApiClient.Mgmt
                     Page = page,
                     Limit = limit,
                 };
-                await client.GetAccessToken();
                 var res = await client.Request<PolicyAssignmentsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -266,10 +409,42 @@ namespace Authing.ApiClient.Mgmt
                 {
                     TargetIdentifiers = new string[] { code },
                 };
-                await client.GetAccessToken();
                 var res = await client.Request<RemovePolicyAssignmentsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
+            public async Task<object> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType, CancellationToken cancellationToken = default)
+            {
+                var param = new ListRoleAuthorizedResourcesParam(code)
+                {
+                    ResourceType = resourceType.ToString().ToUpper(),
+                    Namespace = nameSpace,
+                };
+                var res = await client.Request<ListRoleAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                if (res.Result == null)
+                {
+                    throw new Exception("角色不存在");
+                }
+                return res.Result;
+            }
+
+            public async Task<List<KeyValuePair<string, object>>> GetUdfValue(string roleId, CancellationToken cancellationToken = default)
+            {
+                var param = new UdvParam(UdfTargetType.ROLE, roleId);
+                var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+                return AuthingUtils.ConverUdvToKeyValuePair(res.Result);
+            }
+
+            public async Task<KeyValuePair<string, object>> GetSpecificUdfValue(string roleId, string udfKey, CancellationToken cancellationToken = default)
+            {
+                var param = new UdvParam(UdfTargetType.ROLE, roleId);
+                var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+                var udfList = AuthingUtils.ConverUdvToKeyValuePair(res.Result);
+                var keyValuePair = udfList.Where(item => item.Key == udfKey).ToList();
+                return keyValuePair[0];
+            }
+
+
         }
     }
 }

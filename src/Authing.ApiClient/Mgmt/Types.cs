@@ -623,4 +623,21 @@ namespace Authing.ApiClient.Management.Types {
         public Application [] List { get; set; }
     }
 
+    public class UpdateRoleOptions
+    {
+        public string Description { get; set; }
+        public string NewCode { get; set; }
+
+        public string NameSpace { get; set; }
+    }
+
+    public class ListUsersOption
+    {
+        public string NameSpace { get; set; }
+        public bool WithCustomData { get; set; }
+
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
+    }
+
 }
