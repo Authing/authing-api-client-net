@@ -80,7 +80,11 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
+            public async Task<bool> DeleteResource(string  appId,string code, CancellationToken cancellationToken = default)
+            {
+                var res = await aclManagementClient.DeleteResource(code, appId, cancellationToken);
+                return res;
+            }
 
         }
     }
