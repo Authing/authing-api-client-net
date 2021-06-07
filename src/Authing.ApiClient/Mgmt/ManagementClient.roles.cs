@@ -416,7 +416,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType, CancellationToken cancellationToken = default)
+            public async Task<Role> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType, CancellationToken cancellationToken = default)
             {
                 var param = new ListRoleAuthorizedResourcesParam(code)
                 {

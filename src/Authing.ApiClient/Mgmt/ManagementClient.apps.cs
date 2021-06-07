@@ -230,7 +230,14 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
+            public async Task<Role> ListAuthorizedResourcesByRole(string appId,
+                string code,
+                ResourceType resourceType = default,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.ListAuthorizedResources(code, appId, resourceType, cancellationToken);
+                return res;
+            }
 
         }
     }
