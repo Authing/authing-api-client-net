@@ -40,7 +40,17 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
+            public async Task<Application> Create(string name, string identifier, string redirectUris, string logo = null, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/applications").WithOAuthBearerToken(client.Token).PostJsonAsync(new
+                {
+                    name,
+                    identifier,
+                    redirectUris,
+                    logo
+                }, cancellationToken).ReceiveJson<Application>();
+                return res;
+            }
 
         }
     }
