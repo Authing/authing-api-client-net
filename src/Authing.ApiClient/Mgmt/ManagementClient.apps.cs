@@ -83,13 +83,13 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<bool> DeleteResource(string  appId,string code, CancellationToken cancellationToken = default)
+            public async Task<bool> DeleteResource(string appId, string code, CancellationToken cancellationToken = default)
             {
                 var res = await aclManagementClient.DeleteResource(code, appId, cancellationToken);
                 return res;
             }
 
-            public async Task<ApplicationAccessPolicies> GetAccessPolicies(string appId,AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            public async Task<ApplicationAccessPolicies> GetAccessPolicies(string appId, AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
             {
                 appAccessPolicyQueryFilter.AppId = appId;
                 var res = await aclManagementClient.GetAccessPolicies(appAccessPolicyQueryFilter, cancellationToken);
@@ -104,7 +104,7 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<CommonMessage> DisableAccessPolicy(string appId,AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
+            public async Task<CommonMessage> DisableAccessPolicy(string appId, AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
             {
                 appAccessPolicy.AppId = appId;
                 appAccessPolicy.NameSpace = appId;
@@ -139,7 +139,7 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<PublicApplication> UpdateDefaultAccessPolicy(string appId,UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
+            public async Task<PublicApplication> UpdateDefaultAccessPolicy(string appId, UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
             {
                 updateDefaultApplicationAccessPolicyParam.AppId = appId;
                 var res = await aclManagementClient.UpdateDefaultAccessPolicy(updateDefaultApplicationAccessPolicyParam, cancellationToken);
@@ -174,8 +174,25 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
-            
+            public async Task<Role> UpdateRole(
+                string appId,
+                UpdateRoleOptions updateRoleOptions,
+                CancellationToken cancellationToken = default)
+            {
+                updateRoleOptions.NameSpace = appId;
+                var res = await rolesManagementClient.Update(updateRoleOptions.Code, updateRoleOptions, cancellationToken);
+                return res;
+            }
+
+            public async Task<Role> FindRole(
+                string appId,
+                string code,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.Detail(code, appId, cancellationToken);
+                return res;
+            }
+
         }
     }
 }

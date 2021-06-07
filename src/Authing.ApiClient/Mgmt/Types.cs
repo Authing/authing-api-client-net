@@ -625,6 +625,7 @@ namespace Authing.ApiClient.Management.Types {
 
     public class UpdateRoleOptions
     {
+        public string Code { get; set; }
         public string Description { get; set; }
         public string NewCode { get; set; }
 
