@@ -640,4 +640,10 @@ namespace Authing.ApiClient.Management.Types {
         public int Limit { get; set; } = 10;
     }
 
+    public class SetUdfValueParam
+    {
+        public string RoleId { get; set; }
+        public KeyValueDictionary UdvList { get; set; }
+    }
+
 }

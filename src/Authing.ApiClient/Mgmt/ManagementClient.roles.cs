@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Extensions;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -257,7 +259,8 @@ namespace Authing.ApiClient.Mgmt
                     };
                     var _res = await client.Request<RoleWithUsersResponse>(_param.CreateRequest(), cancellationToken);
                     return _res.Result.Users;
-                } else 
+                }
+                else
                 {
                     var _param = new RoleWithUsersWithCustomDataParam(code)
                     {
@@ -454,6 +457,48 @@ namespace Authing.ApiClient.Mgmt
                         dic.Add(item.TargetId, AuthingUtils.ConverUdvToKeyValuePair(item.Data))
                 );
                 return dic;
+            }
+
+            public async void SetUdfValue(SetUdfValueParam setUdfValueParam, CancellationToken cancellationToken = default)
+            {
+                if (setUdfValueParam.UdvList?.Count < 1)
+                {
+                    throw new Exception("empty udf value list");
+                }
+                var _udvList = new List<UserDefinedDataInput>();
+                setUdfValueParam.UdvList.ToList().ForEach(udv => _udvList.Add(
+                new UserDefinedDataInput(udv.Key)
+                {
+                    Value =  udv.Value.ConvertJson()
+                }));
+                var param = new SetUdvBatchParam(UdfTargetType.ROLE, setUdfValueParam.RoleId)
+                {
+                    UdvList = _udvList
+                };
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellationToken);
+
+                //TODO: 缺少返回值
+            }
+
+            public async void setUdfValueBatch(string roleId, KeyValueDictionary udvList, CancellationToken cancellationToken = default)
+            {
+                if (udvList.Count < 1)
+                {
+                    throw new Exception("empty udf value list");
+                }
+                var _udvList = new List<UserDefinedDataInput>();
+                udvList.ToList().ForEach(udv => _udvList.Add(
+                new UserDefinedDataInput(udv.Key)
+                {
+                    Value = udv.Value.ConvertJson()
+                }));
+                var param = new SetUdvBatchParam(UdfTargetType.ROLE, roleId)
+                {
+                    UdvList = _udvList
+                };
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellationToken);
+
+                //TODO: 缺少返回值
             }
 
         }
