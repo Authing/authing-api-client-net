@@ -248,7 +248,7 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
-            public async Task<ApplicationAccessPolicies> GetApplicationAccessPolicies(AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            public async Task<ApplicationAccessPolicies> GetAccessPolicies(AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
             {
                 if (appAccessPolicyQueryFilter.AppId == null)
                 {
@@ -262,7 +262,7 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<CommonMessage> EnableApplicationAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
+            public async Task<CommonMessage> EnableAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
             {
                 if (appAccessPolicy.AppId == null)
                 {
@@ -286,7 +286,7 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public async Task<CommonMessage> DisableApplicationAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
+            public async Task<CommonMessage> DisableAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
             {
                 if (appAccessPolicy.AppId == null)
                 {
@@ -310,7 +310,7 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public async Task<CommonMessage> DeleteApplicationAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
+            public async Task<CommonMessage> DeleteAccessPolicy(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
             )
             {
                 if (appAccessPolicy.AppId == null)
@@ -335,7 +335,7 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public async Task<CommonMessage> AllowAccessApplication(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
+            public async Task<CommonMessage> AllowAccess(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
             )
             {
                 if (appAccessPolicy.AppId == null)
@@ -360,7 +360,7 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public async Task<CommonMessage> DenyAccessApplication(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
+            public async Task<CommonMessage> DenyAccess(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
             )
             {
                 if (appAccessPolicy.AppId == null)
@@ -385,7 +385,7 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            public async Task<PublicApplication> UpdateDefaultApplicationAccessPolicy(UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
+            public async Task<PublicApplication> UpdateDefaultAccessPolicy(UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
             {
                 if (updateDefaultApplicationAccessPolicyParam.AppId == null)
                 {

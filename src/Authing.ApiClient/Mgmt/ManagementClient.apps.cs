@@ -86,14 +86,22 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<ApplicationAccessPolicies> GetApplicationAccessPolicies(string appId,AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            public async Task<ApplicationAccessPolicies> GetAccessPolicies(string appId,AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
             {
                 appAccessPolicyQueryFilter.AppId = appId;
-                var res = await aclManagementClient.GetApplicationAccessPolicies(appAccessPolicyQueryFilter, cancellationToken);
+                var res = await aclManagementClient.GetAccessPolicies(appAccessPolicyQueryFilter, cancellationToken);
                 return res;
             }
 
-            
+            public async Task<CommonMessage> EnableAccessPolicy(string appId, AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default)
+            {
+                appAccessPolicy.NameSpace = appId;
+                appAccessPolicy.AppId = appId;
+                var res = await aclManagementClient.EnableAccessPolicy(appAccessPolicy, cancellationToken);
+                return res;
+            }
+
+
         }
     }
 }
