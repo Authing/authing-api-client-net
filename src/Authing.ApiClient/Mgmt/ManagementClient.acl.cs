@@ -466,7 +466,15 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
+            public async Task<Namespaces> ListNamespaces(int page = 1, int limit = 10, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.Options.UserPoolId}").SetQueryParams(new
+                {
+                    page,
+                    limit
+                }).WithOAuthBearerToken(client.Token).GetJsonAsync<Namespaces>(cancellationToken);
+                return res;
+            }
 
         }
     }

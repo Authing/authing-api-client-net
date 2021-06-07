@@ -592,4 +592,22 @@ namespace Authing.ApiClient.Management.Types {
         public int TokenLifetime { get; set; } = 600;
     }
 
+    public class Namespaces
+    {
+        public int Total { get; set; }
+
+        public NameSpace [] List { get; set; }
+    }
+
+    public class NameSpace
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public string Description { get; set; }
+        public int Status { get; set; }
+        public string AppId { get; set; }
+        public string AppName { get; set; }
+    }
+
 }
