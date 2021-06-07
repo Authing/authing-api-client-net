@@ -247,7 +247,7 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
-            public async Task<object> GetApplicationAccessPolicies(AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            public async Task<ApplicationAccessPolicies> GetApplicationAccessPolicies(AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
             {
                 if (appAccessPolicyQueryFilter.AppId == null)
                 {
@@ -257,9 +257,11 @@ namespace Authing.ApiClient.Mgmt
                 {
                     page = appAccessPolicyQueryFilter.Page,
                     limit = appAccessPolicyQueryFilter.Limit
-                }).GetJsonAsync<object>(cancellationToken);
-                
+                }).GetJsonAsync<ApplicationAccessPolicies>(cancellationToken);
+                return res;
             }
+
+            
         }
     }
 }

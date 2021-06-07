@@ -465,9 +465,11 @@ namespace Authing.ApiClient.Management.Types {
         public string AppId { get; set; }
     }
 
-    // public class ApplicationAccessPolicies
-    // {
-        
-    // }
+    public class ApplicationAccessPolicies
+    {
+        public int TotalCount { get; set; }
+
+        public Policy [] List { get; set; }
+    }
 
 }
