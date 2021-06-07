@@ -121,7 +121,14 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<IEnumerable<Node>> ListChildren(string nodeId, CancellationToken cancellationToken = default)
+            {
+                var param = new ChildrenNodesParam(nodeId);
+                var res = await client.Request<ChildrenNodesResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
 
+            
 
         }
     }
