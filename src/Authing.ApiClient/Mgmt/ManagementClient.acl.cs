@@ -9,6 +9,7 @@ using Flurl;
 using Flurl.Http;
 using Newtonsoft.Json;
 using Authing.ApiClient.Extensions;
+using Authing.ApiClient.Utils
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -425,7 +426,25 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
-            
+            public async Task<ProgrammaticAccessAccount> RefreshProgrammaticAccessAccountSecret(
+                string programmaticAccessAccountId,
+                string programmaticAccessAccountSecret = null,
+                CancellationToken cancellationToken = default
+            )
+            {
+                if (programmaticAccessAccountSecret == null)
+                {
+                    programmaticAccessAccountSecret = AuthingUtils.GenerateRandomString(32);
+                }
+                var res = await client.Host.AppendPathSegment("api/v2/applications/programmatic-access-accounts").WithOAuthBearerToken(client.Token).PatchJsonAsync(
+                    new
+                    {
+                        id = programmaticAccessAccountId,
+                        secret = programmaticAccessAccountSecret
+                    }
+                ).ReceiveJson<ProgrammaticAccessAccount>();
+                return res;
+            }
 
         }
     }
