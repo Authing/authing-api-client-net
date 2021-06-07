@@ -441,8 +441,18 @@ namespace Authing.ApiClient.Mgmt
                     {
                         id = programmaticAccessAccountId,
                         secret = programmaticAccessAccountSecret
-                    }
+                    },
+                    cancellationToken
                 ).ReceiveJson<ProgrammaticAccessAccount>();
+                return res;
+            }
+
+            public async Task<ProgrammaticAccessAccount> EnableProgrammaticAccessAccount(string programmaticAccessAccountId, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/applications/programmatic-access-accounts").WithOAuthBearerToken(client.Token).PatchJsonAsync(new {
+                    id = programmaticAccessAccountId,
+                    enabled = true,
+                }, cancellationToken).ReceiveJson<ProgrammaticAccessAccount>();
                 return res;
             }
 
