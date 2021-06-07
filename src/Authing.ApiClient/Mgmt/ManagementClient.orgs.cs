@@ -157,6 +157,18 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
+            public async Task<Node> ListMembers(string nodeId,  NodeByIdWithMembersParam nodeByIdWithMembersParam, CancellationToken cancellationToken = default)
+            {
+                nodeByIdWithMembersParam.Id = nodeId;
+                var res = await client.Request<NodeByIdWithMembersResponse>(nodeByIdWithMembersParam.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<object> RemoveMembers()
+            {
+                
+            }
+
         }
     }
 }
