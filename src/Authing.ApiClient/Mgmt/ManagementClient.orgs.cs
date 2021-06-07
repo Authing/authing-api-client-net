@@ -214,6 +214,25 @@ namespace Authing.ApiClient.Mgmt
                 return node.AuthorizedResources;
             }
 
+            public async Task<object> ListAuthorizedResourcesByNodeCode(string orgId, string code, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            {
+                var param = new ListNodeByCodeAuthorizedResourcesParam(orgId, code)
+                {
+                    Namespace = nameSpace,
+                    ResourceType = resourceType.ToString().ToUpper()
+                };
+                var res = await client.Request<ListNodeByCodeAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                var node = res.Result;
+                if (node == null)
+                {
+                    throw new Exception("组织机构节点不存在");
+                }
+                return node.AuthorizedResources;
+            }
+
+            
+
+
         }
     }
 }
