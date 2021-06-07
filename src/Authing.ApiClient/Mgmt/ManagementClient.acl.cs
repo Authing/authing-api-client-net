@@ -384,6 +384,29 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
+            public async Task<PublicApplication> UpdateDefaultApplicationAccessPolicy(UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
+            {
+                if (updateDefaultApplicationAccessPolicyParam.AppId == null)
+                {
+                    throw new Exception("请传入 appId");
+                }
+
+                if (updateDefaultApplicationAccessPolicyParam.DefaultStrategy == default)
+                {
+                    throw new Exception("请传入默认策略，可选值为 ALLOW_ALL、DENY_ALL，含义为默认允许所有用户登录应用、默认拒绝所有用户登录应用");
+                }
+
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{updateDefaultApplicationAccessPolicyParam.AppId}").WithOAuthBearerToken(client.Token).PostJsonAsync(new
+                {
+                    permissionStrategy = new
+                    {
+                        defaultStrategy = updateDefaultApplicationAccessPolicyParam.DefaultStrategy.ToString()?.ToUpper()
+                    }
+                }).ReceiveJson<PublicApplication>();
+
+                return res;
+            }
+
             
 
         }
