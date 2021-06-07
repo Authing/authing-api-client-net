@@ -82,6 +82,22 @@ namespace Authing.ApiClient.Mgmt
                 var res = await client.Request<NodeByCodeResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
+            public async Task<Node> UpdateNode(string orgId, UpdateNodeParam updateNodeParam, CancellationToken cancellationToken = default)
+            {
+                updateNodeParam.Id = orgId;
+                var res = await client.Request<UpdateNodeResponse>(updateNodeParam.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<object> FindById(string id, CancellationToken cancellationToken = default)
+            {
+                var param = new OrgParam(id);
+                var res = client.Request<OrgResponse>(param.CreateRequest(), cancellationToken);
+                // TODO: buildTree(res)
+                return res;
+            }
+
             
 
         }
