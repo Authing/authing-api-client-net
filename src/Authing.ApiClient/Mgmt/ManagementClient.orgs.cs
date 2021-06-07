@@ -106,7 +106,18 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> 
+            public async Task<CommonMessage> MoveNode(string orgId, string nodeId, string targetParentId, CancellationToken cancellationToken = default)
+            {
+                var param = new MoveNodeParam(orgId, nodeId, targetParentId);
+                var res = await client.Request<MoveMembersResponse>(param.CreateRequest(), cancellationToken);
+                // TODO: build tree
+                return res.Result;
+            }
+
+            public async Task<object> IsRootNode()
+            {
+                
+            }
 
         }
     }
