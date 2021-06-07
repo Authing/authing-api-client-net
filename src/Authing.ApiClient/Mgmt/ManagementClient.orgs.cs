@@ -90,15 +90,23 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> FindById(string id, CancellationToken cancellationToken = default)
+            public async Task<Types.Org> FindById(string id, CancellationToken cancellationToken = default)
             {
                 var param = new OrgParam(id);
-                var res = client.Request<OrgResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<OrgResponse>(param.CreateRequest(), cancellationToken);
                 // TODO: buildTree(res)
-                return res;
+                return res.Result;
             }
 
-            
+            public async Task<CommonMessage> DeleteNode(string orgId,
+            string nodeId, CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteNodeParam(orgId, nodeId);
+                var res = await client.Request<DeleteNodeResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<object> 
 
         }
     }
