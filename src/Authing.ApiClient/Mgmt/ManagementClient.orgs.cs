@@ -49,6 +49,17 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<PaginatedOrgs> List(int page = 1, int limit = 10, CancellationToken cancellationToken = default)
+            {
+                var param = new OrgsParam()
+                {
+                    Limit = limit,
+                    Page = page
+                };
+                var res = await client.Request<OrgsResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
             
 
             
