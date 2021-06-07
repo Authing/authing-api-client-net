@@ -493,8 +493,16 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-
-
+            public async Task<NameSpace> UpdateNamespace(string code, UpdateNamespaceParam updateNamespaceParam, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.UserPoolId}/code/{code}").WithOAuthBearerToken(client.Token).PutJsonAsync(new
+                {
+                    name = updateNamespaceParam.Name,
+                    code = updateNamespaceParam.Code,
+                    description = updateNamespaceParam.Description
+                }, cancellationToken).ReceiveJson<NameSpace>();
+                return res;
+            }
         }
     }
 }
