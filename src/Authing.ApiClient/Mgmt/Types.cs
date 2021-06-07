@@ -647,5 +647,12 @@ namespace Authing.ApiClient.Management.Types {
         public KeyValueDictionary UdvList { get; set; }
     }
 
+    public enum ProviderTypeEnum
+    {
+        DINGTALK,
+        WECHATWORK,
+        AD,
+
+    }
 
 }

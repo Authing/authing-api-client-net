@@ -21,7 +21,7 @@ namespace Authing.ApiClient.Mgmt
         public class OrgManagementClient
         {
             private readonly ManagementClient client;
-            
+
 
             /// <summary>
             /// 构造方法
@@ -151,13 +151,13 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> MoveMembers(MoveMembersParam moveMembersParam,CancellationToken cancellationToken = default)
+            public async Task<object> MoveMembers(MoveMembersParam moveMembersParam, CancellationToken cancellationToken = default)
             {
                 var res = await client.Request<MoveMembersResponse>(moveMembersParam.CreateRequest(), cancellationToken);
                 return true;
             }
 
-            public async Task<Node> ListMembers(string nodeId,  NodeByIdWithMembersParam nodeByIdWithMembersParam, CancellationToken cancellationToken = default)
+            public async Task<Node> ListMembers(string nodeId, NodeByIdWithMembersParam nodeByIdWithMembersParam, CancellationToken cancellationToken = default)
             {
                 nodeByIdWithMembersParam.Id = nodeId;
                 var res = await client.Request<NodeByIdWithMembersResponse>(nodeByIdWithMembersParam.CreateRequest(), cancellationToken);
@@ -230,9 +230,39 @@ namespace Authing.ApiClient.Mgmt
                 return node.AuthorizedResources;
             }
 
-            
+            public async Task<object> StartSync(ProviderTypeEnum providerTypeEnum, string adConnectorId = null, CancellationToken cancellationToken = default)
+            {
+                var body = new
+                {
+                    connectionId = adConnectorId
+                };
+                var path = providerTypeEnum switch
+                {
+                    ProviderTypeEnum.WECHATWORK => "connections/enterprise/wechatwork/start-sync",
+                    ProviderTypeEnum.DINGTALK => "connections/enterprise/dingtalk/start-sync",
+                    ProviderTypeEnum.AD => "api/v2/ad/sync",
+                    _ => throw new Exception("请检查输入参数providerTypeEnum")
+                };
+                if (body.connectionId == null && providerTypeEnum == ProviderTypeEnum.AD)
+                {
+                    throw new Exception("must provider adConnectorId");
+                }
+                // TODO: 记得加类型
+                var res = await client.Host.AppendPathSegment(path).WithOAuthBearerToken(client.Token).PostJsonAsync(body, cancellationToken).ReceiveJson<object>();
+                return res;
+            }
 
+            public async Task<IEnumerable<Node>> SearchNodes(string keyword, CancellationToken cancellationToken = default)
+            {
+                var param = new SearchNodesParam(keyword);
+                var res = await client.Request<SearchNodesResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
 
         }
     }
+
+
+}
+}
 }
