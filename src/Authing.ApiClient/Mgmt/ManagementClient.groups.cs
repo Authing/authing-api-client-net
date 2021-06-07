@@ -1,6 +1,8 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,40 +33,17 @@ namespace Authing.ApiClient.Mgmt
             }
 
             /// <summary>
-            /// 获取分组列表
-            /// </summary>
-            /// <param name="page">分页页数，默认为 1</param>
-            /// <param name="limit">分页大小，默认为 10</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
-            public async Task<PaginatedGroups> List(
-                int page = 1, 
-                int limit = 10, 
-                CancellationToken cancellationToken = default)
-            {
-                var param = new GroupsParam()
-                {
-                    Page = page,
-                    Limit = limit,
-                };
-
-                await client.GetAccessToken();
-                var res = await client.Request<GroupsResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
-            }
-
-            /// <summary>
             /// 创建分组
             /// </summary>
             /// <param name="code">分组唯一标志</param>
             /// <param name="name">分组名称</param>
-            /// <param name="description">m描述</param>
+            /// <param name="description">描述</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
             public async Task<Group> Create(
-                string code, 
-                string name, 
-                string description = null, 
+                string code,
+                string name,
+                string description = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new CreateGroupParam(code, name)
@@ -72,8 +51,21 @@ namespace Authing.ApiClient.Mgmt
                     Description = description,
                 };
 
-                await client.GetAccessToken();
                 var res = await client.Request<CreateGroupResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            /// <summary>
+            /// 删除分组
+            /// </summary>
+            /// <param name="code">分组唯一标志</param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            public async Task<CommonMessage> Delete(string code, CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteGroupsParam(new string[] { code });
+
+                var res = await client.Request<DeleteGroupsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
@@ -100,7 +92,6 @@ namespace Authing.ApiClient.Mgmt
                     NewCode = newCode,
                 };
 
-                await client.GetAccessToken();
                 var res = await client.Request<UpdateGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -115,25 +106,32 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new GroupParam(code);
 
-                await client.GetAccessToken();
                 var res = await client.Request<GroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
             /// <summary>
-            /// 删除分组
+            /// 获取分组列表
             /// </summary>
-            /// <param name="code">分组唯一标志</param>
+            /// <param name="page">分页页数，默认为 1</param>
+            /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<CommonMessage> Delete(string code, CancellationToken cancellationToken = default)
+            public async Task<PaginatedGroups> List(
+                int page = 1, 
+                int limit = 10, 
+                CancellationToken cancellationToken = default)
             {
-                var param = new DeleteGroupsParam(new string[] { code });
+                var param = new GroupsParam()
+                {
+                    Page = page,
+                    Limit = limit,
+                };
 
-                await client.GetAccessToken();
-                var res = await client.Request<DeleteGroupsResponse>(param.CreateRequest(), cancellationToken);
+                var res = await client.Request<GroupsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
 
             /// <summary>
             /// 批量删除分组
@@ -145,7 +143,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new DeleteGroupsParam(codeList);
 
-                await client.GetAccessToken();
                 var res = await client.Request<DeleteGroupsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -170,9 +167,39 @@ namespace Authing.ApiClient.Mgmt
                     Limit = limit,
                 };
 
-                await client.GetAccessToken();
                 var res = await client.Request<GroupWithUsersResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result.Users;
+            }
+
+            public async Task<PaginatedUsers> ListUsers(
+                string code,
+                ListUsersOption listUsersOption = null,
+                CancellationToken cancellationToken = default)
+            {
+                if (!listUsersOption.WithCustomData)
+                {
+                    var _param = new RoleWithUsersParam(code)
+                    {
+                        Code = code,
+                        Limit = listUsersOption?.Limit,
+                        Page = listUsersOption?.Page,
+                        Namespace = listUsersOption?.NameSpace
+                    };
+                    var _res = await client.Request<RoleWithUsersResponse>(_param.CreateRequest(), cancellationToken);
+                    return _res.Result.Users;
+                }
+                else
+                {
+                    var _param = new RoleWithUsersWithCustomDataParam(code)
+                    {
+                        Code = code,
+                        Namespace = listUsersOption?.NameSpace,
+                        Page = listUsersOption?.Page,
+                        Limit = listUsersOption?.Limit
+                    };
+                    var _res = await client.Request<RoleWithUsersWithCustomDataResponse>(_param.CreateRequest(), cancellationToken);
+                    return _res.Result.Users;
+                }
             }
 
             /// <summary>
@@ -192,7 +219,6 @@ namespace Authing.ApiClient.Mgmt
                     Code = code,
                 };
 
-                await client.GetAccessToken();
                 var res = await client.Request<AddUserToGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -214,10 +240,27 @@ namespace Authing.ApiClient.Mgmt
                     Code = code,
                 };
 
-                await client.GetAccessToken();
                 var res = await client.Request<RemoveUserFromGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            {
+                var param = new ListGroupAuthorizedResourcesParam(code)
+                {
+                    Namespace = nameSpace,
+                    ResourceType = resourceType.ToString().ToUpper(),
+                };
+                var res = await client.Request<ListGroupAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                var group = res.Result;
+                if (group == null)
+                {
+                    throw new Exception("分组不存在");
+                }
+                var authorizedResources = group.AuthorizedResources;
+                return authorizedResources;
+            }
+
         }
     }
 }

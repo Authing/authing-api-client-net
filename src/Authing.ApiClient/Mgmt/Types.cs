@@ -634,7 +634,7 @@ namespace Authing.ApiClient.Management.Types {
     public class ListUsersOption
     {
         public string NameSpace { get; set; }
-        public bool WithCustomData { get; set; }
+        public bool WithCustomData { get; set; } = false;
 
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
