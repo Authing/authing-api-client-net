@@ -42,6 +42,13 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<CommonMessage> DeleteById(string id, CancellationToken cancellationToken = default)
+            {
+                var param = new DeleteOrgParam(id);
+                var res = await client.Request<DeleteOrgResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
             
 
             
