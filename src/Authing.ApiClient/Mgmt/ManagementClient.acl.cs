@@ -476,6 +476,14 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<bool> DeleteNamespace(string code, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.UserPoolId}/code/${code}").DeleteAsync(cancellationToken);
+                return true;
+            }
+
+            
+
         }
     }
 }
