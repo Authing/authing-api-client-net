@@ -165,6 +165,15 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<CommonMessage> DeleteRoles(
+                string appId,
+                IEnumerable<string> codeList,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.DeleteMany(codeList, appId, cancellationToken);
+                return res;
+            }
+
             
             
         }
