@@ -22,6 +22,8 @@ namespace Authing.ApiClient.Mgmt
             private readonly ManagementClient client;
             private readonly AclManagementClient aclManagementClient;
 
+            private readonly RolesManagementClient rolesManagementClient;
+
             /// <summary>
             /// 构造方法
             /// </summary>
@@ -30,6 +32,7 @@ namespace Authing.ApiClient.Mgmt
             {
                 this.client = client;
                 this.aclManagementClient = client.Acl;
+                this.rolesManagementClient = client.Roles;
             }
 
             public async Task<object> List(int page = 1, int limit = 2, CancellationToken cancellationToken = default)
@@ -143,7 +146,17 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<Role> createRole(
+                string code,
+                string description = null,
+                string parentCode = null,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.Create(code, description, parentCode, cancellationToken);
+                return res;
+            }
 
+            
             
         }
     }
