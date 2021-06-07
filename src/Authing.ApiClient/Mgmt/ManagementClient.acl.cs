@@ -334,7 +334,30 @@ namespace Authing.ApiClient.Mgmt
                 };
             }
 
-            
+            public async Task<CommonMessage> AllowAccessApplication(AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
+            )
+            {
+                if (appAccessPolicy.AppId == null)
+                {
+                    throw new Exception("请传入 appId");
+                }
+                if (appAccessPolicy.TargetType == default)
+                {
+                    throw new Exception("请传入主体类型，可选值为 USER、ROLE、ORG、GROUP，含义为用户、角色、组织机构节点、用户分组");
+                }
+                if (appAccessPolicy.TartgetIdentifiers?.Length < 1)
+                {
+                    throw new Exception("请传入主体 id");
+                }
+
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appAccessPolicy.AppId}/authorization/allow").WithOAuthBearerToken(client.Token).PostJsonAsync(appAccessPolicy, cancellationToken);
+
+                return new CommonMessage
+                {
+                    Code = 200,
+                    Message = "允许主体访问应用的策略配置已生效"
+                };
+            }
         }
     }
 }
