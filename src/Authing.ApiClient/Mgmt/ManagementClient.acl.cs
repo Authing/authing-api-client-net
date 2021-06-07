@@ -456,6 +456,18 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<ProgrammaticAccessAccount> DisableProgrammaticAccessAccount(string programmaticAccessAccountId, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/applications/programmatic-access-accounts").WithOAuthBearerToken(client.Token).PatchJsonAsync(new
+                {
+                    id = programmaticAccessAccountId,
+                    enabled = false,
+                }, cancellationToken).ReceiveJson<ProgrammaticAccessAccount>();
+                return res;
+            }
+
+            
+
         }
     }
 }
