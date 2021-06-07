@@ -444,6 +444,17 @@ namespace Authing.ApiClient.Mgmt
                 return keyValuePair[0];
             }
 
+            public async Task<Dictionary<string, List<KeyValuePair<string, object>>>> GetUdfValueBatch(IEnumerable<string> roleIds, CancellationToken cancellationToken = default)
+            {
+                var param = new UdfValueBatchParam(UdfTargetType.ROLE, roleIds);
+                var res = await client.Request<UdfValueBatchResponse>(param.CreateRequest(), cancellationToken);
+                var dic = new Dictionary<string, List<KeyValuePair<string, object>>>();
+                res.Result.ToList().ForEach(
+                    item =>
+                        dic.Add(item.TargetId, AuthingUtils.ConverUdvToKeyValuePair(item.Data))
+                );
+                return dic;
+            }
 
         }
     }
