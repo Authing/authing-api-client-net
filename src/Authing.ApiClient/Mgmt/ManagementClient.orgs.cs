@@ -128,7 +128,12 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+            public async Task<Node> RootNode(string orgId, CancellationToken cancellationToken = default)
+            {
+                var param = new RootNodeParam(orgId);
+                var res = await client.Request<RootNodeResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
 
         }
     }
