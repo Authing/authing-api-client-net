@@ -86,6 +86,14 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<ApplicationAccessPolicies> GetApplicationAccessPolicies(string appId,AppAccessPolicyQueryFilter appAccessPolicyQueryFilter, CancellationToken cancellationToken = default)
+            {
+                appAccessPolicyQueryFilter.AppId = appId;
+                var res = await aclManagementClient.GetApplicationAccessPolicies(appAccessPolicyQueryFilter, cancellationToken);
+                return res;
+            }
+
+            
         }
     }
 }
