@@ -198,7 +198,21 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResourcesByNodeId(string nodeId, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            {
+                var param = new ListNodeByIdAuthorizedResourcesParam(nodeId)
+                {
+                    Namespace = nameSpace,
+                    ResourceType = resourceType.ToString().ToUpper()
+                };
+                var res = await client.Request<ListNodeByIdAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
+                var node = res.Result;
+                if (node == null)
+                {
+                    throw new Exception("组织机构节点不存在");
+                }
+                return node.AuthorizedResources;
+            }
 
         }
     }
