@@ -202,6 +202,34 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<PaginatedUsers> GetUsersByRoleCode(string appId,
+                string code,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.ListUsers(code, new ListUsersOption {
+                    NameSpace = appId
+                }, cancellationToken);
+                return res;
+            }
+
+            public async Task<CommonMessage> AddUsersToRole(string appId,
+                string code,
+                IEnumerable<string> userIds,  
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.AddUsers(code, userIds, appId, cancellationToken);
+                return res;
+            }
+
+            public async Task<CommonMessage> RemoveUsersFromRole(string appId,
+                string code,
+                IEnumerable<string> userIds,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.RemoveUsers(code, userIds, appId, cancellationToken);
+                return res;
+            }
+
             
 
         }
