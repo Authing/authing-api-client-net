@@ -419,6 +419,12 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<bool> DeleteProgrammaticAccessAccount(string programmaticAccessAccountId, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/programmatic-access-accounts?id={programmaticAccessAccountId}").WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken);
+                return true;
+            }
+
             
 
         }
