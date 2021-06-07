@@ -134,9 +134,17 @@ namespace Authing.ApiClient.Mgmt
                 appAccessPolicy.NameSpace = appId;
                 var res = await aclManagementClient.DenyAccess(appAccessPolicy, cancellationToken);
                 return res;
-            }            
+            }
+
+            public async Task<PublicApplication> UpdateDefaultAccessPolicy(string appId,UpdateDefaultApplicationAccessPolicyParam updateDefaultApplicationAccessPolicyParam, CancellationToken cancellationToken = default)
+            {
+                updateDefaultApplicationAccessPolicyParam.AppId = appId;
+                var res = await aclManagementClient.UpdateDefaultAccessPolicy(updateDefaultApplicationAccessPolicyParam, cancellationToken);
+                return res;
+            }
 
             
+
         }
     }
 }
