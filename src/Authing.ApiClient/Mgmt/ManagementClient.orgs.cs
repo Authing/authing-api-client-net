@@ -76,7 +76,12 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-
+            public async Task<Node> GetNodeById(string nodeId, CancellationToken cancellationToken = default)
+            {
+                var param = new NodeByIdParam(nodeId);
+                var res = await client.Request<NodeByCodeResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
             
 
         }
