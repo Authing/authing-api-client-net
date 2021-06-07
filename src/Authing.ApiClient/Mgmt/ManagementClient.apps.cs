@@ -58,7 +58,11 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
-
+            public async Task<Application> findById(string id, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{id}").WithOAuthBearerToken(client.Token).GetJsonAsync<Application>(cancellationToken);
+                return res;
+            }
 
         }
     }
