@@ -135,6 +135,24 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<object> ImportByJson(object _object)
+            {
+                // TODO: 上传文件
+                // var param = 
+            }
+
+            public async Task<Node> AddMembers(string nodeId, IEnumerable<string> userIds, CancellationToken cancellationToken = default)
+            {
+                var param = new AddMemberParam(userIds)
+                {
+                    NodeId = nodeId
+                };
+                var res = await client.Request<AddMemberResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            
+
         }
     }
 }
