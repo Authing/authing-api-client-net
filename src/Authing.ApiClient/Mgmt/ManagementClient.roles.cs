@@ -497,7 +497,12 @@ namespace Authing.ApiClient.Mgmt
                 //TODO: 缺少返回值
             }
 
-            
+            public async void RemoveUdfValue(string roleId, string key, CancellationToken cancellationToken = default)
+            {
+                var param = new RemoveUdvParam(UdfTargetType.ROLE, roleId, key);
+                var res = await client.Request<RemoveUdvResponse>(param.CreateRequest(), cancellationToken);
+                // TODO: 缺少返回值
+            }
 
         }
     }
