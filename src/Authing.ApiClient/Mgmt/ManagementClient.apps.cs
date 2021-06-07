@@ -109,6 +109,15 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<CommonMessage> DeleteAccessPolicy(string appId, AppAccessPolicy appAccessPolicy, CancellationToken cancellationToken = default
+            )
+            {
+                appAccessPolicy.AppId = appId;
+                appAccessPolicy.NameSpace = appId;
+                var res = await aclManagementClient.DeleteAccessPolicy(appAccessPolicy, cancellationToken);
+                return res;
+            }
+
             
 
         }
