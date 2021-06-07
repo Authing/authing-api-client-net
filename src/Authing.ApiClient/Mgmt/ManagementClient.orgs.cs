@@ -3,6 +3,7 @@ using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Authing.ApiClient.Management.Types;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
@@ -60,7 +61,21 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+            public async Task<Types.Org> AddNote(string orgId, AddNodeParam addNodeParam, CancellationToken cancellationToken = default)
+            {
+                var param = new AddNodeParam(orgId, addNodeParam.Name)
+                {
+                    ParentNodeId = addNodeParam.ParentNodeId,
+                    Code = addNodeParam.Code,
+                    Order = addNodeParam.Order,
+                    NameI18n = addNodeParam.NameI18n,
+                    Description = addNodeParam.Description,
+                    DescriptionI18n = addNodeParam.DescriptionI18n
+                };
+                var res = await client.Request<AddNodeResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
 
             
 
