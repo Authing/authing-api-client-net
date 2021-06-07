@@ -469,7 +469,7 @@ namespace Authing.ApiClient.Mgmt
                 setUdfValueParam.UdvList.ToList().ForEach(udv => _udvList.Add(
                 new UserDefinedDataInput(udv.Key)
                 {
-                    Value =  udv.Value.ConvertJson()
+                    Value = udv.Value.ConvertJson()
                 }));
                 var param = new SetUdvBatchParam(UdfTargetType.ROLE, setUdfValueParam.RoleId)
                 {
@@ -480,26 +480,24 @@ namespace Authing.ApiClient.Mgmt
                 //TODO: 缺少返回值
             }
 
-            public async void setUdfValueBatch(string roleId, KeyValueDictionary udvList, CancellationToken cancellationToken = default)
+            public async void SetUdfValueBatch(IEnumerable<SetUdfValueParam> setUdfValueBatchParam, CancellationToken cancellationToken = default)
             {
-                if (udvList.Count < 1)
+                if (setUdfValueBatchParam.ToList().Count < 1)
                 {
-                    throw new Exception("empty udf value list");
+                    throw new Exception("empty input list");
                 }
-                var _udvList = new List<UserDefinedDataInput>();
-                udvList.ToList().ForEach(udv => _udvList.Add(
-                new UserDefinedDataInput(udv.Key)
-                {
-                    Value = udv.Value.ConvertJson()
-                }));
-                var param = new SetUdvBatchParam(UdfTargetType.ROLE, roleId)
-                {
-                    UdvList = _udvList
-                };
-                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellationToken);
-
+                var param = new List<SetUdfValueBatchInput>();
+                setUdfValueBatchParam.ToList().ForEach(
+                    setUdfValueBatch =>
+                        setUdfValueBatch.UdvList.ToList().ForEach(udf => 
+                        param.Add(new SetUdfValueBatchInput(setUdfValueBatch.RoleId, udf.Key, udf.Value))
+                ));
+                var _param = new Types.SetUdfValueBatchParam(UdfTargetType.ROLE, param);
+                var res = await client.Request<SetUdvBatchResponse>(_param.CreateRequest(), cancellationToken);
                 //TODO: 缺少返回值
             }
+
+            
 
         }
     }
