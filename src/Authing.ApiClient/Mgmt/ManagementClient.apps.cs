@@ -146,13 +146,22 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<Role> createRole(
+            public async Task<Role> CreateRole(
+                string appId,
                 string code,
                 string description = null,
-                string parentCode = null,
                 CancellationToken cancellationToken = default)
             {
-                var res = await rolesManagementClient.Create(code, description, parentCode, cancellationToken);
+                var res = await rolesManagementClient.Create(code, description, appId, cancellationToken);
+                return res;
+            }
+
+            public async Task<CommonMessage> DeleteRole(
+                string appId,
+                string code,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.Delete(code, appId, cancellationToken);
                 return res;
             }
 
