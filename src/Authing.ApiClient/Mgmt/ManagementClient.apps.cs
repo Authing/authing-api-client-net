@@ -193,6 +193,17 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<PaginatedRoles> GetRoles(string appId,
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default)
+            {
+                var res = await rolesManagementClient.List(appId, page, limit, cancellationToken);
+                return res;
+            }
+
+            
+
         }
     }
 }
