@@ -402,12 +402,16 @@ namespace Authing.ApiClient.Mgmt
                     {
                         defaultStrategy = updateDefaultApplicationAccessPolicyParam.DefaultStrategy.ToString()?.ToUpper()
                     }
-                }).ReceiveJson<PublicApplication>();
+                }, cancellationToken).ReceiveJson<PublicApplication>();
 
                 return res;
             }
 
-            
+            public async Task<object> ProgrammaticAccessAccountList(string appId, int page = 1, int limit = 10, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/programmatic-access-accounts?limit={limit}&page={page}").WithOAuthBearerToken(client.Token).GetJsonAsync<ProgrammaticAccessAccountList>(cancellationToken);
+                return res;
+            }
 
         }
     }
