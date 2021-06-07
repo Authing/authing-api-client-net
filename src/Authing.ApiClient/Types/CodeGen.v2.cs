@@ -1304,7 +1304,7 @@ namespace Authing.ApiClient.Types
     #endregion
 
     #region Org
-    public class Org
+    public class  Org
     {
         #region members
         /// <summary>
