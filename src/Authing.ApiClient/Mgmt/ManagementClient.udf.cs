@@ -52,7 +52,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new SetUdfParam(type, key, dataType, label);
 
-                await client.GetAccessToken();
                 var res = await client.Request<SetUdfResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -88,10 +87,19 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new UdfParam(type);
 
-                await client.GetAccessToken();
                 var res = await client.Request<UdfResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
+
+            public async Task<IEnumerable<UserDefinedData>> ListUdv(UdfTargetType targetType, string userId, CancellationToken cancellationToken = default)
+            {
+                var param = new UdvParam(targetType, userId);
+                var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            
+
         }
     }
 }
