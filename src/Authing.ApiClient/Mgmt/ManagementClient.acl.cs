@@ -9,7 +9,7 @@ using Flurl;
 using Flurl.Http;
 using Newtonsoft.Json;
 using Authing.ApiClient.Extensions;
-using Authing.ApiClient.Utils
+using Authing.ApiClient.Utils;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -478,11 +478,22 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<bool> DeleteNamespace(string code, CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.UserPoolId}/code/${code}").DeleteAsync(cancellationToken);
+                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.UserPoolId}/code/${code}").WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken);
                 return true;
             }
 
-            
+            public async Task<NameSpace> CreateNamespace(string code, string name, string description, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/resource-namespace/{client.UserPoolId}").WithOAuthBearerToken(client.Token).PostJsonAsync(new
+                {
+                    name,
+                    code,
+                    description
+                }, cancellationToken).ReceiveJson<NameSpace>();
+                return res;
+            }
+
+
 
         }
     }
