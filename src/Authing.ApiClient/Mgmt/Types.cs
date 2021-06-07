@@ -617,4 +617,10 @@ namespace Authing.ApiClient.Management.Types {
         public string Description { get; set; }
     }
 
+    public class ApplicationList
+    {
+        public int TotalCount { get; set; }
+        public Application [] List { get; set; }
+    }
+
 }
