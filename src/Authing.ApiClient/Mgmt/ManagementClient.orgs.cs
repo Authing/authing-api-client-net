@@ -114,10 +114,14 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> IsRootNode()
+            public async Task<bool?> IsRootNode(string orgId, string nodeId, CancellationToken cancellationToken = default)
             {
-                
+                var param = new IsRootNodeParam(nodeId, orgId);
+                var res = await client.Request<IsRootNodeResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
             }
+
+
 
         }
     }
