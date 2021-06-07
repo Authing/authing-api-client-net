@@ -151,7 +151,11 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            
+            public async Task<object> MoveMembers(MoveMembersParam moveMembersParam,CancellationToken cancellationToken = default)
+            {
+                var res = await client.Request<MoveMembersResponse>(moveMembersParam.CreateRequest(), cancellationToken);
+                return true;
+            }
 
         }
     }
