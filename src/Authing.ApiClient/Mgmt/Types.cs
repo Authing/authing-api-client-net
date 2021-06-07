@@ -472,4 +472,22 @@ namespace Authing.ApiClient.Management.Types {
         public Policy [] List { get; set; }
     }
 
+    public class AppAccessPolicy
+    {
+        [JsonProperty("appId")]
+        public string AppId { get; set; }
+
+        [JsonProperty("targetType")]
+        public PolicyAssignmentTargetType TargetType { get; set; }
+
+        [JsonProperty("targetIdentifiers")]
+        public string [] TartgetIdentifiers { get; set; }
+
+        [JsonProperty("namespace")]
+        public string NameSpace { get; set; }
+
+        [JsonProperty("inheritByChildren")]
+        public bool InheritByChildren { get; set; }
+    }
+
 }
