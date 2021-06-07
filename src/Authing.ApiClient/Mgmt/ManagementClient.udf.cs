@@ -1,6 +1,9 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Types;
+using Authing.ApiClient.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -91,14 +94,27 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<IEnumerable<UserDefinedData>> ListUdv(UdfTargetType targetType, string userId, CancellationToken cancellationToken = default)
+            public async Task<IEnumerable<ResUdv>> ListUdv(UdfTargetType targetType, string targetId, CancellationToken cancellationToken = default)
             {
-                var param = new UdvParam(targetType, userId);
+                var param = new UdvParam(targetType, targetId);
                 var res = await client.Request<UdvResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
+                return AuthingUtils.ConvertUdv(res.Result);
             }
 
-            
+            public async Task<IEnumerable<ResUdv>> SetUdvBatch(UdfTargetType udfTargetType, string targetId, KeyValueDictionary udvList, CancellationToken cancellationToken = default)
+            {
+                var _udvList = new List<UserDefinedDataInput>();
+                udvList.ToList().ForEach(udv => _udvList.Add(new UserDefinedDataInput(udv.Key)
+                {
+                    Value = udv.Value
+                }));
+                var param = new SetUdvBatchParam(udfTargetType, targetId)
+                {
+                    UdvList = _udvList
+                };
+                var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellationToken);
+                return AuthingUtils.ConvertUdv(res.Result);
+            }
 
         }
     }
