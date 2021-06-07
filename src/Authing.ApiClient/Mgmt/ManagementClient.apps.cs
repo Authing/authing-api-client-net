@@ -52,6 +52,14 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
+            public async Task<bool> Delete(string appId, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}").WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken);
+                return true;
+            }
+
+
+
         }
     }
 }
