@@ -174,6 +174,32 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
+            public async Task<CommonMessage> SetMainDepartment(string userId, string departmentId, CancellationToken cancellationToken = default)
+            {
+                var param = new SetMainDepartmentParam(userId)
+                {
+                    DepartmentId = departmentId
+                };
+                var res = await client.Request<SetMainDepartmentResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<object> ExportAll(CancellationToken cancellationToken = default)
+            {
+                // TODO: 数据类型定义
+                var res = await client.Host.AppendPathSegment("api/v2/orgs/export").WithOAuthBearerToken(client.Token).GetJsonAsync<object>(cancellationToken);
+                return res;
+            }
+
+            public async Task<object> ExportByOrgId(string orgId, CancellationToken cancellationToken = default)
+            {
+                // TODO: 数据类型定义
+                var res = await client.Host.AppendPathSegment($"api/v2/orgs/export?org_id={orgId}").WithOAuthBearerToken(client.Token).GetJsonAsync<object>(cancellationToken);
+                return res;
+            }
+
+            
+
         }
     }
 }
