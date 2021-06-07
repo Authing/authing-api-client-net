@@ -407,11 +407,19 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<object> ProgrammaticAccessAccountList(string appId, int page = 1, int limit = 10, CancellationToken cancellationToken = default)
+            public async Task<ProgrammaticAccessAccountList> ProgrammaticAccessAccountList(string appId, int page = 1, int limit = 10, CancellationToken cancellationToken = default)
             {
                 var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/programmatic-access-accounts?limit={limit}&page={page}").WithOAuthBearerToken(client.Token).GetJsonAsync<ProgrammaticAccessAccountList>(cancellationToken);
                 return res;
             }
+
+            public async Task<ProgrammaticAccessAccount> CreateProgrammaticAccessAccount(string appId, CreateProgrammaticAccessAccountParam createProgrammaticAccessAccountParam, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/programmatic-access-accounts").WithOAuthBearerToken(client.Token).PostJsonAsync(createProgrammaticAccessAccountParam.ConvertJson(), cancellationToken).ReceiveJson<ProgrammaticAccessAccount>();
+                return res;
+            }
+
+            
 
         }
     }

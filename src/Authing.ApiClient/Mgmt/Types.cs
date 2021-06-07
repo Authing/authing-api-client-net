@@ -586,4 +586,10 @@ namespace Authing.ApiClient.Management.Types {
 
     }
 
+    public class CreateProgrammaticAccessAccountParam
+    {
+        public string Remarks { get; set; }
+        public int TokenLifetime { get; set; } = 600;
+    }
+
 }
