@@ -20,6 +20,7 @@ namespace Authing.ApiClient.Mgmt
         public class ApplicationsManagementClient
         {
             private readonly ManagementClient client;
+            private readonly AclManagementClient aclManagementClient;
 
             /// <summary>
             /// 构造方法
@@ -28,6 +29,7 @@ namespace Authing.ApiClient.Mgmt
             public ApplicationsManagementClient(ManagementClient client)
             {
                 this.client = client;
+                this.aclManagementClient = client.Acl;
             }
 
             public async Task<object> List(int page = 1, int limit = 2, CancellationToken cancellationToken = default)
@@ -63,6 +65,22 @@ namespace Authing.ApiClient.Mgmt
                 var res = await client.Host.AppendPathSegment($"api/v2/applications/{id}").WithOAuthBearerToken(client.Token).GetJsonAsync<Application>(cancellationToken);
                 return res;
             }
+
+            public async Task<Resources> CreateResource(string appId, CreateResourceParam createResourceParam, CancellationToken cancellationToken = default)
+            {
+                createResourceParam.NameSpace = appId;
+                var res = await aclManagementClient.CreateResource(createResourceParam, cancellationToken);
+                return res;
+            }
+
+            public async Task<Resources> UpdateResource(string appId, string code, UpdateResourceParam updateResourceParam, CancellationToken cancellationToken = default)
+            {
+                updateResourceParam.NameSpace = appId;
+                var res = await aclManagementClient.UpdateResource(code, updateResourceParam, cancellationToken);
+                return res;
+            }
+
+            
 
         }
     }

@@ -213,7 +213,7 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<ListResourcesRes> GetResources(ResourceQueryFilter resourceQueryFilter, CancellationToken cancellationToken = default)
             {
-                var res = await ListResources(resourceQueryFilter);
+                var res = await ListResources(resourceQueryFilter, cancellationToken);
                 return res;
             }
 
