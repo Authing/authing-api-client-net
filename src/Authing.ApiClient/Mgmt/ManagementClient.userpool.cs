@@ -101,28 +101,12 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="key">环境变量键</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task RemoveEnv(
+            public async Task<Dictionary<string, object>> RemoveEnv(
                 string key,
                 CancellationToken cancellationToken = default)
             {
-                await client.GetAccessToken();
-
-                var url = $"{client.Host}/api/v2/env/${key}";
-                var message = new HttpRequestMessage(HttpMethod.Delete, url);
-                var result = await client.Send(message, cancellationToken);
-
-                if (!result.IsSuccessStatusCode)
-                {
-                    throw new AuthingException(result.ReasonPhrase, (int)result.StatusCode);
-                }
-
-                var content = await result.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<RestfulResponse<object>>(content);
-
-                if (res.Code != 200)
-                {
-                    throw new AuthingException(res.Message, res.Code);
-                }
+                var res = await client.Host.AppendPathSegment($"api/v2/env/{key}").WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken).ReceiveJson<Dictionary<string, object>>();
+                return res;
             }
         }
     }
