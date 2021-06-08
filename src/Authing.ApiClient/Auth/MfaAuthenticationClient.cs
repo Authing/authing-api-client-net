@@ -113,5 +113,19 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
+        public async Task<User> AssociateFaceByUrl(AssociateFaceByUrlParam associateFaceByUrlParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/face/associate").WithOAuthBearerToken(associateFaceByUrlParam.MFAToken).PostJsonAsync(
+                new
+                {
+                    photoA = associateFaceByUrlParam.BaseFace,
+                    photoB = associateFaceByUrlParam.CompareFace,
+                    isExternal = true
+                },
+                 cancellationToken
+            ).ReceiveJson<User>();
+            return res;
+        }
+
     }
 }

@@ -665,4 +665,22 @@ namespace Authing.ApiClient.Auth.Types
         public string Phone { get; set; }
     }
 
+    public class VerifyTotpRecoveryCodeParam
+    {
+        public string RecoveryCode { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+    }
+
+    public class AssociateFaceByUrlParam
+    {
+        public string BaseFace { get; set; }
+        
+        public string CompareFace { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+    }
+
 }
