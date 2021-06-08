@@ -127,5 +127,14 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
+        public async Task<User> AssociateFaceByLocalFile(string mfaToken = null, CancellationToken cancellationToken = default)
+        {
+            // TODO: 文件上传
+            // var res = await Host.AppendPathSegment("")
+            return new User { };
+        }
+
+
+        
     }
 }
