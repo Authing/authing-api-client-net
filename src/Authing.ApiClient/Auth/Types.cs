@@ -616,4 +616,16 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
+    public class ConfirmAssosicateMfaAuthenticatorParam
+    {
+        public string AuthenticatorType { get; set; }
+        
+        public string Totp { get; set; }
+        
+        public TotpSourceEnum Source { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+    }
+
 }
