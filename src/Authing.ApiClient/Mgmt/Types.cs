@@ -655,4 +655,11 @@ namespace Authing.ApiClient.Management.Types {
 
     }
 
+    public enum UserMfaTypeEnum
+    {
+        OTP,
+        FACE
+
+    }
+
 }
