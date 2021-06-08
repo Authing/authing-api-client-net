@@ -71,28 +71,8 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<IEnumerable<Env>> ListEnv(CancellationToken cancellationToken = default)
             {
-                await client.GetAccessToken();
-
-                var url = $"{client.Host}/api/v2/env";
-                var message = new HttpRequestMessage(HttpMethod.Get, url);
-                var result = await client.Send(message, cancellationToken);
-
-                if (!result.IsSuccessStatusCode)
-                {
-                    throw new AuthingException(result.ReasonPhrase, (int)result.StatusCode);
-                }
-
-                var content = await result.Content.ReadAsStringAsync();
-                Console.WriteLine(content);
-
-                var res = JsonConvert.DeserializeObject<RestfulResponse<IEnumerable<Env>>>(content);
-
-                if (res.Code != 200)
-                {
-                    throw new AuthingException(res.Message, res.Code);
-                }
-
-                return res.Data;
+                var res = await client.Host.AppendPathSegment("api/v2/env").WithOAuthBearerToken(client.Token).GetJsonAsync<IEnumerable<Env>>(cancellationToken);
+                return res;
             }
 
             /// <summary>
