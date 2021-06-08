@@ -109,6 +109,8 @@ namespace Authing.ApiClient.Mgmt
                 });
 
                 await client.Request<UpdateUserpoolResponse>(param.CreateRequest(), cancellationToken);
+
+                // TODO: 缺少返回类型
             }
 
             /// <summary>
@@ -119,29 +121,29 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task Disable(WhitelistType type, CancellationToken cancellationToken = default)
             {
-                var config = new RegisterWhiteListConfigInput();
-                switch (type)
+                var config = new RegisterWhiteListConfigInput
                 {
-                    case WhitelistType.USERNAME:
-                        config.UsernameEnabled = false;
-                        break;
-                    case WhitelistType.EMAIL:
-                        config.EmailEnabled = false;
-                        break;
-                    case WhitelistType.PHONE:
-                        config.PhoneEnabled = false;
-                        break;
-                    default:
-                        throw new AuthingException("不支持的白名单类型");
-                }
+                    EmailEnabled = type switch
+                    {
+                        WhitelistType.USERNAME =>
+                            true,
+                        WhitelistType.EMAIL =>
+                            true,
+                        WhitelistType.PHONE =>
+                            true,
+                        _ =>
+                            throw new AuthingException("不支持的白名单类型"),
+                    }
+                };
 
                 var param = new UpdateUserpoolParam(new UpdateUserpoolInput()
                 {
                     Whitelist = config,
                 });
 
-                await client.GetAccessToken();
                 await client.Request<UpdateUserpoolResponse>(param.CreateRequest(), cancellationToken);
+
+                // TODO: 缺少返回类型
             }
         }
     }
