@@ -91,7 +91,18 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
-        
+        public async Task<bool> PhoneOrEmailBindable(PhoneOrEmailBindableParam phoneOrEmailBindableParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/applications/mfa/check").WithOAuthBearerToken(phoneOrEmailBindableParam.MFAToken).PostJsonAsync(
+                new
+                {
+                    email = phoneOrEmailBindableParam.Email,
+                    phone = phoneOrEmailBindableParam.Phone
+                },
+                cancellationToken
+            ).ReceiveJson<bool>();
+            return res;
+        }
 
     }
 }

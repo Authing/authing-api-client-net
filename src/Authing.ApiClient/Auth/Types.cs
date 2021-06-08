@@ -656,4 +656,13 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
+    public class PhoneOrEmailBindableParam
+    {
+        public string Email { get; set; }
+
+        public string MFAToken { get; set; }
+
+        public string Phone { get; set; }
+    }
+
 }
