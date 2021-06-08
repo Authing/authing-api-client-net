@@ -58,7 +58,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new AddWhitelistParam(type, list);
 
-                await client.GetAccessToken();
                 var res = await client.Request<AddWhitelistResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -77,7 +76,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new RemoveWhitelistParam(type, list);
 
-                await client.GetAccessToken();
                 var res = await client.Request<RemoveWhitelistResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -90,28 +88,26 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task Enable(WhitelistType type, CancellationToken cancellationToken = default)
             {
-                var config = new RegisterWhiteListConfigInput();
-                switch (type)
+                var config = new RegisterWhiteListConfigInput
                 {
-                    case WhitelistType.USERNAME:
-                        config.UsernameEnabled = true;
-                        break;
-                    case WhitelistType.EMAIL:
-                        config.EmailEnabled = true;
-                        break;
-                    case WhitelistType.PHONE:
-                        config.PhoneEnabled = true;
-                        break;
-                    default:
-                        throw new AuthingException("不支持的白名单类型");
-                }
+                    EmailEnabled = type switch
+                    {
+                        WhitelistType.USERNAME =>
+                            true,
+                        WhitelistType.EMAIL =>
+                            true,
+                        WhitelistType.PHONE =>
+                            true,
+                        _ =>
+                            throw new AuthingException("不支持的白名单类型"),
+                    }
+                };
 
                 var param = new UpdateUserpoolParam(new UpdateUserpoolInput()
                 {
                     Whitelist = config,
                 });
 
-                await client.GetAccessToken();
                 await client.Request<UpdateUserpoolResponse>(param.CreateRequest(), cancellationToken);
             }
 
