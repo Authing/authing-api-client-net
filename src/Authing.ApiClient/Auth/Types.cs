@@ -646,4 +646,14 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
+    public class VerifyAppEmailMfaParam
+    {
+        public string Email { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+        public string Code { get; set; }
+        
+    }
+
 }

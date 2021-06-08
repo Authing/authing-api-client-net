@@ -81,5 +81,17 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
+        public async Task<User> VerifyAppEmailMfa(VerifyAppEmailMfaParam verifyAppEmailMfaParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/applications/mfa/email/verify").WithOAuthBearerToken(verifyAppEmailMfaParam.MFAToken).PostJsonAsync(new
+            {
+                email = verifyAppEmailMfaParam.Email,
+                code = verifyAppEmailMfaParam.Code
+            }, cancellationToken).ReceiveJson<User>();
+            return res;
+        }
+
+        
+
     }
 }
