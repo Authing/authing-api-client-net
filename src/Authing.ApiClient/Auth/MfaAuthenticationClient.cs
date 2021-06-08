@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Types;
 using Flurl;
 using Flurl.Http;
 
@@ -31,6 +32,18 @@ namespace Authing.ApiClient.Auth
             }, cancellationToken).ReceiveJson<AssosicateMfaAuthenticatorRes>();
             return res;
         }
+
+        public async Task<CommonMessage> DeleteMfaAuthenticator(CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/totp/associate").WithOAuthBearerToken(MFAToken).DeleteAsync(cancellationToken);
+            return new CommonMessage
+            {
+                Code = 200,
+                Message = "TOTP MFA 解绑成功"
+            };
+        }
+
+
 
     }
 }
