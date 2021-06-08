@@ -583,4 +583,29 @@ namespace Authing.ApiClient.Auth.Types
 
     }
 
+    public class AssosicateMfaAuthenticatorParam
+    {
+        public string AuthenticatorType { get; set; } = "totp";
+
+        public string MFAToken { get; set; }
+
+        public TotpSourceEnum Source { get; set; } = TotpSourceEnum.SELF;
+
+    }
+
+    public class AssosicateMfaAuthenticatorRes
+    {
+        public string AuthenticatorType { get; set; }
+
+        public string Secret { get; set; }
+        
+        public string QrCodeUri { get; set; }
+        
+        public string QrCodeDataUrl { get; set; }
+        
+        public string RecoveryCode { get; set; }
+        
+           
+    }
+
 }

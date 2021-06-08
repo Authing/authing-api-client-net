@@ -22,5 +22,15 @@ namespace Authing.ApiClient.Auth
             }).GetJsonAsync<ISetTotpRes []>(cancellationToken);
             return res;
         }
+
+        public async Task<AssosicateMfaAuthenticatorRes> AssosicateMfaAuthenticator(AssosicateMfaAuthenticatorParam parameter, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/totp/associate").WithOAuthBearerToken(MFAToken).PostJsonAsync(new {
+                authenticator_type = parameter.AuthenticatorType,
+                source = parameter.Source
+            }, cancellationToken).ReceiveJson<AssosicateMfaAuthenticatorRes>();
+            return res;
+        }
+
     }
 }
