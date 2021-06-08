@@ -62,5 +62,16 @@ namespace Authing.ApiClient.Auth
             };
         }
 
+        public async Task<User> VerifyTotpMfa(VerifyTotpMfaParam verifyTotpMfaParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/totp/verify").WithOAuthBearerToken(verifyTotpMfaParam.MFAToken).PostJsonAsync(new
+            {
+                totp = verifyTotpMfaParam.Totp
+            }, cancellationToken).ReceiveJson<User>();
+            return res;
+        }
+
+
+
     }
 }

@@ -628,4 +628,12 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
+    public class VerifyTotpMfaParam
+    {
+        public string Totp { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+    }
+
 }
