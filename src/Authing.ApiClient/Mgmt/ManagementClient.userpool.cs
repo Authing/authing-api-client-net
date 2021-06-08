@@ -60,7 +60,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new UpdateUserpoolParam(updates);
 
-                await client.GetAccessToken();
                 var res = await client.Request<UpdateUserpoolResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
