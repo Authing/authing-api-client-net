@@ -87,39 +87,12 @@ namespace Authing.ApiClient.Mgmt
                 object value,
                 CancellationToken cancellationToken = default)
             {
-                await client.GetAccessToken();
-
-                var url = $"{client.Host}/api/v2/env";
-                var message = new HttpRequestMessage(HttpMethod.Post, url)
+                var res = await client.Host.AppendPathSegment("api/v2/env").WithOAuthBearerToken(client.Token).PatchJsonAsync(new
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(
-                    new
-                    {
-                        key,
-                        value,
-                    },
-                    Formatting.None,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore
-                    }), Encoding.UTF8, "application/json")
-                };
-                var result = await client.Send(message, cancellationToken);
-
-                if (!result.IsSuccessStatusCode)
-                {
-                    throw new AuthingException(result.ReasonPhrase, (int)result.StatusCode);
-                }
-
-                var content = await result.Content.ReadAsStringAsync();
-                var res = JsonConvert.DeserializeObject<RestfulResponse<Env>>(content);
-
-                if (res.Code != 200)
-                {
-                    throw new AuthingException(res.Message, res.Code);
-                }
-
-                return res.Data;
+                    key,
+                    value
+                }, cancellationToken).ReceiveJson<Env>();
+                return res;
             }
 
             /// <summary>
