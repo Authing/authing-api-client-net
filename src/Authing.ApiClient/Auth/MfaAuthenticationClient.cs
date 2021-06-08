@@ -134,7 +134,21 @@ namespace Authing.ApiClient.Auth
             return new User { };
         }
 
+        public void AssociateFaceByBlob(string parameter)
+        {
+            // TODO: blob 文件上传
+            // return 
+            // return System.NotImplementedException;
+        }
 
-        
+        public async Task<User> VerifyFaceMfa(string photo, string mfaToken, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/face/verify").WithOAuthBearerToken(mfaToken).PostJsonAsync(new 
+            {
+                photo
+            }, cancellationToken).ReceiveJson<User>();
+            return res;
+        }
+
     }
 }
