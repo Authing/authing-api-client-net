@@ -3481,7 +3481,6 @@ namespace Authing.ApiClient.Types
         #endregion
 
 
-
         public RegisterProfile()
         {
 

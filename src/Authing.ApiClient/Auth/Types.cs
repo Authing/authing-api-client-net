@@ -22,9 +22,12 @@ namespace Authing.ApiClient.Auth.Types
         public string WebsocketHost { get; set; }
 
         public Protocol Protocol { get; set; } = Protocol.OIDC;
-        public TokenEndPointAuthMethod TokenEndPointAuthMethod { get; set; }
+        public TokenEndPointAuthMethod TokenEndPointAuthMethod { get; set; } = TokenEndPointAuthMethod.CLIENT_SECRET_POST;
 
-        
+        public TokenEndPointAuthMethod IntrospectionEndPointAuthMethod { get; set; } = TokenEndPointAuthMethod.CLIENT_SECRET_POST;
+
+        public TokenEndPointAuthMethod RevocationEndPointAuthMethod { get; set; } = TokenEndPointAuthMethod.CLIENT_SECRET_POST;
+
     }
 
     public enum TokenEndPointAuthMethod
@@ -58,14 +61,14 @@ namespace Authing.ApiClient.Auth.Types
 
     public class RegisterAndLoginOptions
     {
-        public Boolean ForceLogin { get; set; }
-        public Boolean GenerateToken { get; set; }
-        public Boolean AutoRegister { get; set; } = false;
+        public bool ForceLogin { get; set; }
+        public bool GenerateToken { get; set; }
+        public bool AutoRegister { get; set; } = false;
 
         public string ClientIp { get; set; }
         public KeyValueDictionary[] CustomData { get; set; }
 
-        public Dictionary<string, Object>[] Context { get; set; }
+        public Dictionary<string, object>[] Context { get; set; }
 
         public string CaptchaCode { get; set; }
     }

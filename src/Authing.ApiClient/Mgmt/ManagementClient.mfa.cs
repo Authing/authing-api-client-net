@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Authing.ApiClient.Management.Types;
+using Authing.ApiClient.Auth.Types;
 
 namespace Authing.ApiClient.Mgmt
 {

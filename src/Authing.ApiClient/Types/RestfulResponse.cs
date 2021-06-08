@@ -15,9 +15,9 @@ namespace Authing.ApiClient.Types
 
     public class SimpleResponse
     {
-        public int code { get; set; }
+        public int Code { get; set; }
 
-        public string message { get; set; }
+        public string Message { get; set; }
 
     }
 }

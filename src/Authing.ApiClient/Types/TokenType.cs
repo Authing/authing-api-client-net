@@ -2,15 +2,15 @@ namespace Authing.ApiClient.Types
 {
     public class TokenPayload
     {
-        public string sub;
-        public string iat;
-        public int exp;
-        public UserData data;
+        public string Sub;
+        public string Iat;
+        public int Exp;
+        public UserData Data;
     }
 
     public class UserData
     {
-        public string email;
-        public string id;
+        public string Email;
+        public string Id;
     }
 }
