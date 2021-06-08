@@ -104,5 +104,14 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
+        public async Task<User> VerifyTotpRecoveryCode(VerifyTotpRecoveryCodeParam verifyTotpRecoveryCodeParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/mfa/totp/recovery").WithOAuthBearerToken(verifyTotpRecoveryCodeParam.MFAToken).PostJsonAsync(new
+            {
+                recoveryCode = verifyTotpRecoveryCodeParam.RecoveryCode
+            }, cancellationToken).ReceiveJson<User>();
+            return res;
+        }
+
     }
 }
