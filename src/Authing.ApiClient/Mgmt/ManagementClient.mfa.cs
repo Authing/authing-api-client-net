@@ -40,6 +40,17 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
+            public async Task<ISetTotpRes> ImportTotp(string userId, string secret, string recoverCode = null, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment("api/v2/mfa/totp/import").WithOAuthBearerToken(client.Token).PostJsonAsync(new
+                {
+                    userId,
+                    secret,
+                    recoverCode
+                }, cancellationToken).ReceiveJson<ISetTotpRes>();
+                return res;
+            }
+
         }
     }
 }
