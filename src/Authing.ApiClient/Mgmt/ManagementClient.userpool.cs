@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -39,11 +41,13 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<UserPool> Detail(CancellationToken cancellationToken = default)
             {
-                var param = new UserpoolParam();
+                // var param = new UserpoolParam();
 
-                await client.GetAccessToken();
-                var res = await client.Request<UserpoolResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
+                // await client.GetAccessToken();
+                // var res = await client.Request<UserpoolResponse>(param.CreateRequest(), cancellationToken);
+                // return res.Result;
+                var res = await client.Host.AppendPathSegment("api/v2/userpools/detail").WithOAuthBearerToken(client.Token).GetJsonAsync<UserPool>(cancellationToken);
+                return res;
             }
 
             /// <summary>
