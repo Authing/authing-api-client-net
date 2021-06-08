@@ -40,7 +40,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new WhitelistParam(type);
 
-                await client.GetAccessToken();
                 var res = await client.Request<WhitelistResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
