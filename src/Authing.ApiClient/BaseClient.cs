@@ -92,6 +92,10 @@ GKl64GDcIq3au+aqJQIDAQAB
             }
         }
 
+        public string MFAToken { get; set; }
+        
+        
+
         public string Token
         {
             get

@@ -539,4 +539,48 @@ namespace Authing.ApiClient.Auth.Types
         [JsonProperty("token")]
         public string Token { get; set; }
     }
+
+    public class GetMfaAuthenticatorsParam
+    {
+        public string Type { get; set; } = "totp";
+
+        public string MfaToken { get; set; }
+
+        public TotpSourceEnum Source { get; set; } = TotpSourceEnum.SELF;
+
+    }
+
+    public enum TotpSourceEnum
+    {
+        APPLICATION,
+        SELF
+    }
+
+    public enum UserMfaTypeEnum
+    {
+        OTP,
+        FACE
+
+    }
+
+    public class ISetTotpRes
+    {
+        public string UserId { get; set; }
+
+        public bool Enable { get; set; }
+
+        public string Secret { get; set; }
+
+        public string AuthenticatorType { get; set; }
+
+        public string RecoveryCode { get; set; }
+
+        public string CreatedAt { get; set; }
+
+        public string UpdatedAt { get; set; }
+
+        public string Id { get; set; }
+
+    }
+
 }

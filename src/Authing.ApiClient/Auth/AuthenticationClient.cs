@@ -22,7 +22,7 @@ namespace Authing.ApiClient.Auth
     /// </summary>
     public class AuthenticationClient : BaseClient
     {
-        [Obsolete("建议使用重载方法，使用委托完成初始化")]
+        [Obsolete("建议使用委托完成初始化")]
         /// <summary>
         /// 通过用户池 ID 初始化
         /// </summary>
