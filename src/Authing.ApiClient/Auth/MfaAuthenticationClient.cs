@@ -71,7 +71,15 @@ namespace Authing.ApiClient.Auth
             return res;
         }
 
-
+        public async Task<User> VerifyAppSmsMfa(VerifyAppSmsMfaParam verifyAppSmsMfaParam, CancellationToken cancellationToken = default)
+        {
+            var res = await Host.AppendPathSegment("api/v2/applications/mfa/sms/verify").WithOAuthBearerToken(verifyAppSmsMfaParam.MFAToken).PostJsonAsync(new 
+            {
+                phone = verifyAppSmsMfaParam.Phone,
+                code = verifyAppSmsMfaParam.Code
+            }, cancellationToken).ReceiveJson<User>();
+            return res;
+        }
 
     }
 }

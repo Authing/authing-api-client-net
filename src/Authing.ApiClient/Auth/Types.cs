@@ -636,4 +636,14 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
+    public class VerifyAppSmsMfaParam
+    {   
+        public string Phone { get; set; }
+        
+        public string Code { get; set; }
+        
+        public string MFAToken { get; set; }
+        
+    }
+
 }
