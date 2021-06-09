@@ -18,7 +18,7 @@ namespace Authing.ApiClient.Auth.Types
         public string Secret { get; set; }
         public string RedirectUri { get; set; }
         public string RequestFrom { get; set; }
-        public string Lang { get; set; }
+        public LangEnum Lang { get; set; } = LangEnum.ZH_CN;
         public string WebsocketHost { get; set; }
 
         public Protocol Protocol { get; set; } = Protocol.OIDC;
@@ -272,7 +272,7 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
-    public class OidcOption
+    public class OidcOption: IProtocolInterface
     {
         public string AppId { get; set; }
         public string RedirectUri { get; set; }
@@ -346,7 +346,7 @@ namespace Authing.ApiClient.Auth.Types
         }
     }
 
-    public class OauthOption
+    public class OauthOption: IProtocolInterface
     {
         public string AppId { get; set; }
         public string RedirectUri { get; set; }
@@ -356,9 +356,14 @@ namespace Authing.ApiClient.Auth.Types
         
     }
 
-    public class CasOption
+    public class CasOption: IProtocolInterface
     {
         public string Service { get; set; }
+    }
+
+    public class SamlOption: IProtocolInterface
+    {
+        
     }
 
 
@@ -683,6 +688,17 @@ namespace Authing.ApiClient.Auth.Types
         public string CompareFace { get; set; }
         
         public string MFAToken { get; set; }
+        
+    }
+
+    public enum LangEnum
+    {
+        ZH_CN,
+        EN_US
+    }
+
+    public interface IProtocolInterface
+    {
         
     }
 

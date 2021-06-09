@@ -26,7 +26,7 @@ namespace Authing.ApiClient.Auth
         private async Task<CodeToTokenRes> GetAccessTokenByCodeWithClientSecretPost(string code, string codeVerifier = null, CancellationToken cancellationToken =
         default)
         {
-            string api = Options.Protocol switch
+            var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
                 Protocol.OAUTH => "oauth/token",
@@ -50,7 +50,7 @@ namespace Authing.ApiClient.Auth
         private async Task<CodeToTokenRes> GetAccessTokenByCodeWithClientSecretBasic(string code, string codeVerifier = null, CancellationToken cancellationToken =
         default)
         {
-            string api = Options.Protocol switch
+            var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
                 Protocol.OAUTH => "oauth/token",
@@ -121,7 +121,7 @@ namespace Authing.ApiClient.Auth
             {
                 return await GetAccessTokenByCodeWithNone(code, options?.CodeVerifier, cancellationToken);
             }
-            throw new Exception("请检查参数 TokenEndPointAuthMethod");
+            throw new Exception("请检查相关参数");
         }
 
         /// <summary>
@@ -146,6 +146,7 @@ namespace Authing.ApiClient.Auth
             }
             if (options.Method == CodeChallengeDigestMethod.S256)
             {
+                // TODO: 缺少增加对应的方法 
                 // url safe base64
                 // return sha256(options.codeChallenge).toString(CryptoJS.enc.Base64).replace(/\+/ g, '-').replace(/\//g, '_').replace(/=/g, '');
             }
@@ -167,6 +168,7 @@ namespace Authing.ApiClient.Auth
                 Protocol.OAUTH => "oauth/token",
                 _ => throw new ArgumentOutOfRangeException()
             };
+            // TODO: 返回类型校验
             var res = await Host.AppendPathSegment(api).PostUrlEncodedAsync(
                 new
                 {
@@ -183,6 +185,7 @@ namespace Authing.ApiClient.Auth
         public async Task<UserInfo> GetUserInfoByAccessToken(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 对比 NodeJs 有差异
             var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/me",
@@ -192,29 +195,29 @@ namespace Authing.ApiClient.Auth
             var res = await Host.AppendPathSegment(api).WithOAuthBearerToken(token).PostAsync(null, cancellationToken).ReceiveJson<UserInfo>();
             return res;
         }
-
-        public string BuildAuthorizeUrl<T>(T option)
+        
+        public string BuildAuthorizeUrl(IProtocolInterface option)
         {
             if (Host == null)
             {
-                throw new Exception("请在初始化 AuthenticationClient 时传入应用域名 appHost 参数，形如：https://app1.authing.cn");
+                throw new Exception("请在初始化 AuthenticationClient 时传入应用域名 Host 参数，形如：https://app1.authing.cn");
             }
 
-            if (typeof(T) == typeof(OidcOption))
+            if (option as OidcOption != null)
             {
                 return BuildOidcAuthorizeUrl(option as OidcOption);
             }
-            if (typeof(T) == typeof(OauthOption))
+            if (option as OauthOption != null)
             {
                 return BuildOauthAuthorizeUrl(option as OauthOption);
             }
-            if (Options.Protocol == Protocol.SAML)
-            {
-                return BuildSamlAuthorizeUrl();
-            }
-            if (typeof(T) == typeof(CasOption))
+            if (option as CasOption != null)
             {
                 return BuildCasAuthorizeUrl(option as CasOption);
+            }
+            if (option as SamlOption != null)
+            {
+                return BuildSamlAuthorizeUrl();
             }
 
             throw new Exception("泛型类型必须是 OidcOption, OauthOption, CasOption 其中一种");
@@ -222,7 +225,7 @@ namespace Authing.ApiClient.Auth
 
         private string BuildOidcAuthorizeUrl(OidcOption option)
         {
-            string prompt = "";
+            var prompt = "";
             if (option?.Scope?.IndexOf("offline_access") != -1)
             {
                 prompt = "consent";
@@ -241,6 +244,7 @@ namespace Authing.ApiClient.Auth
                 response_mode = option.ResponseMode?.ToString().ToLower(),
                 prompt = string.IsNullOrEmpty(prompt) ? null : prompt,
             };
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             return $"{Options.Host ?? Host}/oidc/auth{"".SetQueryParams(res)}";
         }
 
@@ -250,21 +254,26 @@ namespace Authing.ApiClient.Auth
             var res = new
             {
                 state = option.State ?? rd.Next(10, 99).ToString(),
-                scope = option.Scope ?? "openid profile email phone address",
+                scope = option.Scope ?? "user",
                 client_id = option.AppId ?? Options.AppId,
                 redirect_uri = option.RedirectUri ?? Options.RedirectUri,
                 response_type = option.ResponseType.ToString().ToLower() ?? "code",
             };
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             return $"{Options.Host ?? Host}/oidc/auth{"".SetQueryParams(res)}";
         }
 
         private string BuildSamlAuthorizeUrl()
         {
-            return $"{Host}/api/v2/saml-idp/{Options.AppId}";
+            return Host.AppendPathSegments(new string [] 
+            {
+                "api/v2/saml-idp", Options.AppId
+            }).ToString();
         }
 
         private string BuildCasAuthorizeUrl(CasOption option)
         {
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             if (option.Service != null)
             {
                 return $"{Host}/cas-idp/{Options.AppId}?service={option.Service}";
@@ -274,6 +283,7 @@ namespace Authing.ApiClient.Auth
 
         private string BuildCasLogoutUrl(LogoutParams option = null)
         {
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             if (option?.RedirectUri != null)
             {
                 return $"{Host}/cas-idp/logout?url={option.RedirectUri}";
@@ -287,6 +297,7 @@ namespace Authing.ApiClient.Auth
             {
                 throw new Exception("必须同时传入 idToken 和 redirectUri 参数，或者同时都不传入");
             }
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             if (option?.RedirectUri != null)
             {
                 return $"{Host}/oidc/session/end?url=id_token_hint={option.IdToken}&post_logout_redirect_uri={option.RedirectUri}";
@@ -296,6 +307,7 @@ namespace Authing.ApiClient.Auth
 
         private string BuildEasyLogoutUrl(LogoutParams option = null)
         {
+            // TODO: 所有的 url 都使用 Flurl 完成拼接，可读性更强
             if (option?.RedirectUri != null)
             {
                 return $"{Host}/login/profile/logout?redirect_uri={option.RedirectUri}";
@@ -321,6 +333,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretPost(string refreshToken, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
@@ -343,6 +356,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithClientSecretBasic(string refreshToken, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
@@ -363,6 +377,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> GetNewAccessTokenByRefreshTokenWithNone(string refreshToken, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
@@ -384,6 +399,7 @@ namespace Authing.ApiClient.Auth
         public async Task<HttpResponseMessage> GetNewAccessTokenByRefreshToken(string refreshToken, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token",
@@ -412,6 +428,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> RevokeTokenWithClientSecretPost(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/revocation",
@@ -433,6 +450,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> RevokeTokenWithClientSecretBasic(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/revocation",
@@ -452,6 +470,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> RevokeTokenWithNone(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/revocation",
@@ -503,6 +522,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretPost(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/introspection",
@@ -524,6 +544,7 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> IntrospectTokenWithClientSecretBasic(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/introspection",
@@ -543,12 +564,14 @@ namespace Authing.ApiClient.Auth
         private async Task<HttpResponseMessage> IntrospectTokenWithNone(string token, CancellationToken cancellationToken =
         default)
         {
+            // TODO: 注意返回类型的转换
             var api = Options?.Protocol switch
             {
                 Protocol.OIDC => "oidc/token/introspection",
                 Protocol.OAUTH => "oauth/token/introspection",
                 _ => throw new ArgumentOutOfRangeException()
             };
+            // WARNING: 注意 body 体为 URLDecode， 头可能并不是 UrlEncode
             var res = await Host.AppendPathSegment(api).WithHeaders(GetHeaders()).PostUrlEncodedAsync(
                 new
                 {
@@ -615,7 +638,7 @@ namespace Authing.ApiClient.Auth
             {
                 return new ValidateTicketV1Res()
                 {
-                    Valid = true,
+                    Valid = false,
                     Username = username,
                     Message = "ticket 不合法"
                 };
@@ -625,6 +648,11 @@ namespace Authing.ApiClient.Auth
         public async Task<HttpResponseMessage> ValidateToken(ValidateTokenOption option, CancellationToken cancellationToken =
         default)
         {
+            if (option.IdToken != null && option.IdToken != null)
+            {
+                throw new Exception("accessToken 和 idToken 只能传入一个，不能同时传入");
+            }
+            // TODO: 参数返回类型转换
             if (option.IdToken != null)
             {
                 var res = await Host.AppendPathSegment("api/v2/oidc/validate_token").SetQueryParams(new
@@ -643,5 +671,6 @@ namespace Authing.ApiClient.Auth
             }
             throw new Exception("请在传入的参数对象中包含 accessToken 或 idToken 字段");
         }
+
     }
 }

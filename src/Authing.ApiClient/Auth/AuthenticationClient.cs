@@ -16,6 +16,7 @@ using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Extensions;
 using Authing.ApiClient.Management.Types;
 
+
 namespace Authing.ApiClient.Auth
 {
     /// <summary>
@@ -1025,7 +1026,7 @@ namespace Authing.ApiClient.Auth
                 x_authing_userpool_id = Options.UserPoolId ?? "",
                 x_authing_request_from = Options.RequestFrom ?? "sdk",
                 x_authing_app_id = Options.AppId ?? "",
-                x_authing_lang = Options.Lang ?? "",
+                x_authing_lang = Options.Lang.ToString().ToUpper(),
                 Authorization = $"Bearer {Token}",
             };
         }
@@ -1375,6 +1376,11 @@ namespace Authing.ApiClient.Auth
                     limit = _params.Limit   
                 }).WithHeaders(GetHeaders()).GetJsonAsync<ApplicationList>(cancellationToken);
             return res;
+        }
+
+        public void SetLang(LangEnum lang)
+        {
+            Options.Lang = lang;
         }
     }
 }

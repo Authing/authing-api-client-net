@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Authing.ApiClient.Auth;
 using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Extensions;
+using Flurl;
+using Flurl.Http;
 
 namespace _1
 {
@@ -44,14 +46,13 @@ namespace _1
             // {
             //     Console.WriteLine(e);
             // }
-            var list = new List<string>()
+            var url = "authing.cn".AppendPathSegments(new string[] 
             {
-                "1",
-                "2",
-                "3"
-            };
-            var res = list.Select(item => item == "1").ToList();
-            Console.WriteLine(res);
+                "aaa",
+                "bb"
+            });
+            Console.WriteLine(url.ToString());
+            Console.WriteLine("ok");
         }
     }
 }
