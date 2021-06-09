@@ -244,8 +244,8 @@ namespace Authing.ApiClient.Auth.Types
 
     public class ListParams
     {
-        public int Page { get; set; }
-        public int Limit { get; set; }
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
     }
 
     public class GetAccessTokenByCodeOptions
