@@ -36,44 +36,46 @@ namespace Authing.ApiClient.Mgmt
                 this.client = client;
             }
 
-            // /// <summary>
-            // /// 允许某个用户操作某个资源
-            // /// </summary>
-            // /// <param name="resource"></param>
-            // /// <param name="action"></param>
-            // /// <param name="userId"></param>
-            // /// <param name="role"></param>
-            // /// <param name="cancellationToken"></param>
-            // /// <returns></returns>
-            // public async Task<CommonMessage> Allow(
-            //     string resource, 
-            //     string action, 
-            //     string userId = null, 
-            //     string role= null,
-            //     CancellationToken cancellationToken = default)
-            // {
-            //     var param = new AllowParam(resource, action)
-            //     {
-            //         UserId = userId,
-            //         RoleCode = role,
-            //     };
-            //     await client.GetAccessToken();
-            //     var res = await client.Request<AllowResponse>(param.CreateRequest(), cancellationToken);
-            //     return res.Result;
-            // }
+            /// <summary>
+            /// 允许某个用户操作某个资源
+            /// </summary>
+            /// <param name="resource"></param>
+            /// <param name="action"></param>
+            /// <param name="userId"></param>
+            /// <param name="role"></param>
+            /// <param name="cancellationToken"></param>
+            /// <returns></returns>
+            /// TODO: 下个大版本去除
+            /// WARNING: 去除 CancellationToken cancellationToken = default 参数以避免与重载函数冲突
+            public async Task<CommonMessage> Allow(
+                string resource, 
+                string action, 
+                string userId = null, 
+                string role= null
+                )
+            {
+                var param = new AllowParam(resource, action)
+                {
+                    UserId = userId,
+                    RoleCode = role,
+                };
+                await client.GetAccessToken();
+                var res = await client.Request<AllowResponse>(param.CreateRequest());
+                return res.Result;
+            }
 
             public async Task<CommonMessage> Allow(
                 string userId,
                 string resource,
                 string action,
-                string nameSpace,
+                string _namespace,
                 CancellationToken cancellationToken = default)
             {
                 var param = new AllowParam(resource, action)
                 {
                     UserId = userId,
                     Resource = resource,
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<AllowResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -87,6 +89,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="resource"></param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下个大版本去除
             public async Task<bool> IsAllowed(
                 string userId,
                 string action,
@@ -103,31 +106,37 @@ namespace Authing.ApiClient.Mgmt
                 string userId,
                 string resource,
                 string action,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new IsActionAllowedParam(resource, action, userId)
                 {
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<IsActionAllowedResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
-            // public async Task<object> listAuthorizedResources(
-            //     PolicyAssignmentTargetType policyAssignmentTargetType,
-            //     string targetIdentifier,
-            //     string nameSpace,
-            //     ResourceType resourceType,
-            //     CancellationToken cancellation = default
-            // )
-            // {
-            //     var param = new ListAuth
-            //     var res = 
-            // }
+            public void ListAuthorizedResources(
+                PolicyAssignmentTargetType policyAssignmentTargetType,
+                string targetIdentifier,
+                string nameSpace,
+                ResourceType resourceType,
+                CancellationToken cancellation = default
+            )
+            {
+                // TODO: 缺少对应的 Graph QL 类
+                // var param = new AuthorizedResourceParam()
+                // {
+                //     Namespace = nameSpace,
+                //     ResourceType = resourceType,
+                    
+                // };
+                // var res = 
+            }
 
             public async Task<CommonMessage> AuthorizeResource(
-                string nameSpace,
+                string _namespace,
                 string resource,
                 AuthorizeResourceOpt[] authorizeResourceOptions,
                 CancellationToken cancellation = default
@@ -135,7 +144,7 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new AuthorizeResourceParam()
                 {
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                     Resource = resource,
                     Opts = authorizeResourceOptions
                 };
@@ -159,7 +168,8 @@ namespace Authing.ApiClient.Mgmt
                 }
                 var param = new AuthorizedTargetsParam(getAuthorizedTargetsOptions.NameSpace, getAuthorizedTargetsOptions.ResourceType, getAuthorizedTargetsOptions.Resource)
                 {
-                    Actions = getAuthorizedTargetsOptions.Actions
+                    Actions = getAuthorizedTargetsOptions.Actions,
+                    TargetType = getAuthorizedTargetsOptions.TargetType
                 };
                 var res = await client.Request<AuthorizedTargetsResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
@@ -242,9 +252,10 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<bool> DeleteResource(string code, string nameSpace, CancellationToken cancellationToken = default)
+            public async Task<bool> DeleteResource(string code, string _namespace, CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/resources/{code}").SetQueryParam("namespace", nameSpace).DeleteAsync(cancellationToken);
+                // TODO: 返回结果是否合适
+                var res = await client.Host.AppendPathSegment($"api/v2/resources/{code}").SetQueryParam("namespace", _namespace).DeleteAsync(cancellationToken);
                 return true;
             }
 
@@ -410,7 +421,11 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<ProgrammaticAccessAccountList> ProgrammaticAccessAccountList(string appId, int page = 1, int limit = 10, CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/programmatic-access-accounts?limit={limit}&page={page}").WithOAuthBearerToken(client.Token).GetJsonAsync<ProgrammaticAccessAccountList>(cancellationToken);
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/programmatic-access-accounts").SetQueryParams(new 
+                {
+                    limit,
+                    page
+                }).WithOAuthBearerToken(client.Token).GetJsonAsync<ProgrammaticAccessAccountList>(cancellationToken);
                 return res;
             }
 
@@ -422,7 +437,7 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<bool> DeleteProgrammaticAccessAccount(string programmaticAccessAccountId, CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/applications/programmatic-access-accounts?id={programmaticAccessAccountId}").WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken);
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/programmatic-access-accounts").SetQueryParam("id", programmaticAccessAccountId).WithOAuthBearerToken(client.Token).DeleteAsync(cancellationToken);
                 return true;
             }
 

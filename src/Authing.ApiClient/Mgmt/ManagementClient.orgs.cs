@@ -2,15 +2,10 @@
 using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Authing.ApiClient.Management.Types;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Newtonsoft.Json;
-using Authing.ApiClient.Extensions;
-using Authing.ApiClient.Utils;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -58,9 +53,11 @@ namespace Authing.ApiClient.Mgmt
                     Page = page
                 };
                 var res = await client.Request<OrgsResponse>(param.CreateRequest(), cancellationToken);
+                // TODO: build tree
                 return res.Result;
             }
 
+            // warning: 参数安排是否合理
             public async Task<Types.Org> AddNote(string orgId, AddNodeParam addNodeParam, CancellationToken cancellationToken = default)
             {
                 var param = new AddNodeParam(orgId, addNodeParam.Name)
@@ -137,7 +134,7 @@ namespace Authing.ApiClient.Mgmt
 
             // public async Task<object> ImportByJson(object _object)
             // {
-            //     // TODO: 上传文件
+                // TODO: 上传文件
             //     // var param = 
             // }
 
@@ -151,27 +148,27 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<object> MoveMembers(MoveMembersParam moveMembersParam, CancellationToken cancellationToken = default)
+            public async Task<bool> MoveMembers(MoveMembersParam moveMembersParam, CancellationToken cancellationToken = default)
             {
                 var res = await client.Request<MoveMembersResponse>(moveMembersParam.CreateRequest(), cancellationToken);
                 return true;
             }
 
-            public async Task<Node> ListMembers(string nodeId, NodeByIdWithMembersParam nodeByIdWithMembersParam, CancellationToken cancellationToken = default)
+            public async Task<PaginatedUsers> ListMembers(string nodeId, NodeByIdWithMembersParam nodeByIdWithMembersParam, CancellationToken cancellationToken = default)
             {
                 nodeByIdWithMembersParam.Id = nodeId;
                 var res = await client.Request<NodeByIdWithMembersResponse>(nodeByIdWithMembersParam.CreateRequest(), cancellationToken);
-                return res.Result;
+                return res.Result.Users;
             }
 
-            public async Task<Node> RemoveMembers(string nodeId, IEnumerable<string> userIds, CancellationToken cancellationToken = default)
+            public async Task<PaginatedUsers> RemoveMembers(string nodeId, IEnumerable<string> userIds, CancellationToken cancellationToken = default)
             {
                 var param = new RemoveMemberParam(userIds)
                 {
                     NodeId = nodeId
                 };
                 var res = await client.Request<RemoveMemberResponse>(param.CreateRequest(), cancellationToken);
-                return res.Result;
+                return res.Result.Users;
             }
 
             public async Task<CommonMessage> SetMainDepartment(string userId, string departmentId, CancellationToken cancellationToken = default)
@@ -198,11 +195,11 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<PaginatedAuthorizedResources> ListAuthorizedResourcesByNodeId(string nodeId, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResourcesByNodeId(string nodeId, string _namespace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
             {
                 var param = new ListNodeByIdAuthorizedResourcesParam(nodeId)
                 {
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                     ResourceType = resourceType.ToString().ToUpper()
                 };
                 var res = await client.Request<ListNodeByIdAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
@@ -214,7 +211,7 @@ namespace Authing.ApiClient.Mgmt
                 return node.AuthorizedResources;
             }
 
-            public async Task<object> ListAuthorizedResourcesByNodeCode(string orgId, string code, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResourcesByNodeCode(string orgId, string code, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
             {
                 var param = new ListNodeByCodeAuthorizedResourcesParam(orgId, code)
                 {
@@ -261,6 +258,4 @@ namespace Authing.ApiClient.Mgmt
 
         }
     }
-
-
 }

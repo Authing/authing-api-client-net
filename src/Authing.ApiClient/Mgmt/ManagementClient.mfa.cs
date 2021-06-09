@@ -29,9 +29,10 @@ namespace Authing.ApiClient.Mgmt
                 this.client = client;
             }
 
+            // TODO: 返回的数据类型似乎不合适
             public async Task<Dictionary<UserMfaTypeEnum, bool>> GetStatus(string userId, CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/users/{userId}/mfa-bound").GetJsonAsync<Dictionary<UserMfaTypeEnum, bool>>(cancellationToken);
+                var res = await client.Host.AppendPathSegment($"api/v2/users/{userId}/mfa-bound").WithOAuthBearerToken(client.Token).GetJsonAsync<Dictionary<UserMfaTypeEnum, bool>>(cancellationToken);
                 return res;
             }
 
@@ -41,7 +42,9 @@ namespace Authing.ApiClient.Mgmt
                 return true;
             }
 
-            public async Task<ISetTotpRes> ImportTotp(string userId, string secret, string recoverCode = null, CancellationToken cancellationToken = default)
+            public async Task<ISetTotpRes> ImportTotp(
+                string userId, string secret, string recoverCode = null, CancellationToken cancellationToken = default
+            )
             {
                 var res = await client.Host.AppendPathSegment("api/v2/mfa/totp/import").WithOAuthBearerToken(client.Token).PostJsonAsync(new
                 {

@@ -35,7 +35,7 @@ namespace Authing.ApiClient.Mgmt
                 this.rolesManagementClient = client.Roles;
             }
 
-            public async Task<object> List(int page = 1, int limit = 2, CancellationToken cancellationToken = default)
+            public async Task<ApplicationList> List(int page = 1, int limit = 2, CancellationToken cancellationToken = default)
             {
                 var res = await client.Host.AppendPathSegment("api/v2/applications").WithOAuthBearerToken(client.Token).SetQueryParams(new
                 {
@@ -68,6 +68,8 @@ namespace Authing.ApiClient.Mgmt
                 var res = await client.Host.AppendPathSegment($"api/v2/applications/{id}").WithOAuthBearerToken(client.Token).GetJsonAsync<Application>(cancellationToken);
                 return res;
             }
+
+            // TODO: 缺少方法 listResources
 
             public async Task<Resources> CreateResource(string appId, CreateResourceParam createResourceParam, CancellationToken cancellationToken = default)
             {
@@ -193,53 +195,92 @@ namespace Authing.ApiClient.Mgmt
                 return res;
             }
 
-            public async Task<PaginatedRoles> GetRoles(string appId,
+            public async Task<PaginatedRoles> GetRoles(
+                string appId,
                 int page = 1,
                 int limit = 10,
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
                 var res = await rolesManagementClient.List(appId, page, limit, cancellationToken);
                 return res;
             }
 
-            public async Task<PaginatedUsers> GetUsersByRoleCode(string appId,
+            public async Task<PaginatedUsers> GetUsersByRoleCode(
+                string appId,
                 string code,
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
-                var res = await rolesManagementClient.ListUsers(code, new ListUsersOption {
-                    NameSpace = appId
-                }, cancellationToken);
+                var res = await rolesManagementClient.ListUsers(
+                    code, 
+                    new ListUsersOption {
+                        NameSpace = appId
+                    },
+                    cancellationToken
+                );
                 return res;
             }
 
-            public async Task<CommonMessage> AddUsersToRole(string appId,
+            public async Task<CommonMessage> AddUsersToRole(
+                string appId,
                 string code,
                 IEnumerable<string> userIds,  
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
                 var res = await rolesManagementClient.AddUsers(code, userIds, appId, cancellationToken);
                 return res;
             }
 
-            public async Task<CommonMessage> RemoveUsersFromRole(string appId,
+            public async Task<CommonMessage> RemoveUsersFromRole(
+                string appId,
                 string code,
                 IEnumerable<string> userIds,
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
                 var res = await rolesManagementClient.RemoveUsers(code, userIds, appId, cancellationToken);
                 return res;
             }
 
-            public async Task<Role> ListAuthorizedResourcesByRole(string appId,
+            public async Task<Role> ListAuthorizedResourcesByRole(
+                string appId,
                 string code,
                 ResourceType resourceType = default,
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
                 var res = await rolesManagementClient.ListAuthorizedResources(code, appId, resourceType, cancellationToken);
                 return res;
             }
 
-            
+            // TODO: 缺少 CreateAgreement
+            // TODO: 缺少 DeleteAgreement
+            // TODO: 缺少 ModifyAgreement
+            // TODO: 缺少 ListAgreement
+            // TODO: 缺少 SortAgreement
+
+            public async Task<ActiveUsers> ActiveUsers(
+                string appId,
+                int page = 1,
+                int limit = 10,
+                CancellationToken cancellationToken = default
+            )
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/applications/{appId}/active-users").SetQueryParams(new
+                {
+                    page,
+                    limit
+                }).WithOAuthBearerToken(client.Token).GetJsonAsync<ActiveUsers>(cancellationToken);
+                return res;
+            }
+
+            public async Task<Application> RefreshApplicationSecret(string appId, CancellationToken cancellationToken = default)
+            {
+                var res = await client.Host.AppendPathSegment($"api/v2/application/{appId}/refresh-secret").WithOAuthBearerToken(client.Token).PatchAsync(null, cancellationToken).ReceiveJson<Application>();
+                return res;
+            }
 
         }
     }

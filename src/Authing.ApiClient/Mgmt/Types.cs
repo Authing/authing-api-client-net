@@ -19,6 +19,8 @@ namespace Authing.ApiClient.Management.Types {
         public string? Email { get; set; }
 
         public string? Phone { get; set; }
+
+        public string? ExternalId { get; set; }
     }
 
     public class FindUserOption : ExistsOption
@@ -47,6 +49,9 @@ namespace Authing.ApiClient.Management.Types {
         public SearchUserGroupOpt [] GroupOpts { get; set; }
 
         public SearchUserRoleOpt [] RoleOpts { get; set; }
+
+        public bool WithCustomData { get; set; }
+        
 
     }
 
@@ -655,6 +660,20 @@ namespace Authing.ApiClient.Management.Types {
 
     }
 
-    
+    public class CreateUserOption
+    {
+        public bool KeppPassword { get; set; }
+        
+        public bool ResetPasswordOnFirstLogin { get; set; }
+        
+    }
+
+    public class ActiveUsers
+    {
+        public int TotalCount { get; set; }
+        
+        public IEnumerable<User> List { get; set; }
+        
+    }
 
 }

@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Extensions;
 
 namespace Authing.ApiClient.Mgmt
 {
@@ -45,6 +46,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userInfo">用户信息</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO： 下一个大版本移除
             public async Task<User> Create(
                 CreateUserInput userInfo,
                 bool keepPassword = false,
@@ -56,6 +58,23 @@ namespace Authing.ApiClient.Mgmt
                     KeepPassword = keepPassword,
                 };
                 await client.GetAccessToken();
+                var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<User> Create(
+                CreateUserInput userInfo,
+                CreateUserOption createUserOption = null,
+                CancellationToken cancellationToken = default)
+            {
+                userInfo.Password = client.Encrypt(userInfo.Password);
+                var param = new CreateUserParam(userInfo)
+                {
+                    KeepPassword = createUserOption?.KeppPassword,
+                    ResetPasswordOnFirstLogin = createUserOption?.ResetPasswordOnFirstLogin,
+                    UserInfo = userInfo,
+                };
+
                 var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -76,8 +95,9 @@ namespace Authing.ApiClient.Mgmt
                 var param = new UpdateUserParam(updates)
                 {
                     Id = userId,
+                    Input = updates
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<UpdateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -88,10 +108,31 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userId">用户 ID</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下个大版本去除
             public async Task<User> Detail(
                 string userId,
                 CancellationToken cancellationToken = default)
             {
+                var param = new UserParam() { Id = userId };
+                await client.GetAccessToken();
+                var res = await client.Request<UserResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
+            }
+
+            public async Task<User> Detail(
+                string userId,
+                bool withCustomData = false,
+                CancellationToken cancellationToken = default)
+            {
+                if (withCustomData)
+                {
+                    var _param = new UserWithCustomDataParam()
+                    {
+                        Id = userId
+                    };
+                    var _res = await client.Request<UserWithCustomDataResponse>(_param.CreateRequest(), cancellationToken);
+                    return _res.Result;
+                }
                 var param = new UserParam() { Id = userId };
                 await client.GetAccessToken();
                 var res = await client.Request<UserResponse>(param.CreateRequest(), cancellationToken);
@@ -109,7 +150,6 @@ namespace Authing.ApiClient.Mgmt
                 CancellationToken cancellationToken = default)
             {
                 var param = new DeleteUserParam(userId);
-                await client.GetAccessToken();
                 var res = await client.Request<DeleteUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -125,7 +165,7 @@ namespace Authing.ApiClient.Mgmt
                 CancellationToken cancellationToken = default)
             {
                 var param = new DeleteUsersParam(userIds);
-                await client.GetAccessToken();
+
                 var res = await client.Request<DeleteUsersResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -136,17 +176,18 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userIds">用户 ID 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
-            public async Task<HttpResponseMessage> Batch(
+            /// TODO: 缺少 customData 配置参数
+            public async Task<IEnumerable<User>> Batch(
                 IEnumerable<string> userIds,
                 BatchFetchUserTypes batchFetchUserType = BatchFetchUserTypes.ID,
                 CancellationToken cancellationToken = default)
             {
-                var res = await client.Host.AppendPathSegment("api/v2/users/batch").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                var param = new UserBatchParam(userIds)
                 {
-                    ids = userIds,
-                    type = batchFetchUserType.ToString(),
-                }, cancellationToken);
-                return res.ResponseMessage;
+                    Type = batchFetchUserType.ToString().ToUpper()
+                };
+                var res = await client.Request<UserBatchResponse>(param.CreateRequest(), cancellationToken);
+                return res.Result;
             }
 
             /// <summary>
@@ -156,6 +197,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="limit">每页最大数量，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 缺少 customData 配置参数
             public async Task<PaginatedUsers> List(
                 int page = 1,
                 int limit = 10,
@@ -166,7 +208,7 @@ namespace Authing.ApiClient.Mgmt
                     Page = page,
                     Limit = limit,
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<UsersResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -188,7 +230,8 @@ namespace Authing.ApiClient.Mgmt
                 {
                     Username = options.Username,
                     Email = options.Email,
-                    Phone = options.Phone
+                    Phone = options.Phone,
+                    ExternalId = options.ExternalId
                 };
                 var res = await client.Request<IsUserExistsResponse>(parma.CreateRequest(), cancellation);
                 return res.Result;
@@ -202,6 +245,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="email">邮箱</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下一个大版本中去除
             public async Task<User> Find(
                 string username = null,
                 string phone = null,
@@ -219,14 +263,7 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            /// <summary>
-            /// 通过手机号、游戏、用户名查找用户
-            /// </summary>
-            /// <param name="username">用户名</param>
-            /// <param name="phone">手机号</param>
-            /// <param name="email">邮箱</param>
-            /// <param name="cancellationToken"></param>
-            /// <returns></returns>
+            // TODO: 缺少配置参数 withCustomData
             public async Task<User> Find(
                 FindUserOption options,
                 CancellationToken cancellationToken = default)
@@ -238,7 +275,7 @@ namespace Authing.ApiClient.Mgmt
                     Email = options.Email,
                     ExternalId = options.ExternalId,
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<FindUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -253,6 +290,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下个大版本去除
             public async Task<PaginatedUsers> Search(
                 string query,
                 int page = 1,
@@ -277,6 +315,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 缺少配置参数 withCustomData 
             public async Task<PaginatedUsers> Search(
                 string query,
                 SearchOption option = null,
@@ -311,7 +350,7 @@ namespace Authing.ApiClient.Mgmt
                 CancellationToken cancellationToken = default)
             {
                 var param = new RefreshTokenParam() { Id = userId };
-                await client.GetAccessToken();
+
                 var res = await client.Request<RefreshTokenResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -325,7 +364,7 @@ namespace Authing.ApiClient.Mgmt
             public async Task<PaginatedGroups> ListGroups(string userId, CancellationToken cancellationToken = default)
             {
                 var param = new GetUserGroupsParam(userId);
-                await client.GetAccessToken();
+
                 var res = await client.Request<GetUserGroupsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result.Groups;
             }
@@ -346,7 +385,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     Code = group
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<AddUserToGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -367,7 +406,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     Code = group
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<RemoveUserFromGroupResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -381,12 +420,12 @@ namespace Authing.ApiClient.Mgmt
             /// <returns></returns>
             public async Task<PaginatedRoles> ListRoles(
                 string userId,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new GetUserRolesParam(userId)
                 {
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<GetUserRolesResponse>(param.CreateRequest(), cancellationToken);
@@ -408,16 +447,16 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> AddRoles(
                 string userId,
                 IEnumerable<string> roles,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new AssignRoleParam()
                 {
                     UserIds = new string[] { userId },
                     RoleCodes = roles,
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                 };
-                await client.GetAccessToken();
+
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -432,20 +471,21 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> RemoveRoles(
                 string userId,
                 IEnumerable<string> roles,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new RevokeRoleParam()
                 {
                     UserIds = new string[] { userId },
                     RoleCodes = roles,
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                 };
                 await client.GetAccessToken();
                 var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
 
+            // TODO: 注意类型转换
             public async Task<HttpResponseMessage> ListOrgs(string userId, CancellationToken cancellation = default)
             {
                 var res = await client.Host.AppendPathSegment($"api/v2/users/{userId}/orgs").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
@@ -464,16 +504,16 @@ namespace Authing.ApiClient.Mgmt
                 return user.Departments;
             }
 
-            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string userId, string nameSpace, ListAuthorizedResourcesOption option = null, CancellationToken cancellationToken = default)
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string userId, string _namespace, ListAuthorizedResourcesOption option = null, CancellationToken cancellationToken = default)
             {
                 var resourceType = option.ResourceType;
                 var param = new ListUserAuthorizedResourcesParam(userId)
                 {
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                 };
                 if (resourceType != null)
                 {
-                    param.ResourceType = resourceType.ToString();
+                    param.ResourceType = resourceType.ToString().ToUpper();
                 }
                 var res = await client.Request<ListUserAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
                 var user = res.Result;
@@ -481,7 +521,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     throw new Exception("用户不存在！");
                 }
-                // var authorizedResources = user.AuthorizedResources;
+
                 return user.AuthorizedResources;
             }
 
@@ -516,7 +556,10 @@ namespace Authing.ApiClient.Mgmt
                 }
                 var param = new SetUdvBatchParam(UdfTargetType.USER, userId)
                 {
-                    // UdvList,
+                    UdvList = data.ToList().Select(item => new UserDefinedDataInput(item.Key)
+                    {
+                        Value = item.Value.ConvertJson()
+                    }),
                 };
                 var res = await client.Request<SetUdvBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
@@ -529,20 +572,25 @@ namespace Authing.ApiClient.Mgmt
                     throw new Exception("empty input list");
                 }
                 var param = new List<SetUdfValueBatchInput>();
-                foreach (var item in setUdfValueBatchInput)
-                {
-                    foreach (KeyValuePair<string, string> keyValue in item.Data)
-                    {
-                        var tmp = new SetUdfValueBatchInput(item.UserId, keyValue.Key, keyValue.Value);
-                        param.Add(tmp);
-                    }
-                }
+                setUdfValueBatchInput.ToList().ForEach(
+                    item =>
+                        item.Data.ToList().ForEach(
+                            keyValue =>
+                            param.Add(
+                                new SetUdfValueBatchInput(
+                                    item.UserId,
+                                    keyValue.Key,
+                                    keyValue.Value.ConvertJson()
+                                )
+                        )
+                ));
                 var _param = new Types.SetUdfValueBatchParam(UdfTargetType.USER, param);
                 var res = await client.Request<SetUdvBatchResponse>(_param.CreateRequest(), cancellation);
                 return res.Result;
             }
 
-            public async Task<CommonMessage> SetUdfValueBatch(UdfValues[] udfValues, CancellationToken cancellation = default)
+            // TODO: 衡量两个方法的优劣
+            public async Task<CommonMessage> SetUdfValueBatch(IEnumerable<UdfValues>  udfValues, CancellationToken cancellation = default)
             {
                 if (udfValues.Count() < 1)
                 {
@@ -553,9 +601,13 @@ namespace Authing.ApiClient.Mgmt
                 {
                     foreach (var kvp in udfValue.Data)
                     {
-                        param.Add(new SetUdfValueBatchInput(udfValue.UserId,
-                            kvp.Key,
-                            JsonConvert.SerializeObject(kvp.Value)));
+                        param.Add(
+                            new SetUdfValueBatchInput(
+                                udfValue.UserId,
+                                kvp.Key,
+                                kvp.Value.ConvertJson()
+                            )
+                        );
                     }
                 }
                 var _param = new Types.SetUdfValueBatchParam(UdfTargetType.USER, param);
@@ -563,18 +615,17 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<CommonMessage> RemoveUdfValue(string key, CancellationToken cancellation = default)
+            // ? RemoveUdfValue 方法却使用了 UdvParam 这合理吗?
+            public async Task<CommonMessage> RemoveUdfValue(string userId, string key, CancellationToken cancellation = default)
             {
-                var param = new RemoveUdfParam(UdfTargetType.USER, key)
-                {
-                };
+                var param = new RemoveUdvParam(UdfTargetType.USER, userId, key);
                 var res = await client.Request<SetUdfValueBatchResponse>(param.CreateRequest(), cancellation);
                 return res.Result;
             }
 
-            public async Task<bool> hasRole(string userId, string roleCode, string nameSpace = null, CancellationToken cancellation = default)
+            public async Task<bool> hasRole(string userId, string roleCode, string _namespace = null, CancellationToken cancellation = default)
             {
-                var roleList = await ListRoles(userId, nameSpace, cancellation);
+                var roleList = await ListRoles(userId, _namespace, cancellation);
 
                 if (roleList.TotalCount < 1)
                 {
@@ -586,9 +637,9 @@ namespace Authing.ApiClient.Mgmt
                 return hasRole.Count > 0;
             }
 
-            public async Task<CommonMessage> Kick(string[] userIds, CancellationToken cancellation = default)
+            public async Task<CommonMessage> Kick(IEnumerable<string> userIds, CancellationToken cancellation = default)
             {
-                var res = await client.Host.AppendPathSegment($"api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).PostJsonAsync(new
+                var res = await client.Host.AppendPathSegment($"api/v2/users/kick").WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.Token).PostJsonAsync(new
                 {
                     userIds,
                 }, cancellation);
@@ -610,17 +661,18 @@ namespace Authing.ApiClient.Mgmt
                 {
                     appId = logoutParam.AppId,
                     userId = logoutParam.UserId
-                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.AccessToken).GetAsync(cancellation);
+                }).WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.Token).GetAsync(cancellation);
                 return new CommonMessage
                 {
                     Code = 200,
-                    Message = "强制等出成功"
+                    Message = "强制登出成功"
                 };
             }
 
             public async Task<CheckLoginStatusRes> CheckLoginStatus(string userId, string appId = null, string devicdId = null, CancellationToken cancellation = default)
             {
-                var res = await client.Host.AppendPathSegment("api/v2/users/login-status").WithOAuthBearerToken(client.Token).SetQueryParams(new
+                var res = await client.Host.AppendPathSegment("api/v2/users/login-status").
+                WithHeaders(client.GetAuthHeaders()).WithOAuthBearerToken(client.Token).SetQueryParams(new
                 {
                     userId,
                     appId,
@@ -663,7 +715,7 @@ namespace Authing.ApiClient.Mgmt
                     }
                 };
                 dic["exclude_non_app_records"] = listUserActionsParam.ExcludeNonAppRecords ?? "1";
-                var res = await client.Host.AppendPathSegment("api/v2/analysis/user-action").SetQueryParams(dic).GetJsonAsync<ListUserActionsRes>(cancellation);
+                var res = await client.Host.AppendPathSegment("api/v2/analysis/user-action").SetQueryParams(dic).WithHeaders(client.GetAuthHeaders()).GetJsonAsync<ListUserActionsRes>(cancellation);
                 var list = res.List;
                 var resList = list.Select(log => new UserActionRes
                 {

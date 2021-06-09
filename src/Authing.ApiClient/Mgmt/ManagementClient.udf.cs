@@ -73,7 +73,6 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new RemoveUdfParam(type, key);
 
-                await client.GetAccessToken();
                 var res = await client.Request<RemoveUdfResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }

@@ -64,6 +64,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="code">角色唯一标志</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 在下一个大版本中去除
             public async Task<CommonMessage> Delete(
                 string code,
                 CancellationToken cancellationToken = default)
@@ -76,12 +77,12 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<CommonMessage> Delete(
                 string code,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new DeleteRoleParam(code)
                 {
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<DeleteRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -93,6 +94,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="codeList">角色 code 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO： 在下一个大版本中去除
             public async Task<CommonMessage> DeleteMany(
                 IEnumerable<string> codeList,
                 CancellationToken cancellationToken = default)
@@ -105,12 +107,12 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<CommonMessage> DeleteMany(
                 IEnumerable<string> codeList,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new DeleteRolesParam(codeList)
                 {
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<DeleteRolesResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -124,6 +126,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="newCode">新的 code</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下一个大版本中去除
             public async Task<Role> Update(
                 string code,
                 string description = null,
@@ -147,6 +150,7 @@ namespace Authing.ApiClient.Mgmt
             {
                 var param = new UpdateRoleParam(code)
                 {
+                    Namespace = updateRoleOptions.NameSpace,
                     Description = updateRoleOptions.Description,
                     NewCode = updateRoleOptions.NewCode,
                 };
@@ -161,6 +165,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="code">角色唯一标志</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO：下一个大版本去除
             public async Task<Role> Detail(
                 string code,
                 CancellationToken cancellationToken = default)
@@ -173,12 +178,13 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<Role> Detail(
                 string code,
-                string nameSpace = null,
-                CancellationToken cancellationToken = default)
+                string _namespace = null,
+                CancellationToken cancellationToken = default
+            )
             {
                 var param = new RoleParam(code)
                 {
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<RoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -186,10 +192,10 @@ namespace Authing.ApiClient.Mgmt
 
             public async Task<Role> FindByCode(
                 string code,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
-                var res = await Detail(code, nameSpace, cancellationToken);
+                var res = await Detail(code, _namespace, cancellationToken);
                 return res;
             }
 
@@ -200,6 +206,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO：下一个大版本去除
             public async Task<PaginatedRoles> List(
                 int page = 1,
                 int limit = 10,
@@ -212,7 +219,7 @@ namespace Authing.ApiClient.Mgmt
             }
 
             public async Task<PaginatedRoles> List(
-                string nameSpace,
+                string _namespace,
                 int page = 1,
                 int limit = 10,
                 CancellationToken cancellationToken = default)
@@ -221,7 +228,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     Page = page,
                     Limit = limit,
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<RolesResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -233,6 +240,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="code">角色唯一标志</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO：下一个大版本去除            
             public async Task<PaginatedUsers> ListUsers(
                 string code,
                 CancellationToken cancellationToken = default)
@@ -281,6 +289,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userIds">用户 ID 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO：下一个大版本去除
             public async Task<CommonMessage> AddUsers(
                 string code,
                 IEnumerable<string> userIds,
@@ -299,14 +308,14 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> AddUsers(
                 string code,
                 IEnumerable<string> userIds,
-                string nameSpace = null,
+                string _namespace = null,
                 CancellationToken cancellationToken = default)
             {
                 var param = new AssignRoleParam()
                 {
                     UserIds = userIds,
                     RoleCode = code,
-                    Namespace = nameSpace
+                    Namespace = _namespace
                 };
                 var res = await client.Request<AssignRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -319,6 +328,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="userIds">用户 ID 列表</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO：下一个大版本去除
             public async Task<CommonMessage> RemoveUsers(
                 string code,
                 IEnumerable<string> userIds,
@@ -337,14 +347,15 @@ namespace Authing.ApiClient.Mgmt
             public async Task<CommonMessage> RemoveUsers(
                 string code,
                 IEnumerable<string> userIds,
-                string nameSpace = null,
-                CancellationToken cancellationToken = default)
+                string _namespace = null,
+                CancellationToken cancellationToken = default
+            )
             {
                 var param = new RevokeRoleParam()
                 {
                     UserIds = userIds,
                     RoleCode = code,
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                 };
                 var res = await client.Request<RevokeRoleResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
@@ -362,7 +373,8 @@ namespace Authing.ApiClient.Mgmt
                 string code,
                 int page = 1,
                 int limit = 10,
-                CancellationToken cancellationToken = default)
+                CancellationToken cancellationToken = default
+            )
             {
                 var param = new PolicyAssignmentsParam()
                 {
@@ -391,7 +403,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     TargetIdentifiers = new string[] { code },
                 };
-                await client.GetAccessToken();
+                
                 var res = await client.Request<AddPolicyAssignmentsResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
@@ -416,12 +428,12 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<Role> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType, CancellationToken cancellationToken = default)
+            public async Task<Role> ListAuthorizedResources(string code, string _namespace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
             {
                 var param = new ListRoleAuthorizedResourcesParam(code)
                 {
                     ResourceType = resourceType.ToString().ToUpper(),
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                 };
                 var res = await client.Request<ListRoleAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);
                 if (res.Result == null)

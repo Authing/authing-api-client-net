@@ -155,6 +155,7 @@ namespace Authing.ApiClient.Mgmt
             /// <param name="limit">分页大小，默认为 10</param>
             /// <param name="cancellationToken"></param>
             /// <returns></returns>
+            /// TODO: 下一个大版本去除
             public async Task<PaginatedUsers> ListUsers(
                 string code,
                 int page = 1,
@@ -244,11 +245,11 @@ namespace Authing.ApiClient.Mgmt
                 return res.Result;
             }
 
-            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string code, string nameSpace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
+            public async Task<PaginatedAuthorizedResources> ListAuthorizedResources(string code, string _namespace, ResourceType resourceType = default, CancellationToken cancellationToken = default)
             {
                 var param = new ListGroupAuthorizedResourcesParam(code)
                 {
-                    Namespace = nameSpace,
+                    Namespace = _namespace,
                     ResourceType = resourceType.ToString().ToUpper(),
                 };
                 var res = await client.Request<ListGroupAuthorizedResourcesResponse>(param.CreateRequest(), cancellationToken);

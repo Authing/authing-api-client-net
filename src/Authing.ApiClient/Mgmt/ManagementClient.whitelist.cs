@@ -90,17 +90,9 @@ namespace Authing.ApiClient.Mgmt
             {
                 var config = new RegisterWhiteListConfigInput
                 {
-                    EmailEnabled = type switch
-                    {
-                        WhitelistType.USERNAME =>
-                            true,
-                        WhitelistType.EMAIL =>
-                            true,
-                        WhitelistType.PHONE =>
-                            true,
-                        _ =>
-                            throw new AuthingException("不支持的白名单类型"),
-                    }
+                    EmailEnabled = type == WhitelistType.EMAIL,
+                    PhoneEnabled = type == WhitelistType.PHONE,
+                    UsernameEnabled = type == WhitelistType.USERNAME,
                 };
 
                 var param = new UpdateUserpoolParam(new UpdateUserpoolInput()
@@ -123,17 +115,9 @@ namespace Authing.ApiClient.Mgmt
             {
                 var config = new RegisterWhiteListConfigInput
                 {
-                    EmailEnabled = type switch
-                    {
-                        WhitelistType.USERNAME =>
-                            true,
-                        WhitelistType.EMAIL =>
-                            true,
-                        WhitelistType.PHONE =>
-                            true,
-                        _ =>
-                            throw new AuthingException("不支持的白名单类型"),
-                    }
+                    EmailEnabled = type == WhitelistType.EMAIL,
+                    PhoneEnabled = type == WhitelistType.PHONE,
+                    UsernameEnabled = type == WhitelistType.USERNAME,
                 };
 
                 var param = new UpdateUserpoolParam(new UpdateUserpoolInput()
