@@ -5,6 +5,16 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authing.ApiClient", "src\Authing.ApiClient\Authing.ApiClient.csproj", "{16F59BA3-E511-47C0-B905-A6BE881BC024}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{747019B2-7F71-4C19-BCC3-3F360BD9D747}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authing.ApiClient", "Authing.ApiClient", "{C30A0349-CEAF-4D7C-BF63-DFDFC9EF0002}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{6BC1739B-EDA8-4546-B6D3-6D139E78CE8C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{FA7312C6-4051-4DF6-AD72-6EDC28B7D3C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationClient", "src\Authing.ApiClient\Examples\Auth\AuthenticationClient\AuthenticationClient.csproj", "{89F2C8C0-6398-4C5A-B891-67E4990F71B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +25,21 @@ Global
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F59BA3-E511-47C0-B905-A6BE881BC024}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F2C8C0-6398-4C5A-B891-67E4990F71B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F2C8C0-6398-4C5A-B891-67E4990F71B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F2C8C0-6398-4C5A-B891-67E4990F71B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F2C8C0-6398-4C5A-B891-67E4990F71B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {906D012B-115A-438F-9D9E-0E51CD4E2617}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C30A0349-CEAF-4D7C-BF63-DFDFC9EF0002} = {747019B2-7F71-4C19-BCC3-3F360BD9D747}
+		{6BC1739B-EDA8-4546-B6D3-6D139E78CE8C} = {C30A0349-CEAF-4D7C-BF63-DFDFC9EF0002}
+		{FA7312C6-4051-4DF6-AD72-6EDC28B7D3C0} = {6BC1739B-EDA8-4546-B6D3-6D139E78CE8C}
+		{89F2C8C0-6398-4C5A-B891-67E4990F71B4} = {FA7312C6-4051-4DF6-AD72-6EDC28B7D3C0}
 	EndGlobalSection
 EndGlobal

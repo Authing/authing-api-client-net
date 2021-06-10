@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Authing.ApiClient.Auth.Types
 {
 
     public class InitAuthenticationClientOptions
     {
+        [Required]
         public string AppId { get; set; }
         public string UserPoolId { get; set; }
         // public string UserPoolId { get; set; }
@@ -200,10 +202,10 @@ namespace Authing.ApiClient.Auth.Types
 
     class HttpClientConfig
     {
-        public Dictionary<string, object> [] Headers { get; set; }
-        
+        public Dictionary<string, object>[] Headers { get; set; }
+
     }
-    
+
     public class ResUdv
     {
         public string Key { get; set; }
@@ -228,16 +230,16 @@ namespace Authing.ApiClient.Auth.Types
 
         [JsonProperty(PropertyName = "mfa")]
         public bool Mfa { get; set; }
-        
+
         [JsonProperty(PropertyName = "password")]
         public bool Password { get; set; }
-        
+
         [JsonProperty(PropertyName = "phone")]
         public bool Phone { get; set; }
-        
+
         [JsonProperty(PropertyName = "passwordSecurityLevel")]
         public PasswordSecurityLevel PasswordSecurityLevel { get; set; }
-        
+
         [JsonProperty(PropertyName = "score")]
         public int Score { get; set; }
     }
@@ -269,10 +271,10 @@ namespace Authing.ApiClient.Auth.Types
     {
         public string AccessKey { get; set; }
         public string AccessSecret { get; set; }
-        
+
     }
 
-    public class OidcOption: IProtocolInterface
+    public class OidcOption : IProtocolInterface
     {
         public string AppId { get; set; }
         public string RedirectUri { get; set; }
@@ -283,7 +285,7 @@ namespace Authing.ApiClient.Auth.Types
         public string Scope { get; set; }
         public CodeChallengeDigestMethod? CodeChallengeMethod { get; set; }
         public string CodeChallenge { get; set; }
-        
+
     }
 
     public enum ResponseMode
@@ -346,24 +348,24 @@ namespace Authing.ApiClient.Auth.Types
         }
     }
 
-    public class OauthOption: IProtocolInterface
+    public class OauthOption : IProtocolInterface
     {
         public string AppId { get; set; }
         public string RedirectUri { get; set; }
         public OauthResponseType? ResponseType { get; set; }
         public string State { get; set; }
         public string Scope { get; set; }
-        
+
     }
 
-    public class CasOption: IProtocolInterface
+    public class CasOption : IProtocolInterface
     {
         public string Service { get; set; }
     }
 
-    public class SamlOption: IProtocolInterface
+    public class SamlOption : IProtocolInterface
     {
-        
+
     }
 
 
@@ -391,7 +393,7 @@ namespace Authing.ApiClient.Auth.Types
     {
         public string AccessToken { get; set; }
         public string IdToken { get; set; }
-        
+
     }
 
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
@@ -400,7 +402,7 @@ namespace Authing.ApiClient.Auth.Types
         public string AccessToken { get; set; }
 
         public int ExpiresIn { get; set; }
-        
+
         public string IdToken { get; set; }
 
         public string Scope { get; set; }
@@ -606,62 +608,62 @@ namespace Authing.ApiClient.Auth.Types
         public string AuthenticatorType { get; set; }
 
         public string Secret { get; set; }
-        
+
         public string QrCodeUri { get; set; }
-        
+
         public string QrCodeDataUrl { get; set; }
-        
+
         public string RecoveryCode { get; set; }
-        
-           
+
+
     }
 
     public class DeleteMfaAuthenticatorRes
     {
         public int Code { get; set; }
-        
+
         public string Message { get; set; }
-        
+
     }
 
     public class ConfirmAssosicateMfaAuthenticatorParam
     {
         public string AuthenticatorType { get; set; }
-        
+
         public string Totp { get; set; }
-        
+
         public TotpSourceEnum Source { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
     }
 
     public class VerifyTotpMfaParam
     {
         public string Totp { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
     }
 
     public class VerifyAppSmsMfaParam
-    {   
+    {
         public string Phone { get; set; }
-        
+
         public string Code { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
     }
 
     public class VerifyAppEmailMfaParam
     {
         public string Email { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
         public string Code { get; set; }
-        
+
     }
 
     public class PhoneOrEmailBindableParam
@@ -676,19 +678,19 @@ namespace Authing.ApiClient.Auth.Types
     public class VerifyTotpRecoveryCodeParam
     {
         public string RecoveryCode { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
     }
 
     public class AssociateFaceByUrlParam
     {
         public string BaseFace { get; set; }
-        
+
         public string CompareFace { get; set; }
-        
+
         public string MFAToken { get; set; }
-        
+
     }
 
     public enum LangEnum
@@ -699,7 +701,7 @@ namespace Authing.ApiClient.Auth.Types
 
     public interface IProtocolInterface
     {
-        
+
     }
 
 }
