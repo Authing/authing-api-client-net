@@ -86,6 +86,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             init(Options);
             UserPoolId = Options.UserPoolId;
             AppId = Options.AppId;
+            Host = Options.Host is not null ? Options.Host : Host;
             if (UserPoolId == string.Empty && AppId == string.Empty)
             {
                 throw new Exception("参数错误");
@@ -93,8 +94,8 @@ GKl64GDcIq3au+aqJQIDAQAB
         }
 
         public string MFAToken { get; set; }
-        
-        
+
+
 
         public string Token
         {
@@ -207,7 +208,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             }
         }
 
-        public object GetAuthHeaders() 
+        public object GetAuthHeaders()
         {
             return new
             {

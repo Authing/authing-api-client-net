@@ -2,37 +2,37 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "AuthenticationClient-build",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/examples/1/1.csproj",
+                "${workspaceFolder}/Examples/Auth/AuthenticationClient/AuthenticationClient.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "AuthenticationClient-publish",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/examples/1/1.csproj",
+                "${workspaceFolder}/Examples/Auth/AuthenticationClient/AuthenticationClient.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "AuthenticationClient-watch",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/examples/1/1.csproj",
+                "${workspaceFolder}/Examples/Auth/AuthenticationClient/AuthenticationClient.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

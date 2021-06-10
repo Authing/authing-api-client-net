@@ -1,10 +1,9 @@
-using System.IO;
-using System;
 using System.Collections.Generic;
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace Authing.ApiClient.Auth.Types
 {
@@ -702,6 +701,18 @@ namespace Authing.ApiClient.Auth.Types
     public interface IProtocolInterface
     {
 
+    }
+
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
+    public class ListOrgsRes
+    {
+        public int Code { get; set; }
+        
+        public string Message { get; set; }
+        
+        public IEnumerable<object> Data { get; set; }
+        
+        
     }
 
 }

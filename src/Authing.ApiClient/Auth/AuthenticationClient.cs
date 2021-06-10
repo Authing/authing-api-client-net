@@ -803,7 +803,7 @@ namespace Authing.ApiClient.Auth
         /// <returns>User</returns>
         public async Task<User> UpdatePassword(
             string newPassword,
-            string oldPassword = null,
+            string oldPassword,
             CancellationToken cancellationToken = default)
         {
             CheckLoggedIn();
@@ -1003,11 +1003,13 @@ namespace Authing.ApiClient.Auth
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async void Logout(CancellationToken cancellationToken = default)
+        public async Task<object> Logout(CancellationToken cancellationToken = default)
         {
             // TODO: 是否需要返回值
-            await Host.AppendPathSegment($"/api/v2/logout").SetQueryParam("app_id", Options.AppId).WithHeaders(GetHeaders()).GetAsync(cancellationToken);
+            var res = await Host.AppendPathSegment($"/api/v2/logout").SetQueryParam("app_id", Options.AppId).WithHeaders(GetHeaders()).GetJsonAsync<CommonMessage>(cancellationToken);
+
             ClearUser();
+            return res;
         }
 
         private void ClearUser()
@@ -1124,10 +1126,10 @@ namespace Authing.ApiClient.Auth
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns>HttpResponseMessage</returns>
-        public async Task<string> ListOrgs(CancellationToken cancellationToken = default)
+        public async Task<ListOrgsRes> ListOrgs(CancellationToken cancellationToken = default)
         {
             // TODO: 确定返回类型
-            var res = await Host.AppendPathSegment("api/v2/users/me/orgs").WithHeaders(GetHeaders()).GetJsonAsync(cancellationToken);
+            var res = await Host.AppendPathSegment("api/v2/users/me/orgs").WithHeaders(GetHeaders()).GetJsonAsync<ListOrgsRes>(cancellationToken);
             return res;
         }
         
@@ -1318,7 +1320,7 @@ namespace Authing.ApiClient.Auth
         /// <returns>RefreshToken</returns>
         // INFO: 这个 RefreshToken 与上面的 RefreshToken 是有区别的
         public async Task<RefreshToken> RefreshToken(
-            string accessToken = null,
+            string accessToken,
             CancellationToken cancellationToken = default)
         {
             CheckLoggedIn();
