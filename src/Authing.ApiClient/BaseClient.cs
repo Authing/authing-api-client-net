@@ -31,7 +31,7 @@ namespace Authing.ApiClient
         /// 配置对象
         /// </summary>
         /// <returns></returns>
-        public InitAuthenticationClientOptions Options = new();
+        public InitAuthenticationClientOptions Options { get; protected set; } = new();
 
         /// <summary>
         /// 接口超时时间，默认为 10 秒

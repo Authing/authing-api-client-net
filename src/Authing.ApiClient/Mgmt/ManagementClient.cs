@@ -1,4 +1,5 @@
-﻿using Authing.ApiClient.Types;
+﻿using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +19,23 @@ namespace Authing.ApiClient.Mgmt
         private readonly string secret;
         private int? accessTokenExpriredAt = 0;
 
+        public Action<InitAuthenticationClientOptions> Init { get; }
+
         /// <summary>
         /// 构造方法
         /// </summary>
         public ManagementClient(string userPoolId, string secret): base(userPoolId)
         {
             this.secret = secret;
-            // GetAccessToken();
+        }
+
+        public ManagementClient(Action<InitAuthenticationClientOptions> init) : base(init)
+        {
+            if (init is null)
+            {
+                throw new ArgumentNullException(nameof(init));
+            }
+            Init = init;
         }
 
         public async Task<ManagementClient> InitManagementClient(string userPoolId, string secret)

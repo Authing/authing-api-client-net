@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Authing.ApiClient.Auth.Types;
 using Authing.ApiClient.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Authing.ApiClient.Management.Types {
     public enum BatchFetchUserTypes {
@@ -66,6 +67,7 @@ namespace Authing.ApiClient.Management.Types {
         public string UserId { get; set; }
     }
 
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class Application
     {
         public QrcodeScanning QrcodeScanning { get; set; }
@@ -75,7 +77,8 @@ namespace Authing.ApiClient.Management.Types {
         public string Name { get; set; }
         public string Secret { get; set; }
         public string Identifier { get; set; }
-
+        public string Domain { get; set; }
+        
         public KeyValuePair<string, string> Jwks { get; set; }
 
         public string [] RedirectUris { get; set; }
@@ -85,7 +88,7 @@ namespace Authing.ApiClient.Management.Types {
         public OauthConfig OauthConfig { get; set; }
         public string CreateAt { get; set; }
         public string UpdatedAt { get; set; }
-        public object? Description { get; set; }
+        public string Description { get; set; }
         public object? SsoPageCustomizationSettings { get; set; }
         public string Logo { get; set; }
         public object? LogoutRedirectUris { get; set; }
@@ -673,6 +676,17 @@ namespace Authing.ApiClient.Management.Types {
         public int TotalCount { get; set; }
         
         public IEnumerable<User> List { get; set; }
+        
+    }
+
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
+    public class ListApplicationsRes
+    {
+        public string Code { get; set; }
+        
+        public string Message { get; set; }
+        
+        public ApplicationList Data { get; set; }
         
     }
 

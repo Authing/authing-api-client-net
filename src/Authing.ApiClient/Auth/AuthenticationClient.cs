@@ -1257,8 +1257,8 @@ namespace Authing.ApiClient.Auth
         public async Task<SecurityLevel> GetSecurityLevel(CancellationToken cancellationToken = default)
         {
             // TODO: 注意返回类型转换
-            var res = await Host.AppendPathSegment("api/v2/users/me/security-level").WithHeaders(GetHeaders()).GetAsync(cancellationToken);
-            return res.ResponseMessage.Convert<SecurityLevel>();
+            var res = await Host.AppendPathSegment("api/v2/users/me/security-level").WithHeaders(GetHeaders()).GetJsonAsync<SecurityLevel>(cancellationToken);
+            return res;
         }
 
         /// <summary>
@@ -1349,6 +1349,7 @@ namespace Authing.ApiClient.Auth
             {
                 return false;
             }
+            var user = res.Result;
 
             var roleList = user.Roles?.List;
             if (roleList == null || !roleList.Any())
@@ -1366,7 +1367,7 @@ namespace Authing.ApiClient.Auth
         /// <param name="_params">列表参数</param>
         /// <param name="cancellationToken"></param>
         /// <returns>HttpResponseMessage</returns>
-        public async Task<ApplicationList> ListApplications(ListParams _params = null, CancellationToken cancellationToken =
+        public async Task<ListApplicationsRes> ListApplications(ListParams _params = null, CancellationToken cancellationToken =
         default)
         {
             // TODO: 注意返回类型转换
@@ -1376,7 +1377,7 @@ namespace Authing.ApiClient.Auth
                 {
                     page = _params.Page,
                     limit = _params.Limit   
-                }).WithHeaders(GetHeaders()).GetJsonAsync<ApplicationList>(cancellationToken);
+                }).WithHeaders(GetHeaders()).GetJsonAsync<ListApplicationsRes>(cancellationToken);
             return res;
         }
 

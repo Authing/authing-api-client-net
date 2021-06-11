@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using Authing.ApiClient.Auth;
 using Authing.ApiClient.Auth.Types;
-using Authing.ApiClient.Types;
 
 
 #region 初始化    
@@ -312,29 +309,61 @@ Console.WriteLine(res is IEnumerable<KeyValuePair<string, object>>); */
 
 // SetUdfValue
 
-var res = await authenticationClient.SetUdfValue(new KeyValueDictionary()
+/* var res = await authenticationClient.SetUdfValue(new KeyValueDictionary()
 {
     {"key", "value11"},
 });
 
-Console.WriteLine(res is IEnumerable<KeyValuePair<string, object>>);
+Console.WriteLine(res is IEnumerable<KeyValuePair<string, object>>); */
 
 // RemoveUdfValue
 
+/* var res = await authenticationClient.RemoveUdfValue(key: "key");
+
+Console.WriteLine(res is true);
+ */
 
 // GetSecurityLevel
 
+/* var res = await authenticationClient.GetSecurityLevel();
 
+Console.WriteLine(res is SecurityLevel); */
 
 // ListAuthorizedResources
 
+/* var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", ResourceType.API);
+
+Console.WriteLine(res is PaginatedAuthorizedResources); */
 
 // ComputedPasswordSecurityLevel
 
+// TODO: 有问题
+
+/* var res = authenticationClient.ComputedPasswordSecurityLevel("Authing!@.com_123");
+
+Console.WriteLine(res); */
+
 // RefreshToken
+
+/* var res = await authenticationClient.RefreshToken();
+
+Console.WriteLine(res is RefreshToken); */
 
 // HasRole
 
+/* var res = await authenticationClient.HasRole("AuthingAdministratorRole");
+
+Console.WriteLine(res is true);
+ */
+
 // ListApplications
 
+/* var res = await authenticationClient.ListApplications();
+
+Console.WriteLine(res is ListApplicationsRes); */
+
 // SetLang
+
+/* authenticationClient.SetLang(LangEnum.ZH_CN);
+
+Console.WriteLine(authenticationClient.Options.Lang); */
