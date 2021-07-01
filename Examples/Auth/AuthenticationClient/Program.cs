@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Authing.ApiClient.Auth;
 using Authing.ApiClient.Auth.Types;
+using Authing.ApiClient.Types;
 
 
 #region 初始化    
@@ -12,7 +14,7 @@ var authenticationClient = new AuthenticationClient(
             }
 );
 
-await authenticationClient.LoginByUsername("Authing-test", "Authing", new RegisterAndLoginOptions { }, new CancellationTokenSource().Token);
+await authenticationClient.LoginByUsername("Authing-test", "123456aa", new RegisterAndLoginOptions { }, new CancellationTokenSource().Token);
 
 #endregion
 
@@ -331,9 +333,9 @@ Console.WriteLine(res is SecurityLevel); */
 
 // ListAuthorizedResources
 
-/* var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", ResourceType.API);
+var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", null);
 
-Console.WriteLine(res is PaginatedAuthorizedResources); */
+Console.WriteLine(res is PaginatedAuthorizedResources);
 
 // ComputedPasswordSecurityLevel
 

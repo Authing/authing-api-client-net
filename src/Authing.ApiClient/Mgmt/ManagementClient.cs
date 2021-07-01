@@ -13,23 +13,23 @@ namespace Authing.ApiClient.Mgmt
     /// </summary>
     public partial class ManagementClient : BaseClient
     {
-        /// <summary>
-        /// 用户池密钥，可以在控制台获取
-        /// </summary>
-        private readonly string secret;
         private int? accessTokenExpriredAt = 0;
+
+        private string Sercet { get; set; }
+        
+        
 
         public Action<InitAuthenticationClientOptions> Init { get; }
 
         /// <summary>
         /// 构造方法
         /// </summary>
-        public ManagementClient(string userPoolId, string secret): base(userPoolId)
+        private ManagementClient(string userPoolId, string secret) : base(userPoolId)
         {
-            this.secret = secret;
+            // this.secret = secret;
         }
 
-        public ManagementClient(Action<InitAuthenticationClientOptions> init) : base(init)
+        private ManagementClient(Action<InitAuthenticationClientOptions> init) : base(init)
         {
             if (init is null)
             {
@@ -38,25 +38,42 @@ namespace Authing.ApiClient.Mgmt
             Init = init;
         }
 
-        public async Task<ManagementClient> InitManagementClient(string userPoolId, string secret)
+        public static async Task<ManagementClient> InitManagementClient(string userPoolId, string secret)
         {
             var manageClient = new ManagementClient(userPoolId, secret);
             await manageClient.GetAccessToken();
 
-            Users = new UsersManagementClient(manageClient);
-            Roles = new RolesManagementClient(manageClient);
-            Acl = new AclManagementClient(manageClient);
-            Groups = new GroupsManagementClient(manageClient);
-            Udf = new UdfManagementClient(manageClient);
-            Whitelist = new WhitelistManagementClient(manageClient);
-            Userpool = new UserpoolManagementClient(manageClient);
-            Policies = new PoliciesManagementClient(manageClient);
+            manageClient.Users = new UsersManagementClient(manageClient);
+            manageClient.Roles = new RolesManagementClient(manageClient);
+            manageClient.Acl = new AclManagementClient(manageClient);
+            manageClient.Groups = new GroupsManagementClient(manageClient);
+            manageClient.Udf = new UdfManagementClient(manageClient);
+            manageClient.Whitelist = new WhitelistManagementClient(manageClient);
+            manageClient.Userpool = new UserpoolManagementClient(manageClient);
+            manageClient.Policies = new PoliciesManagementClient(manageClient);
+            return manageClient;
+        }
+
+
+        public static async Task<ManagementClient> InitManagementClient(Action<InitAuthenticationClientOptions> init)
+        {
+            var manageClient = new ManagementClient(init);
+            await manageClient.GetAccessToken();
+
+            manageClient.Users = new UsersManagementClient(manageClient);
+            manageClient.Roles = new RolesManagementClient(manageClient);
+            manageClient.Acl = new AclManagementClient(manageClient);
+            manageClient.Groups = new GroupsManagementClient(manageClient);
+            manageClient.Udf = new UdfManagementClient(manageClient);
+            manageClient.Whitelist = new WhitelistManagementClient(manageClient);
+            manageClient.Userpool = new UserpoolManagementClient(manageClient);
+            manageClient.Policies = new PoliciesManagementClient(manageClient);
             return manageClient;
         }
 
         private async Task<AccessTokenRes> GetClientWhenSdkInit(CancellationToken cancellationToken = default)
         {
-            var param = new AccessTokenParam(UserPoolId, secret);
+            var param = new AccessTokenParam(UserPoolId, Secret);
             var res = await Request<AccessTokenResponse>(param.CreateRequest(), cancellationToken);
             return res.Result;
         }

@@ -22,6 +22,11 @@ namespace Authing.ApiClient
         /// </summary>
         public string UserPoolId { get; private set; }
 
+
+        public string Secret { get; set; }
+        
+        
+
         /// <summary>
         /// AppID，注意用户池 ID 与 AppID，必填其一
         /// </summary>
@@ -86,6 +91,7 @@ GKl64GDcIq3au+aqJQIDAQAB
             init(Options);
             UserPoolId = Options.UserPoolId;
             AppId = Options.AppId;
+            Secret = Options.Secret;
             Host = Options.Host is not null ? Options.Host : Host;
             if (UserPoolId == string.Empty && AppId == string.Empty)
             {

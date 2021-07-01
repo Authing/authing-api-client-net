@@ -11,7 +11,7 @@ namespace Authing.ApiClient.Mgmt
 {
     public partial class ManagementClient
     {
-        public OrgManagementClient Orgs { get; private set; }
+        public static OrgManagementClient Orgs { get; private set; }
 
         public class OrgManagementClient
         {

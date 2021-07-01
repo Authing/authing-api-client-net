@@ -57,7 +57,7 @@ namespace Authing.ApiClient.Mgmt
                 {
                     KeepPassword = keepPassword,
                 };
-                await client.GetAccessToken();
+                
                 var res = await client.Request<CreateUserResponse>(param.CreateRequest(), cancellationToken);
                 return res.Result;
             }
