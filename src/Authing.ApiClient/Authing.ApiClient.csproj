@@ -13,7 +13,9 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 4.2.4
+    <PackageReleaseNotes>Version 4.2.4.1
+      - 🔨 修改若干问题(重大重构)，增强程序健壮性，稳定版本将在 4.2.5 进行发布 🚀
+Version 4.2.4
       - 完善部分功能细节
 Version 4.2.3
       - 完善认证模块-核心认证
@@ -45,7 +47,7 @@ Version 1.1.0
       - 增加十个接口，详见文档。
 Version 1.0.0
       - 提供了注册、登录、更新等 11 个常用的接口。</PackageReleaseNotes>
-<Version>4.2.4</Version>
+<Version>4.2.4.1</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Authing.ApiClient.xml</DocumentationFile>
