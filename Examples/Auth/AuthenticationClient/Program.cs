@@ -333,9 +333,9 @@ Console.WriteLine(res is SecurityLevel); */
 
 // ListAuthorizedResources
 
-var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", null);
+/* var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", ResourceType.API);
 
-Console.WriteLine(res is PaginatedAuthorizedResources);
+Console.WriteLine(res is PaginatedAuthorizedResources); */
 
 // ComputedPasswordSecurityLevel
 
