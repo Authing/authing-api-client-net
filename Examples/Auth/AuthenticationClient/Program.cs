@@ -333,9 +333,12 @@ Console.WriteLine(res is SecurityLevel); */
 
 // ListAuthorizedResources
 
-/* var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", ResourceType.API);
+var token = @"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikx1aEtLTWU0eV9VeDFyZ3hBQ2tNY3RkZlFrUTEzZjlDcDZUT2haSENrbVkifQ.eyJqdGkiOiJXVXJkX2ZRUWpOc0daamY5RXJqckIiLCJzdWIiOiI2MGRjMzUyYmM1MmY3OWI2ZGFmODkxOWEiLCJpYXQiOjE2MjUxOTQ0MTYsImV4cCI6MTYyNjQwNDAxNiwic2NvcGUiOiJwaG9uZSBlbWFpbCBvcGVuaWQgcHJvZmlsZSIsImlzcyI6Imh0dHBzOi8vZHBjLmF1dGhpbmcuY24vb2lkYyIsImF1ZCI6IjYwZGMzMjUxZjNjMWZmYmU3MDFjZDNhNiJ9.ypcmLrQKkn9vCRYCIUUMDtGCFV6c33gRK6A6sB-J-7c1U2O0c6NOXNVxeaIsImFoo6iNLt_WeSkv-SxabyuIsAUIX_RqwVy8PDOBFBg6oxqphveeD7omH7dccWwNWIjqjkClr8Zs8RBnqFLoefhL-UD0xI6-dFS9_v7HUuKY--mn3rWWJuMdGf7AhshBLMXPTXXHxIyyaVYVnoJbPbQQFKOaK6Rg4bpob_DlEFO-FxG2R2_lVhFTLMp4uhgB79odN49CqT3QtJlltFhH605Xqok911JjDmMgL-0oxo_3kAoXYm0FaYyNysogaxwfiVfyU8PqRy02OzGX_N8VNj0lvQ";
+authenticationClient.SetToken(token);
 
-Console.WriteLine(res is PaginatedAuthorizedResources); */
+var res = await authenticationClient.ListAuthorizedResources(_namespace: "default", ResourceType.API);
+
+Console.WriteLine(res is PaginatedAuthorizedResources);
 
 // ComputedPasswordSecurityLevel
 

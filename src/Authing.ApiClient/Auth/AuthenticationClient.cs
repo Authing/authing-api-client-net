@@ -71,8 +71,8 @@ namespace Authing.ApiClient.Auth
             }
 
             var tokenInfo = AuthingUtils.GetPayloadByToken(Token);
-            var userDataString = tokenInfo.Payload.Claims.First(item => item.Type == "data").Value;
-            var userData = JsonConvert.DeserializeObject<UserData>(userDataString);
+            var userDataString = tokenInfo.Payload.Claims.FirstOrDefault(item => item.Type == "data")?.Value;
+            var userData = JsonConvert.DeserializeObject<UserData>(userDataString ?? "");
             var userId = tokenInfo.Payload.Sub ?? userData.Id;
             if (string.IsNullOrEmpty(userId))
             {
@@ -96,7 +96,9 @@ namespace Authing.ApiClient.Auth
         /// <param name="token">token 值</param>
         public void SetToken(string token)
         {
+            user = null;
             Token = token;
+            CheckLoggedIn();
         }
 
         [Obsolete("该函数已弃用，请使用　GetCurrentUser")]
