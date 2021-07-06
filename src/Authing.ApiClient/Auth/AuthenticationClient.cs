@@ -1134,8 +1134,21 @@ namespace Authing.ApiClient.Auth
             var res = await Host.AppendPathSegment("api/v2/users/me/orgs").WithHeaders(GetHeaders()).GetJsonAsync<ListOrgsRes>(cancellationToken);
             return res;
         }
-        
-        // TODO: 缺少方法
+
+        // TODO: 缺少方法 ListDepartment
+        // notd: 缺少方法 ListDepartment
+        public async Task<PaginatedDepartments> ListDepartment(CancellationToken cancellation = default)
+        {
+            var userId = CheckLoggedIn();
+            var param = new GetUserDepartmentsParam(userId);
+            var res = await Request<GetUserDepartmentsResponse>(param.CreateRequest(), cancellation);
+            var user = res.Result;
+            if (user == null)
+            {
+                throw new Exception("用户不存在！");
+            }
+            return user.Departments;
+        }
 
         /// <summary>
         /// 通过 LDAP 进行登录
