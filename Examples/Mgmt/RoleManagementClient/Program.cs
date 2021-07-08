@@ -16,5 +16,5 @@ var rolesManageClient = manageMentClient.Roles;
 
 var roles = await rolesManageClient.List();
 
-Console.WriteLine();
+Console.WriteLine(roles is PaginatedRoles);
 
