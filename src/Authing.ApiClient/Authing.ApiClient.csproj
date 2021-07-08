@@ -13,7 +13,9 @@
     <Authors>Authing</Authors>
     <Product />
     <Description>通过简单、安全的接口使用 Authing 提供的功能。</Description>
-    <PackageReleaseNotes>Version 4.2.4.3
+    <PackageReleaseNotes>Version 4.2.4.4
+      - 🔨 修改 OrgManagement 找不到的 bug
+Version 4.2.4.3
       - ✨ 补充认证模块中的 ListDepartment ✨
 Version 4.2.4.2
       - ⚡️ 改善认证模块 CheckLoggedIn 方法中 Linq Frist -> FirstOrDefault, 并调整 SetToken 部分逻辑 🐎
@@ -51,7 +53,7 @@ Version 1.1.0
       - 增加十个接口，详见文档。
 Version 1.0.0
       - 提供了注册、登录、更新等 11 个常用的接口。</PackageReleaseNotes>
-<Version>4.2.4.3</Version>
+<Version>4.2.4.4</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard2.0\Authing.ApiClient.xml</DocumentationFile>
