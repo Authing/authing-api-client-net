@@ -43,6 +43,11 @@ Console.WriteLine(user is User); */
 
 // List
 
+var users = await userManageClient.List();
+
+Console.WriteLine(users is PaginatedUsers);
+
+
 // ListArchivedUsers
 
 // Exists

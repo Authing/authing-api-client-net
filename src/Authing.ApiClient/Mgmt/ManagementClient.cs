@@ -64,6 +64,7 @@ namespace Authing.ApiClient.Mgmt
             manageClient.Roles = new RolesManagementClient(manageClient);
             manageClient.Acl = new AclManagementClient(manageClient);
             manageClient.Groups = new GroupsManagementClient(manageClient);
+            manageClient.Orgs = new OrgManagementClient(manageClient);
             manageClient.Udf = new UdfManagementClient(manageClient);
             manageClient.Whitelist = new WhitelistManagementClient(manageClient);
             manageClient.Userpool = new UserpoolManagementClient(manageClient);
