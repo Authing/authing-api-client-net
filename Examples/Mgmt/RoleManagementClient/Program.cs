@@ -14,5 +14,7 @@ var manageMentClient = await ManagementClient.InitManagementClient(init: opt =>
 
 var rolesManageClient = manageMentClient.Roles;
 
+var roles = await rolesManageClient.List();
 
+Console.WriteLine();
 
